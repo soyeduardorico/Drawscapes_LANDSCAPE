@@ -23,10 +23,10 @@ root_data = os.path.join(absFilePath,  'data')
 # ----------------------------------------------------------------------------------
 # initiates Redis Queue when running in Ubuntu. Comment when running tests on Windows
 # ----------------------------------------------------------------------------------
-import redis
-from rq import Queue
-r=redis.Redis()
-q=Queue(connection=r)
+# import redis
+# from rq import Queue
+# r=redis.Redis()
+# q=Queue(connection=r)
 
 
 # -----------------------------------------------------------------------------------------
