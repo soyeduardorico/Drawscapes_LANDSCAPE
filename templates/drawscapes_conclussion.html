@@ -1,0 +1,130 @@
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for ('static', filename='drawscapes_scripts.js')}}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=0.3">
+
+</head>
+
+<style type="text/css">
+    
+.btn2 {
+    background-color: black;
+    border: none;
+    color: white;
+    padding: 3px 3px;
+    font-size: 22px;
+}
+
+</style>>
+
+<body>
+
+    <h1>STEP 10 - FINAL FEEDBACK</h1>
+
+
+    <!-- basic lines drawn feedback area -->
+    <div class="btn-toolbar">
+        <div role="group" class="btn-group" style="text-align:center"> 
+        <a> <button id = "draw_your_park"  class="btn2" style="width:400px">
+         This is what you drew
+        </button> </a>
+
+        <a><button id = "replay"  class="btn2" style="width:400px">
+         These are all participant lines "bundelled" together
+        </button> </a>
+        </div>
+    </div>
+
+    <div class="central-layout">
+        <div role="group" class="btn-group" style="text-align:center">
+
+            <img id="connections_drawn" width="400" height="400"> </img>
+            <img id="overall_connections" width="400" height="400"> </img>
+            <br> </br>
+            <br> </br>
+            <br> </br>
+        </div>
+    </div>
+
+
+    <!-- basic lines drawn feedback area -->
+    <div class="btn-toolbar">
+        <div role="group" class="btn-group" style="text-align:center"> 
+        <a> <button id = "draw_your_park"  class="btn2" style="width:400px">
+         These are the strongest connections suggested by your drawing
+        </button> </a>
+
+        <a><button id = "replay"  class="btn2" style="width:400px">
+         These are the main connections suggested by all participants
+        </button> </a>
+        </div>
+    </div>
+
+    <div class="central-layout">
+        <div role="group" class="btn-group" style="text-align:center">
+            <img id="basic_lines_drawn" width="400" height="400"> </img>
+            <img id="overall_basic_lines" width="400" height="400"> </img>
+            <br> </br>
+            <br> </br>
+            <br> </br>
+        </div>
+    </div>
+
+
+    <!-- basic massing feedback area -->
+    <div class="btn-toolbar">
+        <div role="group" class="btn-group" style="text-align:center"> 
+        <a> <button id = "draw_your_park"  class="btn2" style="width:400px">
+         This is where you placed the built area
+
+        <a><button id = "replay"  class="btn2" style="width:400px">
+         This is an average location of built area from all participants so far 
+        </button> </a>
+        </div>
+    </div>    
+
+    <div class="central-layout">
+        <div role="group" class="btn-group" style="text-align:center">
+            <img id="massing_drawn" width="400" height="400"> </img>
+            <img id="overall_massing" width="400" height="400"> </img>
+            <br> </br>
+            <br> </br>
+            <br> </br>
+        </div>
+    </div>
+
+</body>
+
+<script>
+   $(document).ready(function() {
+      $('html').css('background', color9);
+      document.getElementById("connections_drawn").src = connections_drawn.src;
+  }); 
+
+
+
+connections_drawn.src = "{{url_for ('static', filename='images/current_lines_temporal.jpg')}}";
+overall_connections.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", "bundle_drawing.jpg");
+document.getElementById("connections_drawn").src = connections_drawn.src;
+document.getElementById("overall_connections").src = overall_connections.src;
+
+
+basic_lines_drawn.src = "{{url_for ('static', filename='images/current_basic_lines_temporal.jpg')}}";
+overall_basic_lines.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", "basic_line_drawing.jpg");
+document.getElementById("basic_lines_drawn").src = basic_lines_drawn.src;
+document.getElementById("overall_basic_lines").src = overall_basic_lines.src;
+
+
+massing_drawn.src = "{{url_for ('static', filename='images/current_massing_temporal.jpg')}}";
+overall_massing.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", "massing_average.jpg");
+document.getElementById("massing_drawn").src = massing_drawn.src;
+document.getElementById("overall_massing").src = overall_massing.src;
+
+</script>
+
+</html>

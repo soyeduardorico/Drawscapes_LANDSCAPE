@@ -1,0 +1,91 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for ('static', filename='drawscapes_scripts.js')}}"></script>
+    <base target="_top">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
+</head>
+
+<body>
+
+
+    <div>
+        <br> </br>
+        <h1>STEP 9</h1></div>
+        <h1>SOME FINAL QUESTIONS</h1></div>
+
+    <div class="btn-toolbar">
+        <div role="group" class="btn-group" style="text-align:center">
+
+            <br> </br>
+
+            <h2>Do you live local to UCL east?</h2>
+            <form action="/action_page.php" id="frm-live">
+                <select name="live">
+                    <option value="nil">-</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+                <br>
+                <br>
+            </form>
+
+            <h2>Are you student?</h2>
+            <form action="/action_page.php" id="frm-study">
+                <select name="study">
+                    <option value="nil">-</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+                <br>
+                <br>
+            </form>
+
+            <a>
+                <div>
+                    <h2>WRITE DOWN ANYTHING ELSE YOU THINK SHOULD BE IN UCL EAST</h2>
+                    <input type="text" id="myText">
+                </div>
+            </a>
+
+            <br> </br>
+            <div class="item5">
+                <button id="btn-save"><img src="{{url_for ('static', filename='images/save.jpg')}}"></button>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+        $("#btn-save").on("click", function() {
+            mySaveText();
+            myGo();
+        });
+        $('html').css('background', color9);
+    });
+
+    function mySaveText() {
+        //gets text information
+        var x1 = document.getElementById("myText").value;
+        var js_data = JSON.stringify(x1);
+        $.ajax({
+            url: '/drawscapes_save_text',
+            type: 'post',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: js_data
+        })
+    }
+
+    function myGo() {
+        window.location.replace("{{url_for ('drawscapes_conclussion') }}");
+    }
+</script>
+
+</html>

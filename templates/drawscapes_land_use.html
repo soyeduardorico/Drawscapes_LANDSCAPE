@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for ('static', filename='drawscapes_scripts.js')}}"></script>
+    <base target="_top">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
+    <meta name="viewport" content="width=device-width, initial-scale=0.3">
+
+</head>
+
+<body>
+    <br> </br>
+    <!-- Centered top menu with stages-->
+    <div class=container6>
+        <!--container centering items-->
+        <div class="row">
+            <div class="column" id="btn1" style="color: #4a4a4a;"> 1 <br> screern fit</div>
+            <div class="column" id="btn2" style="color: #4a4a4a;"> 2 <br> draw </div>
+            <div class="column" id="btn3" style="color: #4a4a4a;"> 3 <br> connectivity </div>
+            <div class="column" id="btn4" style="color: #4a4a4a;"> 4 <br> style </div>
+            <div class="column" id="btn5" style="color: #4a4a4a;"> 5 <br> buildings </div>
+            <div class="column" id="btn6" style="color: #4a4a4a;"> 6 <br> statistics </div>
+            <div class="column" id="btn7" onclick="openTab('b7');"> 7 <br> key uses </div>
+            <div class="column" id="btn8" onclick="openTab('b8');"> 8 <br> landscape </div>
+            <div class="column" id="btn9" > 9 <br> survey </div>
+            <div class="column" id="btn10" style="color: #4a4a4a;"> 10 <br> feedback </div>
+        </div>
+    </div>
+
+    <!-- central layout-->
+    <div class="central-layout">
+        <div role="group" class="btn-group" style="text-align:center">
+            <canvas id="canvas" width="700" height="700"> </canvas>
+            <!-- drawing canvas on the left-->
+            <img id="feedback" width="700" height="700"> </img>
+            <!--feedback area on the right-->
+            <div id="overlay">
+                <div id="ldr" class="loader"> </div>
+            </div>
+            <!--overlay loader-->
+        </div>
+    </div>
+
+    <!-- full menus below  -->
+    <div class=container6>
+        <!--container centering items-->
+
+        <!-- Stage 7: DRAW LAND USES  -->
+        <div id="b7" class="containerTab" style="display:none;background:none">
+            <div class="row">
+                <div class="column" id="btnerase" onclick="myClear(1,1);"> erase </div>
+                <div class="column" id="btn-back" onclick="myBack();"> restart </div>
+                <div class="column" onclick="myReplay('video_7');"> load intro </div>
+                <div class="column"> - </div>
+                <div class="column"> - </div>
+                <div class="column" id="btn-landuse_1" onclick="newCanvasStroke(4);"> cafe and food</div>
+                <div class="column" id="btn-landuse_2" onclick="newCanvasStroke(5);"> gathering area </div>
+                <div class="column"> - </div>
+                <div class="column"> - </div>
+                <div class="column"> - </div>
+            </div>
+        </div>
+
+        <!-- Stage 8: CHECK STYLE  -->
+        <div id="b8" class="containerTab" style="display:none;background:none">
+            <div class="row">
+                <div class="column" id="btnerase" onclick="myClear(1,1);"> erase </div>
+                <div class="column" id="btn-back" onclick="myBack();"> restart </div>
+                <div class="column" onclick="myReplay('video_8');"> load intro </div>
+                <div class="column"> - </div>
+                <div class="column"> - </div>
+                <div class="column" id="btn-landscape_0" onclick="myPassLandscape(0);"> style 1 </div>
+                <div class="column" id="btn-landscape_1" onclick="myPassLandscape(1);"> style 2 </div>
+                <div class="column" id="btn-landscape_2" onclick="myPassLandscape(2);"> style 3 </div>
+                <div class="column" id="btn-landscape_3" onclick="myPassLandscape(3);"> style 4 </div>
+                <div class="column"> - </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+<script>
+
+    //--------------------------------------------------------------------------
+    //imports images for canvas background, feedback screen and sets new canvas and colors buttons
+    //--------------------------------------------------------------------------
+    image_canvas.src = "{{url_for ('data', filename='ADDSHARE2') }}".replace("ADDSHARE2", '{{ imagename }}');
+    image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_7.jpg");
+    ctx = document.getElementById('canvas').getContext("2d"); //imports data from previosly defined canvas
+    document.addEventListener("load", newWhiteCanvas(0)); //Initializes canvas when background image is ready 
+    image_canvas.onload = function() {
+        color_buttons_neutral() //turns all the rest of buttons to neutral color
+        document.getElementById("btn7").style.background = color7; // colors button in stage color
+        image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_7.jpg");
+        document.getElementById("feedback").src = image_video.src;
+        $('html').css('background', color7);
+        newcanvas(image_canvas, 1, 1);
+        document.getElementById("feedback").src = image_video.src;
+        openTab('b7')
+        document.getElementById("overlay").style.visibility = "hidden";
+        document.getElementById("ldr").style.visibility = "hidden";
+    }
+
+
+
+    //--------------------------------------------------------------------------
+    // Reloads gif video. For some reason does not work if placed in .js file
+    //--------------------------------------------------------------------------
+    function myReplay(video_name){
+              image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/".concat(video_name).concat('.gif'));
+            document.getElementById("feedback").src = image_video.src;
+    }
+
+
+
+    //--------------------------------------------------------------------------
+    //functinality for header buttons
+    //--------------------------------------------------------------------------
+    $(document).ready(function() {
+        $("#btn7").on("click", function() {
+            color_buttons_neutral()
+            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_7.jpg");
+            document.getElementById("feedback").src = image_video.src;
+            document.getElementById("btn7").style.background = color7;
+            $('html').css('background', color7);
+        });
+    });
+
+
+    $(document).ready(function() {
+        $("#btn8").on("click", function() {
+            color_buttons_neutral()
+            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_8.jpg");
+            document.getElementById("feedback").src = image_video.src;
+            document.getElementById("btn8").style.background = color8;
+            $('html').css('background', color8);
+        });
+    });
+
+
+    $(document).ready(function() {
+        $("#btn9").on("click", function() {
+            window.location.replace("{{url_for ('drawscapes_form') }}");
+        });
+    });
+
+
+    function myBack() {
+        window.location.replace("{{url_for ('drawscapes') }}");
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Functions passing data to backend and bringing feedback to front end
+    //----------------------------------------------------------------------------------------------
+
+
+    function myPassLandscape(declared_style) {
+        var js_data = JSON.stringify(mySave(declared_style));
+        document.getElementById("overlay").style.visibility = "visible";
+        document.getElementById("ldr").style.visibility = "visible";
+        $.ajax({
+            url: '/drawscapes_render_landscape',
+            type: 'post',
+            contentType: 'application/json',
+            dataType: 'json',
+            data: js_data
+        }).done(function(result) {
+            image_feedback_link = result;
+            console.log(result);
+            image_back.src = "{{url_for ('data', filename='ADDSHARE') }}".replace("ADDSHARE", image_feedback_link);
+            image_back.onload = function() {
+                document.getElementById("feedback").src = image_back.src;
+                document.getElementById("overlay").style.visibility = "hidden";
+                document.getElementById("ldr").style.visibility = "hidden";
+            };
+            $("#data").html(result);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.log("fail: ", textStatus, errorThrown);
+        });
+    }
+
+</script>
+
+</html>
