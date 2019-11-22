@@ -39,6 +39,7 @@
         </div>
     </div>
 
+
     <div class="central-layout">
         <div role="group" class="btn-group" style="text-align:center">
 
@@ -63,6 +64,7 @@
         </button> </a>
         </div>
     </div>
+
 
     <div class="central-layout">
         <div role="group" class="btn-group" style="text-align:center">
@@ -106,7 +108,9 @@
   }); 
 
 
-connections_drawn.src = "{{url_for ('static', filename='images/current_lines_temporal.jpg')}}";
+connections_drawn.src = "{{url_for ('data', filename='ADDSHARE2') }}".replace("ADDSHARE2", '{{ title }}'.concat('_lines_base.jpg'))
+console.log('{{ title }}');
+//connections_drawn.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", "bundle_drawing.jpg");
 overall_connections.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", "bundle_drawing.jpg");
 document.getElementById("connections_drawn").src = connections_drawn.src;
 document.getElementById("overall_connections").src = overall_connections.src;
@@ -118,7 +122,8 @@ document.getElementById("basic_lines_drawn").src = basic_lines_drawn.src;
 document.getElementById("overall_basic_lines").src = overall_basic_lines.src;
 
 
-massing_drawn.src = "{{url_for ('static', filename='images/current_massing_temporal.jpg')}}";
+massing_drawn.src = "{{url_for ('data', filename='ADDSHARE2') }}".replace("ADDSHARE2", '{{ title }}'.concat('_massing_base.jpg'))
+console.log('{{ title }}');
 overall_massing.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", "massing_average.jpg");
 document.getElementById("massing_drawn").src = massing_drawn.src;
 document.getElementById("overall_massing").src = overall_massing.src;

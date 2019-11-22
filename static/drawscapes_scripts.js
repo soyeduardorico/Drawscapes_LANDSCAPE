@@ -38,7 +38,7 @@ Screen_01_right = "images/screens/Slide2.jpg"
 Screen_02_left = "images/Screen_02_left.gif"
 Screen_02_right = "images/screens/Slide3.jpg"
 
-Screen_03_left = "images/screens/Slide7.jpg"
+Screen_03_left = "images/base_for_canvas.jpg"
 Screen_03_right = "images/base_image_large_annotated.jpg"
 
 Screen_04_left = new String () //This is previolsy loaded canvas
@@ -66,8 +66,8 @@ title4 = '4 <br> check lines'
 title5 = '5 <br> draw buildings'
 title6 = '6 <br> check numbers'
 title7 = '7 <br> locate key uses'
-title8 = '8 <br> text'
-title9 = '9 <br> -'
+title8 = '8 <br> survey'
+title9 = '9 <br> feedback'
 title10 = '10 <br> -'
 
 //----------------------------------------------------------------------------------------------

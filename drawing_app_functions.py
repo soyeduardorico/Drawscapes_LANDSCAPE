@@ -22,7 +22,7 @@ from matplotlib import pyplot as plt #used for debuggin purposes
 # Imports project variables
 # ------------------------------------------------------------------------------------  
 from project_data import link_base_image, link_base_image_large_annotated, link_base_image_warning, ucl_east_image
-from project_data import shape_y, shape_x, thickness_lines
+from project_data import shape_y, shape_x, thickness_lines, root_participation_directory
 from project_data import reference_directory_images, reference_directory, overall_results_directory
 from project_data import link_outcome_failure, link_outcome_success, node_coords, threshold_distance
 from project_data import node_coords_large, color_canvas_rgb, node_coords_detailed
@@ -126,7 +126,10 @@ def save_land_uses (data, session_folder, file_name, folder_name):
     file_path = os.path.join(session_folder, folder_name + '_land_uses_type.npy')
     np.save(file_path, line_type_export)       
     file_path = os.path.join(overall_results_directory, folder_name + '_land_uses_type.npy')
-    np.save(file_path, line_type_export)  
+    np.save(file_path, line_type_export)
+
+    # calls for the generation of the  series of draswigns last drawn
+    generate_all_drawings (folder_name)       
 
 
 # ------------------------------------------------------------------------------------
@@ -186,7 +189,8 @@ def drawscapes_draw_base (data, file_name, session_folder, folder_name):
         np.save(file_path, line_type_export)         
 
         # generates drawing base
-        draw_paths_base (pols, line_type, session_folder, file_name)
+        img=cv2.imread(link_base_image)
+        draw_paths_base (pols, line_type, session_folder, file_name, img)
     else:
         base=cv2.imread(link_base_image_warning)
         b=os.path.join(session_folder,file_name +'_base'+'.jpg')
@@ -213,7 +217,8 @@ def drawscapes_draw_base_2 (data, file_name, session_folder, folder_name):
         points=ptexport.tolist()
         pols  = pts_to_polylines(points, line_type)[0]
         linetype = pts_to_polylines (points, line_type) [1]
-        draw_paths_base (pols, linetype, session_folder, file_name)
+        img=cv2.imread(link_base_image)
+        draw_paths_base (pols, linetype, session_folder, file_name, img)
     else:
         base=cv2.imread(link_base_image_warning)
         b=os.path.join(session_folder,file_name +'_base.jpg')
@@ -243,8 +248,10 @@ def pts_to_polylines (points, line_type):
     return polylines, linetypes
 
 
+# ------------------------------------------------------------------------------------
+# line drawing over blank canvas
+# ------------------------------------------------------------------------------------
 def draw_paths (polylines, line_type, folder,file_name):
-    #line drawing over blank canvas
     img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
     img.fill(255)
     for i in range(0, len(polylines)):
@@ -256,20 +263,22 @@ def draw_paths (polylines, line_type, folder,file_name):
     img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     cv2.imwrite(b,img2)
     return img2
-    
 
-def draw_paths_base (polylines, line_type, folder,file_name):    
-    #line drawing over base
-    img2=cv2.imread(link_base_image)
+
+# ------------------------------------------------------------------------------------
+# line drawing over base
+# ------------------------------------------------------------------------------------
+def draw_paths_base (polylines, line_type, folder,file_name, img):
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) # needs to invert colors first for the case of multiple line drawing. Does not affect individual ones which come greyscale
     for i in range(0, len(polylines)):
         thickness = thickness_lines[line_type[i]]
         color = color_canvas_rgb[line_type[i]]        
         for j in range(0, int(len(polylines[i])-1)):
-            cv2.line(img2,(int(polylines[i][j][0]),int(shape_y-polylines[i][j][1])),(int(polylines[i][j+1][0]),int(shape_y-polylines[i][j+1][1])),color,thickness)
+            cv2.line(img,(int(polylines[i][j][0]),int(shape_y-polylines[i][j][1])),(int(polylines[i][j+1][0]),int(shape_y-polylines[i][j+1][1])),color,thickness)
     b2=os.path.join(folder, file_name + '_base.jpg')
-    img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2RGB)
-    cv2.imwrite(b2,img2)
-    return img2
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    cv2.imwrite(b2,img)
+    return img
 
 
 # ------------------------------------------------------------------------------------
@@ -296,6 +305,37 @@ def draw_base_large (polylines, session_folder,file_name):
         for j in range(0, int(len(polylines2[i])-1)):
             cv2.line(img,(int(polylines2[i][j][0]-pos_x),int(pos_y+shape_y-polylines2[i][j][1])),(int(polylines2[i][j+1][0]-pos_x),int(pos_y+shape_y-polylines2[i][j+1][1])),(0,0,1),thickness_lines[0])
     cv2.imwrite(b1,img)    
+
+
+
+# ------------------------------------------------------------------------------------
+# Generates conclussion drawings for all categories (_lines, _massing and _land_uses)
+# ------------------------------------------------------------------------------------  
+def generate_all_drawings (session_user):
+    root_data = root_participation_directory
+    session_folder=os.path.join(root_data, session_user)
+    extension_names =  ['_lines', '_massing', '_land_uses']
+    imgtotal=cv2.imread(link_base_image) # this will be 
+    for i in extension_names: # iterates thorugh categories
+        file_name = session_user + i 
+    
+        filepath_np_lines = os.path.join(session_folder, str(file_name) + '.npy') # loads lines
+        filepath_np_lines_type = os.path.join(session_folder, str(file_name) + '_type.npy') #loads line types
+            
+        ptexport=np.load(filepath_np_lines).astype(int)
+        points=ptexport.tolist()
+        line_type=np.load(filepath_np_lines_type).astype(int)
+        pols  = pts_to_polylines(points, line_type)[0]
+        linetype = pts_to_polylines (points, line_type) [1]
+    
+        img=cv2.imread(link_base_image)
+        
+        imgtotal = draw_paths_base (pols, linetype, session_folder, file_name, imgtotal)
+        
+        draw_paths_base (pols, linetype, session_folder, file_name, img) # calls drawing function
+    
+    file_name = os.path.join(session_folder, session_user + '_combined.jpg')
+    cv2.imwrite(file_name,imgtotal)
 
 
 # ------------------------------------------------------------------------------------
@@ -353,7 +393,8 @@ def report_land_use (data, file_name, session_folder, folder_name):
         thumb_large_y = int(thumb_y * 1.5)
         
         # place original image on the top
-        im_source=draw_paths_base (polylines, linetype, session_folder,file_name)
+        img=cv2.imread(link_base_image)
+        im_source=draw_paths_base (polylines, linetype, session_folder,file_name, img)
         im_source = cv2.cvtColor(im_source, cv2.COLOR_BGR2RGB)
         im_source=cv2.rectangle(im_source,(0,0),(thumb_large_x,thumb_large_y),(0,0,0),3)
         im_source_pil = Image.fromarray(im_source)
@@ -549,7 +590,8 @@ def generate_image (ptexport, line_type, session_folder, file_name, folder_name,
     points=ptexport.tolist()
     pols  = pts_to_polylines(points, line_type)[0]
     img=draw_paths (pols, line_type, session_folder,file_name) # draws paths in the small scale drawing ovwer white canvas for further processing
-    draw_paths_base (pols, line_type, session_folder,file_name) # Draws paths in the small scale base
+    img2=cv2.imread(link_base_image)
+    draw_paths_base (pols, line_type, session_folder,file_name,img2) # Draws paths in the small scale base
     draw_base_large(pols, session_folder,file_name)
     # will develop connectivity even for style to ensure final drawing considered at the end
     draw_skeleton_graphs(img, session_folder,file_name, folder_name)

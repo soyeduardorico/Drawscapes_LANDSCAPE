@@ -316,38 +316,37 @@ class path_graph ():
         node_coords=[]
         for i in self.nodes:
             node_coords.append(self.coords(i))
-        
-        #adds points into plots
-        for i in range (0,len(node_coords)):
-            cv2.circle(img,node_coords[i],5,(0,0,255),-1)
-            cv2.putText(img,' '+str(i), node_coords[i],cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), lineType=cv2.LINE_AA)    
-        for i in range (0,len(node_coords_large)):
-            cv2.circle(img2,(node_coords_large[i][0],node_coords_large[i][1]),3,(0,0,255),-1)
-      
+
         #calls cost function and represents best lines
         costs = self.path_cost_metric()
         basic_connections=[]
         for i in range (0,len(costs)): # Brings 4 best lines into small scale drawing
             if i<4:
-                cv2.line(img,node_coords[costs[i][0]],node_coords[costs[i][1]],(0,0,0),(10-i*i))
+                cv2.line(img,node_coords[costs[i][0]],node_coords[costs[i][1]],(29, 41, 82),(10-i*i))
                 basic_connections.append([costs[i][0],costs[i][1]])                   
-                # Instantiates class for text
-                font_large = ImageFont.truetype("arial.ttf", size = 56)
-                font_small = ImageFont.truetype("arial.ttf", size = 25)
+        
+        #adds points into plots
+        for i in range (0,len(node_coords)):
+            cv2.circle(img,node_coords[i],5,(0,0,255),-1)
+            cv2.putText(img,' '+str(i), node_coords[i],cv2.FONT_HERSHEY_SIMPLEX, 0.4, (29, 41, 82), lineType=cv2.LINE_AA)    
+        for i in range (0,len(node_coords_large)):
+            cv2.circle(img2,(node_coords_large[i][0],node_coords_large[i][1]),3,(0,0,255),-1)
 
         # Writes text on image
+        # Instantiates class for text
+        font_large = ImageFont.truetype("arial.ttf", size = 56)
+        font_small = ImageFont.truetype("arial.ttf", size = 25)
         # generate new canvas
         im_source = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         im_source_pil = Image.fromarray(im_source)
         canvas =Image.new('RGB',(shape_y,shape_y), color = 'white')
         canvas.paste(im_source_pil,(0,0))
         draw = ImageDraw.Draw(canvas)
-        draw.text((15, 560),"These are the strongest",(0,0,0),font=font_small)
-        draw.text((15, 560 + 32),"connections suggested by your sketch",(0,0,0),font=font_small)
-        draw.text((15, 560 + 32 + 32 + 10),"You connected a total of " + str(len(costs)) + " ♦node couples",(0,0,0),font=font_small)
+        draw.text((15, 560),"These are the strongest",(29, 41, 82),font=font_small)
+        draw.text((15, 560 + 32),"connections suggested by your sketch",(29, 41, 82),font=font_small)
+        draw.text((15, 560 + 32 + 32 + 10),"You connected a total of " + str(len(costs)) + " node couples",(29, 41, 82),font=font_small)
         b1=os.path.join(self.dir_write, self.sketch_name + "_ln"+"." + 'jpg') 
         canvas.save(b1)
-
 
         # saves connections as integers np
         b2=os.path.join(self.dir_write, self.sketch_name + "_ln")   # copy with file name
