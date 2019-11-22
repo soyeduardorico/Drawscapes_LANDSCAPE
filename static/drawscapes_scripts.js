@@ -21,26 +21,54 @@ var image_back = new Image();
 var exportArray = new Array()
 var style_save = new Array()
 var linetype = new Array(); //data on type of line on the canvas. 0: black and 1,2,3 for buildigns
-
 var color = new String ()
 var timeStep = 1000;
 var exportText = new String ();
 var image_feedback_link = new String ();
 var basename = new String ();
-basename = "images/base_image.jpg"
-basename2 = "images/video_1.gif"
+
 var color1 = '#1d2952'
-var color2 = '#1d2952'
-var color3 = '#1d2952'
-var color4 = '#1d2952'
-var color5 = '#1d2952'
-var color6 = '#1d2952'
-var color7 = '#1d2952'
-var color8 = '#1d2952'
-var color9 = '#1d2952'
-var color10 = '#ffffff'
 var color_generic = '#000000'
 
+
+//file paths for images and titles for header buttons
+Screen_01_left = "images/screens/Slide1.jpg"
+Screen_01_right = "images/screens/Slide2.jpg"
+
+Screen_02_left = "images/Screen_02_left.gif"
+Screen_02_right = "images/screens/Slide3.jpg"
+
+Screen_03_left = "images/screens/Slide7.jpg"
+Screen_03_right = "images/base_image_large_annotated.jpg"
+
+Screen_04_left = new String () //This is previolsy loaded canvas
+Screen_04_right = new String () //This is served based on drawings
+
+Screen_05_left = new String () //This is served based on drawings
+Screen_05_right = "images/screens/Slide4.jpg"
+
+Screen_06_left = new String () //This is previolsy loaded canvas
+Screen_06_right = new String () //This is served based on drawings
+
+Screen_07_left = new String () //This is served based on drawings
+Screen_07_right = "images/screens/Slide5.jpg"
+
+basename = "images/base_image.jpg"
+
+fail_image = "images/screens/Slide6.jpg"
+
+
+//titles for header buttons
+title1 = '1 <br> screen fit'
+title2 = '2 <br> some tips'
+title3 = '3 <br> draw paths'
+title4 = '4 <br> check lines'
+title5 = '5 <br> draw buildings'
+title6 = '6 <br> check numbers'
+title7 = '7 <br> locate key uses'
+title8 = '8 <br> text'
+title9 = '9 <br> -'
+title10 = '10 <br> -'
 
 //----------------------------------------------------------------------------------------------
 // fucntion that sets all button colors to neutral

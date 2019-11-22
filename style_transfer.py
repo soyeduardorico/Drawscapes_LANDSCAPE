@@ -76,7 +76,7 @@ def stylize_image (frozen_graph_path, img, content_target_resize):
 # ------------------------------------------------------------------------------------
 def call_montage(data, session_folder, file_name, folder_name):
     #checks model and content_target_resize and calls montage_image to carry out work
-    #separated in order to allow tests wot montage sepparately
+    #separated in order to allow tests with montage sepparately
     data=int(data[0][0])
     model_name = model_list[data]
     content_target_resize = content_target_resize_list[data]

@@ -7,7 +7,7 @@ from flask import Flask, render_template, url_for, request, jsonify, send_from_d
 import time
 import os
 
-from drawing_app_functions import drawscapes_feedback_function, report_land_use, drawscapes_draw_base, drawscapes_draw_base_2 
+from drawing_app_functions import drawscapes_feedback_function, report_land_use, drawscapes_draw_base, drawscapes_draw_base_2, save_land_uses 
 from style_transfer import call_montage
 
 
@@ -30,7 +30,7 @@ root_data = os.path.join(absFilePath,  'data')
 
 
 # -----------------------------------------------------------------------------------------
-# renders intro page
+# renders index page
 # -----------------------------------------------------------------------------------------
 @app.route ('/index')
 def index():
@@ -79,6 +79,12 @@ def drawscapes():
     # res = make_response("Setting a cookie")
     # res.set_cookie('session_number', variable, max_age=60*60*24*365*2)
     return render_template ('drawscapes.html', 
+        title = 'network design for session ' + session['user'])
+
+
+@app.route('/drawscapes_intro')
+def drawscapes_intro():
+    return render_template ('drawscapes_intro.html', 
         title = 'network design for session ' + session['user'])
 
 @app.route('/drawscapes_massing/<filename>')
@@ -161,7 +167,7 @@ def drawscapes_connection_feedback():
     drawscapes_feedback_function(data, file_name, session_folder, folder_name, task)
 
     # sends name of file back to browswer        
-    image_feedback=  file_name + '_large_overall.jpg' # defines name of image for feedbak and passes it to template
+    image_feedback=  file_name + '_ln.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
 
 @app.route('/drawscapes_massing_base', methods=["GET", "POST"])
@@ -216,8 +222,8 @@ def drawscapes_landscape_base():
     image_feedback=  file_name + '_landscape_base.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
 
-@app.route('/drawscapes_render_landscape', methods=["GET", "POST"]) #complete when generating landscape
-def drawscapes_render_landscape():
+@app.route('/drawscapes_save_land_uses', methods=["GET", "POST"]) #complete when generating landscape
+def drawscapes_save_land_uses():
     # defines drawing number within the session
     millis = int(round(time.time() * 1000))
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
@@ -236,7 +242,7 @@ def drawscapes_render_landscape():
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
     data = request.json
-    call_montage (data, session_folder, file_name, folder_name)
+    save_land_uses (data, session_folder, file_name, folder_name)
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_stylized_montage.jpg' # defines name of image for feedbak and passes it to template

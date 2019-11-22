@@ -26,7 +26,6 @@
 
     <h1>STEP 10 - FINAL FEEDBACK</h1>
 
-
     <!-- basic lines drawn feedback area -->
     <div class="btn-toolbar">
         <div role="group" class="btn-group" style="text-align:center"> 
@@ -102,10 +101,9 @@
 
 <script>
    $(document).ready(function() {
-      $('html').css('background', color9);
+      $('html').css('background', color1);
       document.getElementById("connections_drawn").src = connections_drawn.src;
   }); 
-
 
 
 connections_drawn.src = "{{url_for ('static', filename='images/current_lines_temporal.jpg')}}";

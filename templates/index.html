@@ -40,9 +40,9 @@ img {vertical-align: middle;}
   width: auto;
   padding: 16px;
   margin-top: -22px;
-  color: black;
+  color: white;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 30px;
   transition: 0.6s ease;
   border-radius: 0 3px 3px 0;
   user-select: none;
@@ -180,9 +180,9 @@ img {vertical-align: middle;}
 <br>
 
 <div  class="slideshow-container">              
-  <a href="{{ url_for('drawscapes') }}"> 
+  <a href="{{ url_for('drawscapes_intro') }}"> 
     <button id = "draw_your_park"  class="btn" style="width:700px">
-     Skip video and draw UCL EAST!
+     Skip slideshow and draw UCL EAST!
     </button>
   </a>
 </div>
@@ -210,31 +210,31 @@ image1.src ="{{url_for ('static', filename='images/VIDEO0/Slide1.jpg') }}"
 document.getElementById("image1").src = image1.src;
 
 image2.src ="{{url_for ('static', filename='images/VIDEO0/Slide2.jpg') }}"
-document.getElementById("image1").src = image2.src;
+document.getElementById("image2").src = image2.src;
 
 image3.src ="{{url_for ('static', filename='images/VIDEO0/Slide3.jpg') }}"
-document.getElementById("image1").src = image3.src;
+document.getElementById("image3").src = image3.src;
 
 image4.src ="{{url_for ('static', filename='images/VIDEO0/Slide4.jpg') }}"
-document.getElementById("image1").src = image4.src;
+document.getElementById("image4").src = image4.src;
 
-image5.src ="{{url_for ('static', filename='images/VIDEO0/Slide3.jpg') }}"
-document.getElementById("image1").src = image5.src;
+image5.src ="{{url_for ('static', filename='images/VIDEO0/Slide5.jpg') }}"
+document.getElementById("image5").src = image5.src;
 
 image6.src ="{{url_for ('static', filename='images/VIDEO0/Slide6.jpg') }}"
-document.getElementById("image1").src = image6.src;
+document.getElementById("image6").src = image6.src;
 
 image7.src ="{{url_for ('static', filename='images/VIDEO0/Slide7.jpg') }}"
-document.getElementById("image1").src = image7.src;
+document.getElementById("image7").src = image7.src;
 
 image8.src ="{{url_for ('static', filename='images/VIDEO0/Slide8.jpg') }}"
-document.getElementById("image1").src = image8.src;
+document.getElementById("image8").src = image8.src;
 
 image9.src ="{{url_for ('static', filename='images/VIDEO0/Slide9.jpg') }}"
-document.getElementById("image1").src = image9.src;
+document.getElementById("image9").src = image9.src;
 
 image10.src ="{{url_for ('static', filename='images/VIDEO0/Slide10.jpg') }}"
-document.getElementById("image1").src = image10.src;
+document.getElementById("image10").src = image10.src;
 
 var slideIndex = 1;
 showSlides(slideIndex);

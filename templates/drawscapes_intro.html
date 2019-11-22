@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html>
+
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for ('static', filename='drawscapes_scripts.js')}}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=0.3">
+
+</head>
+
+<body>
+    <br> </br>
+    <!-- Centered top menu with stages-->
+    <div class=container6>
+        <!--container centering items-->
+        <div class="row">
+            <div class="column" id="btn1" > </div>
+            <div class="column" id="btn2" > </div>
+            <div class="column" id="btn3" > </div>
+            <div class="column" id="btn4" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn5" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn6" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn7" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn8" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn9" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn10" style="color: #4a4a4a;"> </div>
+        </div>
+    </div>
+
+    <!-- central layout-->
+    <div class="central-layout">
+        <div role="group" class="btn-group" style="text-align:center">
+            <img id="im_left" width="700" height="700"> </img>
+            <!-- drawing canvas on the left-->
+            <img id="im_right" width="700" height="700"> </img>
+            <!--feedback area on the right-->
+            <div id="overlay">
+                <div id="ldr" class="loader"> </div>
+            </div>
+            <!--overlay loader-->
+        </div>
+    </div>
+
+
+
+
+    </div>
+
+</body>
+
+<script>  
+    //--------------------------------------------------------------------------
+    //brings titles into header buttons
+    //--------------------------------------------------------------------------
+    var element = document.getElementById("btn1");
+    element.innerHTML = title1;
+
+    var element = document.getElementById("btn2");
+    element.innerHTML = title2;
+
+    var element = document.getElementById("btn3");
+    element.innerHTML = title3;
+
+    var element = document.getElementById("btn4");
+    element.innerHTML = title4;
+
+    var element = document.getElementById("btn5");
+    element.innerHTML = title5;
+
+    var element = document.getElementById("btn6");
+    element.innerHTML = title6;
+
+    var element = document.getElementById("btn7");
+    element.innerHTML = title7;
+
+    var element = document.getElementById("btn8");
+    element.innerHTML = title8;
+
+    var element = document.getElementById("btn9");
+    element.innerHTML = title9;
+
+    var element = document.getElementById("btn10");
+    element.innerHTML = title10;
+
+    //--------------------------------------------------------------------------
+    //imports images for screens n and sets new canvas and colors buttons
+    //--------------------------------------------------------------------------
+    var image_left = new Image();
+    var image_right = new Image();
+    image_left.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_01_left);
+    image_right.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_01_right);
+
+    document.addEventListener("load", myInitialise());
+    
+    function myInitialise() {
+        $('html').css('background', color1); //sets background color
+
+        color_buttons_neutral() //turns all the rest of buttons to neutral color
+        document.getElementById("btn1").style.background = color1; // colors button in stage color
+
+        document.getElementById("im_left").src = image_left.src; // loads image into frame
+        document.getElementById("im_right").src = image_right.src; // loads image into frame
+        document.getElementById("overlay").style.visibility = "hidden"; // removes loader overlay
+        document.getElementById("ldr").style.visibility = "hidden"; // removes loader overlay
+    }
+
+
+    //--------------------------------------------------------------------------
+    //functinality for header buttons
+    //--------------------------------------------------------------------------
+    $(document).ready(function() {
+        $("#btn1").on("click", function() {
+            color_buttons_neutral() //turns all the rest of buttons to neutral color
+            document.getElementById("btn1").style.background = color1; // colors button in stage color
+
+            openTab('b1')
+
+            image_left.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_01_left);
+            image_right.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_01_right);
+            document.getElementById("im_left").src = image_left.src; // loads image into frame
+            document.getElementById("im_right").src = image_right.src; // loads image into frame
+        });
+    });
+
+    $(document).ready(function() {
+        $("#btn2").on("click", function() {
+            color_buttons_neutral() //turns all the rest of buttons to neutral color
+            document.getElementById("btn2").style.background = color1; // colors button in stage color
+            image_left.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_02_left);
+            image_right.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_02_right);
+            document.getElementById("im_left").src = image_left.src; // loads image into frame
+            document.getElementById("im_right").src = image_right.src; // loads image into frame
+        });
+    });
+
+    $(document).ready(function() {
+        $("#btn3").on("click", function() {
+            window.location.replace("{{url_for ('drawscapes') }}")
+        });
+    });
+
+</script>
+</html>
+
+<!--Useful Sources
+For color choice: 
+    https://www.google.com/search?q=color+picker
+For dynamic rescaling of entire webpage on mobile devices (initial lines):
+    https://css-tricks.com/snippets/html/responsive-meta-tag/ 
+For quick html formatting in order to make it easier to follow:
+    https://htmlformatter.com/
+For GIF generation
+    https://ezgif.com/maker
+-->
+

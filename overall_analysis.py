@@ -85,7 +85,8 @@ def basic_line_drawing (node_coords, edge_list, foldername,shape_x,shape_y,link_
         colourvalue = value/maxline
         rgba = cmap(0.5-colourvalue/2)
         final_colour= (int(rgba[0]*255),int(rgba[1]*255),int(rgba[2]*255)) 
-        cv2.line(img,(node_coords[i[0]][0],node_coords[i[0]][1]),(node_coords[i[1]][0],node_coords[i[1]][1]),final_colour,
+        if int(20*value/maxline)>0:
+            cv2.line(img,(node_coords[i[0]][0],node_coords[i[0]][1]),(node_coords[i[1]][0],node_coords[i[1]][1]),final_colour,
                  int(20*value/maxline))
 
     # Draws nodes

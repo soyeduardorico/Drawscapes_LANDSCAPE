@@ -6,8 +6,13 @@ import os
 import cv2
 import numpy as np
 
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+
+
 from project_data import link_base_image_large, thickness_lines, link_base_image_large_annotated
-from project_data import node_coords_large, large_scale_paths, overall_results_directory
+from project_data import node_coords_large, large_scale_paths, overall_results_directory, shape_x, shape_y
 
 import project_data as pdt
 
@@ -322,17 +327,27 @@ class path_graph ():
         #calls cost function and represents best lines
         costs = self.path_cost_metric()
         basic_connections=[]
-        if len(costs)>4:
-            for i in range (0,4): # Brings 4 best lines into small scale drawing
+        for i in range (0,len(costs)): # Brings 4 best lines into small scale drawing
+            if i<4:
                 cv2.line(img,node_coords[costs[i][0]],node_coords[costs[i][1]],(0,0,0),(10-i*i))
                 basic_connections.append([costs[i][0],costs[i][1]])                   
-        if len(costs)>2:
-            for i in range (0,2): # Brings 2 best lines into small scale drawing
-                cv2.line(img2,(node_coords_large[costs[i][0]][0],node_coords_large[costs[i][0]][1]),(node_coords_large[costs[i][1]][0],node_coords_large[costs[i][1]][1]),(255,255,255),3)      
-            
-        # saves image files
-        b1=os.path.join(self.dir_write, self.sketch_name + "_ln"+"." + 'jpg')    
-        cv2.imwrite(b1,img)
+                # Instantiates class for text
+                font_large = ImageFont.truetype("arial.ttf", size = 56)
+                font_small = ImageFont.truetype("arial.ttf", size = 25)
+
+        # Writes text on image
+        # generate new canvas
+        im_source = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        im_source_pil = Image.fromarray(im_source)
+        canvas =Image.new('RGB',(shape_y,shape_y), color = 'white')
+        canvas.paste(im_source_pil,(0,0))
+        draw = ImageDraw.Draw(canvas)
+        draw.text((15, 560),"These are the strongest",(0,0,0),font=font_small)
+        draw.text((15, 560 + 32),"connections suggested by your sketch",(0,0,0),font=font_small)
+        draw.text((15, 560 + 32 + 32 + 10),"You connected a total of " + str(len(costs)) + " ♦node couples",(0,0,0),font=font_small)
+        b1=os.path.join(self.dir_write, self.sketch_name + "_ln"+"." + 'jpg') 
+        canvas.save(b1)
+
 
         # saves connections as integers np
         b2=os.path.join(self.dir_write, self.sketch_name + "_ln")   # copy with file name
@@ -381,27 +396,6 @@ class path_graph ():
             
         return basic_connections
 
-    def draw_large_connections (self):
-        #imports base images for large scale image
-        b1=os.path.join(self.dir_write, self.sketch_name + "_large_overall.jpg")
-        img2=cv2.imread(b1) 
-        node_coords=[]
-        for i in self.nodes:
-            node_coords.append(self.coords(i))
-        
-        #adds points into plots
-        for i in range (0,len(pdt.nodes_destinations_large)):
-            cv2.circle(img2,(pdt.nodes_destinations_large[i][0],pdt.nodes_destinations_large[i][1]),3,(0,0,255),-1)
-
-        #calls cost function and represents best lines
-        costs = self.path_cost_metric()
-        if len(costs)>2:
-            for i in range (0,2): # Brings 2 best lines into small scale drawing
-                cv2.line(img2,(pdt.nodes_destinations_large[costs[i][0]][0],pdt.nodes_destinations_large[costs[i][0]][1]),(pdt.nodes_destinations_large[costs[i][1]][0],pdt.nodes_destinations_large[costs[i][1]][1]),(255,255,255),3)      
-
-        # saves files  
-        cv2.imwrite(b1,img2)       
-        return costs
 
 #%%
 

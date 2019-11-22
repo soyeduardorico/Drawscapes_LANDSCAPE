@@ -100,6 +100,36 @@ def site_area():
 
 
 # ------------------------------------------------------------------------------------
+# Saves land uses data
+# ------------------------------------------------------------------------------------
+def save_land_uses (data, session_folder, file_name, folder_name):
+    declared_style=int(data[0][0]) # reads first item on the list and turns into integer
+    line_type = data[4]
+    data.pop(4) # removes linetype array  
+    data.pop(0) # removes style array (one element) from list
+    ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
+    line_type_export = np.array(line_type).astype(int)
+    
+    # saves data as csv
+    file_path = os.path.join(session_folder, file_name + '.csv')         
+    np.savetxt(file_path, ptexport, delimiter=",")
+    
+    # saves data as numpy
+    file_path = os.path.join(session_folder, file_name + '.npy')
+    np.save(file_path, ptexport)
+    
+    # saves line and stlyle data as numpy with base name as most up to date option both in the folder and the overall results dir
+    file_path = os.path.join(session_folder, folder_name + '_land_uses.npy')
+    np.save(file_path, ptexport)
+    file_path = os.path.join(overall_results_directory, folder_name + '_land_uses.npy')
+    np.save(file_path, ptexport)        
+    file_path = os.path.join(session_folder, folder_name + '_land_uses_type.npy')
+    np.save(file_path, line_type_export)       
+    file_path = os.path.join(overall_results_directory, folder_name + '_land_uses_type.npy')
+    np.save(file_path, line_type_export)  
+
+
+# ------------------------------------------------------------------------------------
 # Generates main feedback for connectivity and style analysis
 # ------------------------------------------------------------------------------------
 def drawscapes_feedback_function (data, file_name, session_folder, folder_name, task):
@@ -242,6 +272,9 @@ def draw_paths_base (polylines, line_type, folder,file_name):
     return img2
 
 
+# ------------------------------------------------------------------------------------
+# Draws simplified lines into the large scale plan of the site
+# ------------------------------------------------------------------------------------
 def draw_base_large (polylines, session_folder,file_name):
     b1=os.path.join(session_folder, file_name + '_large_overall.jpg')
     pos_x=0
@@ -558,7 +591,7 @@ def blurred_massing (filepath_np, filepath_linetype_np):
 
 
 # ----------------------------------------------------------------------------------
-# Convert a Matplotlib figure to a 4D numpy array with RGBA channels and return it
+# Convert a Matplotlib figure to a 4D numpy array with RGBA channels and return it. Used for contour drawing generation
 # ----------------------------------------------------------------------------------
 def fig2data ( fig ):
     # http://www.icare.univ-lille1.fr/tutorials/convert_a_matplotlib_figure
@@ -704,39 +737,6 @@ def overall_image_report ():
 
 
 
-#%%
-
-#1573480457016
-#1573484470718
-#1573493802603
-
-#directory = overall_results_directory
-#sketch_number = 1573493802603
-#filepath_np_massing = os.path.join(overall_results_directory, str(sketch_number) + '_massing.npy')
-#filepath_linetype_np_massing = os.path.join(overall_results_directory, str(sketch_number) + '_massing_type.npy')
-#
-#plt.imshow(blurred_massing (filepath_np_massing, filepath_linetype_np_massing))
-
-#%%
-    
-    
-
-# test area for function drawscapes_draw_base_2 (data, file_name, session_folder, folder_name):
-#session_user =  '1573493802603'
-#millis = 1573493911735
-#file_name = session_user+'_'+ str(millis)
-#root_data = 'C:\\Users\\ucbqeri\\Documents\\GitHub\\Flask_Blog\\Drawscapes\\data'
-#session_folder=os.path.join(root_data, session_user)
-#folder_name = session_user
-
-#data=[]
-#data.append(style)
-#data.append(points_massing[0])
-#data.append(points_massing[1])
-#data.append(points_massing[2])
-#data.append(line_type_massing)
-#
-#report_land_use (data, file_name, session_folder, folder_name)
 
 
 #%%

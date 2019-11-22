@@ -19,16 +19,16 @@
     <div class=container6>
         <!--container centering items-->
         <div class="row">
-            <div class="column" id="btn1" onclick="openTab('b1');"> 1 <br> screern fitt </div>
-            <div class="column" id="btn2" onclick="openTab('b2');"> 2 <br> draw lines </div>
-            <div class="column" id="btn3" onclick="openTab('b3');"> 3 <br>  connectivity </div>
-            <div class="column" id="btn4" onclick="openTab('b4');"> 4 <br>  style </div>
-            <div class="column" id="btn5"> 5 <br>  buildings </div>
-            <div class="column" id="btn6" style="color: #4a4a4a;"> 6 <br>  statistics </div>
-            <div class="column" id="btn7" style="color: #4a4a4a;"> 7 <br> key uses </div>
-            <div class="column" id="btn8" style="color: #4a4a4a;"> 8 <br> landscape </div>
-            <div class="column" id="btn9" style="color: #4a4a4a;"> 9  <br> survey </div>
-            <div class="column" id="btn10" style="color: #4a4a4a;"> 10  <br> feedback </div>
+            <div class="column" id="btn1" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn2" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn3" > </div>
+            <div class="column" id="btn4" > </div>
+            <div class="column" id="btn5" > </div>
+            <div class="column" id="btn6" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn7" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn8" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn9" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn10" style="color: #4a4a4a;"> </div>
         </div>
     </div>
 
@@ -48,75 +48,80 @@
 
     <!-- full menus below  -->
     <div class=container6><!--container centering items-->
-        
-        <!-- Stage 2 DRAW LINES -->
-        <div id="b2" class="containerTab" style="display:none;background:none">
-            <div class="row">
-                <div class="column" id="btnerase" onclick="myClear(1,0);"> erase </div>
-                <div class="column" id="btnreplay2" onclick="myReplay('video_2');"> load intro </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-            </div>
-        </div>
 
-        <!-- Stage 3: CONNECTIVITY feedback -->
+        <!-- Stage 3: PATHS -->
         <div id="b3" class="containerTab" style="display:none;background:none">
             <div class="row">
-                <div class="column" id="btnerase" onclick="myClear(1,0);"> erase </div>
-                <div class="column" onclick="myReplay('video_3');"> load intro </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column" id="btn-style_0" onclick="myPassDataConnectivity(4);"> check connections </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
+                <div class="column_below" id="b3_1" onclick="myClear(1,0);"> <img id="erase" width="80" height="80"> </img> <br> ERASE </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
+                <div class="column_below" > </div>
             </div>
         </div>
 
-        <!-- Stage 4: STYLE feedback -->
-        <div id="b4" class="containerTab" style="display:none;background:none">
-            <div class="row">
-                <div class="column" id="btnerase" onclick="myClear(1,0);"> erase </div>
-                <div class="column" onclick="myReplay('video_4');"> load intro </div>
-                <div class="column" onclick="myStyleCatalogue();"> character list </div>
-                <div class="column"> - </div>
-                <div class="column"> - </div>
-                <div class="column" id="btn-style_0" onclick="myPassData(0);"> character 1 </div>
-                <div class="column" id="btn-style_1" onclick="myPassData(1);"> character 2 </div>
-                <div class="column" id="btn-style_2" onclick="myPassData(2);"> character 3 </div>
-                <div class="column" id="btn-style_3" onclick="myPassData(3);"> character 4 </div>
-                <div class="column" id="btn-style_4" onclick="myPassData(4);"> character 5 </div>
-            </div>
-        </div>
 
     </div>
 
 </body>
 
-<script>
+<script> 
+
+    
+    //--------------------------------------------------------------------------
+    //brings titles into header buttons
+    //--------------------------------------------------------------------------
+    var element = document.getElementById("btn1");
+    element.innerHTML = title1;
+
+    var element = document.getElementById("btn2");
+    element.innerHTML = title2;
+
+    var element = document.getElementById("btn3");
+    element.innerHTML = title3;
+
+    var element = document.getElementById("btn4");
+    element.innerHTML = title4;
+
+    var element = document.getElementById("btn5");
+    element.innerHTML = title5;
+
+    var element = document.getElementById("btn6");
+    element.innerHTML = title6;
+
+    var element = document.getElementById("btn7");
+    element.innerHTML = title7;
+
+    var element = document.getElementById("btn8");
+    element.innerHTML = title8;
+
+    var element = document.getElementById("btn9");
+    element.innerHTML = title9;
+
+    var element = document.getElementById("btn10");
+    element.innerHTML = title10;
+
     //--------------------------------------------------------------------------
     //imports images for canvas background, feedback screen and sets new canvas and colors buttons
     //--------------------------------------------------------------------------
-    image_canvas.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", basename);
-    image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", basename2);
+    image_canvas.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_03_left);
     ctx = document.getElementById('canvas').getContext("2d"); //imports data from previosly defined canvas
     document.addEventListener("load", newWhiteCanvas(0)); //Initializes canvas when background image is ready 
     image_canvas.onload = function() {
+        openTab('b3')
         color_buttons_neutral() //turns all the rest of buttons to neutral color
-        document.getElementById("btn1").style.background = color1; // colors button in stage color
-        image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/video_1.gif");
+        document.getElementById("btn3").style.background = color1; // colors button in stage color
+        image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_03_right);
         document.getElementById("feedback").src = image_video.src;
         $('html').css('background', color1);
         newcanvas(image_canvas, 1, 0);
         document.getElementById("feedback").src = image_video.src;
+        document.getElementById("erase").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/erase.jpg");
         document.getElementById("overlay").style.visibility = "hidden";
         document.getElementById("ldr").style.visibility = "hidden";
     }
@@ -126,70 +131,38 @@
     // Reloads gif video. For some reason does not work if placed in .js file
     //--------------------------------------------------------------------------
     function myReplay(video_name){
-              image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/".concat(video_name).concat('.gif'));
+              image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/".concat(video_name));
             document.getElementById("feedback").src = image_video.src;
     }
 
 
     //--------------------------------------------------------------------------
-    // Reloads gif video. For some reason does not work if placed in .js file
-    //--------------------------------------------------------------------------
-    function myStyleCatalogue(){
-              image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/style_catalogue.jpg");
-            document.getElementById("feedback").src = image_video.src;
-    }    
-
-    //--------------------------------------------------------------------------
     //functinality for header buttons
     //--------------------------------------------------------------------------
     $(document).ready(function() {
-        $("#btn1").on("click", function() {
-            color_buttons_neutral() //turns all the rest of buttons to neutral color
-            document.getElementById("btn1").style.background = color1; // colors button in stage color
-            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/video_1.gif");
-            document.getElementById("feedback").src = image_video.src;
-            $('html').css('background', color1);
-        });
-    });
-
-    $(document).ready(function() {
-        $("#btn2").on("click", function() {
-            color_buttons_neutral()
-            document.getElementById("btn2").style.background = color2;
-            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_2.jpg");
-            document.getElementById("feedback").src = image_video.src;
-            $('html').css('background', color2);
-        });
-    });
-
-    $(document).ready(function() {
         $("#btn3").on("click", function() {
             color_buttons_neutral()
-            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_3.jpg");
+            document.getElementById("btn3").style.background = color1;
+            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_03_right);
             document.getElementById("feedback").src = image_video.src;
-            document.getElementById("btn3").style.background = color3;
-            $('html').css('background', color3);
         });
     });
 
     $(document).ready(function() {
         $("#btn4").on("click", function() {
             color_buttons_neutral()
-            image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/Intro_4.jpg");
-            document.getElementById("feedback").src = image_video.src;
-            document.getElementById("btn4").style.background = color4;
-            $('html').css('background', color4);
+            myPassDataConnectivity(4)
+            document.getElementById("btn4").style.background = color1;
         });
     });
 
     $(document).ready(function() {
         $("#btn5").on("click", function() {
-            color_buttons_neutral()
-            document.getElementById("btn5").style.background = color5;
-            $('html').css('background', color5);
-            myPassBuildings(4);
+            myPassBuildings(4)
+
         });
     });
+
 
     //----------------------------------------------------------------------------------------------
     // Functions passing data to backend and bringing feedback to front end
@@ -220,46 +193,68 @@
     }
 
     function myPassDataConnectivity(declared_style) {
-        var js_data = JSON.stringify(mySave(declared_style));
-        document.getElementById("overlay").style.visibility = "visible";
-        document.getElementById("ldr").style.visibility = "visible";
-        $.ajax({
-            url: '/drawscapes_connection_feedback',
-            type: 'post',
-            contentType: 'application/json',
-            dataType: 'json',
-            data: js_data
-        }).done(function(result) {
-            image_feedback_link = result;
-            console.log(result);
-            image_back.src = "{{url_for ('data', filename='ADDSHARE') }}".replace("ADDSHARE", image_feedback_link);
-            image_back.onload = function() {
-                document.getElementById("feedback").src = image_back.src;
-                document.getElementById("overlay").style.visibility = "hidden";
-                document.getElementById("ldr").style.visibility = "hidden";
-            };
-            $("#data").html(result);
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log("fail: ", textStatus, errorThrown);
-        });
+        var list_pass = mySave(declared_style)
+        
+        if (list_pass[1].length > 1){ //checks that w are not passing a null array for evaluation
+            console.log(list_pass[1]);
+            var js_data = JSON.stringify(list_pass);
+            document.getElementById("overlay").style.visibility = "visible";
+            document.getElementById("ldr").style.visibility = "visible";
+            $.ajax({
+                url: '/drawscapes_connection_feedback',
+                type: 'post',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: js_data
+            }).done(function(result) {
+                image_feedback_link = result;
+                //console.log(result);
+                image_back.src = "{{url_for ('data', filename='ADDSHARE') }}".replace("ADDSHARE", image_feedback_link);
+                image_back.onload = function() {
+                    document.getElementById("feedback").src = image_back.src;
+                    document.getElementById("overlay").style.visibility = "hidden";
+                    document.getElementById("ldr").style.visibility = "hidden";
+                };
+                $("#data").html(result);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("fail: ", textStatus, errorThrown);
+
+            });
+        }
+
+        else {
+            image_back.src = "{{url_for ('static', filename='ADDSHARE') }}".replace("ADDSHARE", fail_image);
+            document.getElementById("feedback").src = image_back.src;
+        }
     }
 
     function myPassBuildings(declared_style) {
-        var js_data = JSON.stringify(mySave(declared_style));
-        document.getElementById("overlay").style.visibility = "visible";
-        document.getElementById("ldr").style.visibility = "visible";
-        $.ajax({
-            url: '/drawscapes_massing_base',
-            type: 'post',
-            contentType: 'application/json',
-            dataType: 'json',
-            data: js_data
-        }).done(function(result) {
-            image_feedback_link = result;
-            document.getElementById("overlay").style.visibility = "hidden";
-            document.getElementById("ldr").style.visibility = "hidden";
-            window.location.replace("{{url_for ('drawscapes_massing', filename='ADDSHARE') }}".replace("ADDSHARE", image_feedback_link));
-        })
+        var list_pass = mySave(declared_style)
+
+        if (list_pass[1].length > 1){ //checks that w are not passing a null array for evaluation
+            var js_data = JSON.stringify(mySave(declared_style));
+            document.getElementById("overlay").style.visibility = "visible";
+            document.getElementById("ldr").style.visibility = "visible";
+            $.ajax({
+                url: '/drawscapes_massing_base',
+                type: 'post',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: js_data
+            }).done(function(result) {
+                image_feedback_link = result;
+                document.getElementById("overlay").style.visibility = "hidden";
+                document.getElementById("ldr").style.visibility = "hidden";
+                window.location.replace("{{url_for ('drawscapes_massing', filename='ADDSHARE') }}".replace("ADDSHARE", image_feedback_link));
+            })
+        }
+
+        else {
+            image_back.src = "{{url_for ('static', filename='ADDSHARE') }}".replace("ADDSHARE", fail_image);
+            document.getElementById("feedback").src = image_back.src;
+        }
+
+
     }
 
 </script>

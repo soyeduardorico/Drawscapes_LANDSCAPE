@@ -32,12 +32,26 @@ canvas{
   float: left;
   width:141px;
   height:90px;
-  padding: 22px;
+  padding-top: 12px;
+  padding-right: 17px;
+  padding-bottom: 17px;
+  padding-left: 17px;
   text-align: center;
   font-size: 20px;
   cursor: pointer;
   color: white;
   border: 1px solid grey;
+}
+
+.column_below {
+  float: left;
+  width:141px;
+  height:90px;
+  padding: 0px;
+  text-align: center;
+  font-size: 15px;
+  cursor: pointer;
+  color: white;   
 }
 
 
