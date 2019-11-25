@@ -23,10 +23,10 @@ root_data = os.path.join(absFilePath,  'data')
 # ----------------------------------------------------------------------------------
 # initiates Redis Queue when running in Ubuntu. Comment when running tests on Windows
 # ----------------------------------------------------------------------------------
-import redis
-from rq import Queue
-r=redis.Redis()
-q=Queue(connection=r)
+# import redis
+# from rq import Queue
+# r=redis.Redis()
+# q=Queue(connection=r)
 
 
 # -----------------------------------------------------------------------------------------
@@ -125,16 +125,16 @@ def drawscapes_feedback():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    data = request.json
-    job = q.enqueue(drawscapes_feedback_function, data, file_name, session_folder, folder_name, task)
-    while job.is_finished != True: 
-        time.sleep(0.1)
+    # data = request.json
+    # job = q.enqueue(drawscapes_feedback_function, data, file_name, session_folder, folder_name, task)
+    # while job.is_finished != True: 
+    #     time.sleep(0.1)
     
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback. Activate on Windows
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # drawscapes_feedback_function(data, file_name, session_folder, folder_name, task)
+    data = request.json
+    drawscapes_feedback_function(data, file_name, session_folder, folder_name, task)
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_recommendation_output.jpg' # defines name of image for feedbak and passes it to template
@@ -154,16 +154,16 @@ def drawscapes_connection_feedback():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    data = request.json
-    job = q.enqueue(drawscapes_feedback_function, data, file_name, session_folder, folder_name, task)
-    while job.is_finished != True:
-         time.sleep(0.1)
+    # data = request.json
+    # job = q.enqueue(drawscapes_feedback_function, data, file_name, session_folder, folder_name, task)
+    # while job.is_finished != True:
+    #      time.sleep(0.1)
     
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback. Activate on Windows
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # drawscapes_feedback_function(data, file_name, session_folder, folder_name, task)
+    data = request.json
+    drawscapes_feedback_function(data, file_name, session_folder, folder_name, task)
 
     # sends name of file back to browswer        
     image_feedback=  file_name + '_ln.jpg' # defines name of image for feedbak and passes it to template
@@ -180,16 +180,16 @@ def drawscapes_massing_base():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    data = request.json
-    job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
-    while job.is_finished != True:
-        time.sleep(0.1)
+    # data = request.json
+    # job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
+    # while job.is_finished != True:
+    #     time.sleep(0.1)
     
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # drawscapes_draw_base (data, file_name, session_folder, folder_name) # Draws paths in the small scale base
+    data = request.json
+    drawscapes_draw_base (data, file_name, session_folder, folder_name) # Draws paths in the small scale base
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_base.jpg' # defines name of image for feedbak and passes it to template
@@ -206,16 +206,16 @@ def drawscapes_landscape_base():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    data = request.json
-    job = q.enqueue(drawscapes_draw_base_2, data, file_name, session_folder, folder_name)
-    while job.is_finished != True: 
-        time.sleep(0.1)
+    # data = request.json
+    # job = q.enqueue(drawscapes_draw_base_2, data, file_name, session_folder, folder_name)
+    # while job.is_finished != True: 
+    #     time.sleep(0.1)
     
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # drawscapes_draw_base_2 (data, file_name, session_folder, folder_name)  
+    data = request.json
+    drawscapes_draw_base_2 (data, file_name, session_folder, folder_name)  
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_landscape_base.jpg' # defines name of image for feedbak and passes it to template
@@ -232,16 +232,16 @@ def drawscapes_save_land_uses():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    data = request.json
-    job = q.enqueue(save_land_uses, data, session_folder, file_name, folder_name)
-    while job.is_finished != True: 
-        time.sleep(0.1)
+    # data = request.json
+    # job = q.enqueue(save_land_uses, data, session_folder, file_name, folder_name)
+    # while job.is_finished != True: 
+    #     time.sleep(0.1)
     
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # save_land_uses (data, session_folder, file_name, folder_name)
+    data = request.json
+    save_land_uses (data, session_folder, file_name, folder_name)
 
     # sends name of file back to browswer
     image_feedback=  folder_name + '_combined.jpg' # defines name of image for feedbak and passes it to template
@@ -258,16 +258,16 @@ def drawscapes_land_use_analysis():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    data = request.json
-    job = q.enqueue(report_land_use, data, file_name, session_folder, folder_name)
-    while job.is_finished != True: 
-        time.sleep(0.1)
+    # data = request.json
+    # job = q.enqueue(report_land_use, data, file_name, session_folder, folder_name)
+    # while job.is_finished != True: 
+    #     time.sleep(0.1)
     
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback. Activate on Windows
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # report_land_use (data, file_name, session_folder, folder_name)
+    data = request.json
+    report_land_use (data, file_name, session_folder, folder_name)
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_land_use_output.jpg' # defines name of image for feedbak and passes it to template

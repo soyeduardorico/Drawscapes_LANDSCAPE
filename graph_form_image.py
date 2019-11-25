@@ -337,16 +337,19 @@ class path_graph ():
         font_large = ImageFont.truetype("arial.ttf", size = 56)
         font_small = ImageFont.truetype("arial.ttf", size = 25)
         # generate new canvas
-        im_source = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        im_source_pil = Image.fromarray(im_source)
+        # im_source = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        im_source_pil = Image.fromarray(img)
         canvas =Image.new('RGB',(shape_y,shape_y), color = 'white')
         canvas.paste(im_source_pil,(0,0))
         draw = ImageDraw.Draw(canvas)
         draw.text((15, 560),"These are the strongest",(29, 41, 82),font=font_small)
         draw.text((15, 560 + 32),"connections suggested by your sketch",(29, 41, 82),font=font_small)
         draw.text((15, 560 + 32 + 32 + 10),"You connected a total of " + str(len(costs)) + " node couples",(29, 41, 82),font=font_small)
-        b1=os.path.join(self.dir_write, self.sketch_name + "_ln"+"." + 'jpg') 
+        b1=os.path.join(self.dir_write, self.sketch_name + '_ln.jpg') # saves image corresponding to drawing stage
         canvas.save(b1)
+        b2=os.path.join(self.dir_write, self.folder_name + '_ln_base.jpg') # saves image as the latest version in the folder
+        canvas.save(b2)
+
 
         # saves connections as integers np
         b2=os.path.join(self.dir_write, self.sketch_name + "_ln")   # copy with file name

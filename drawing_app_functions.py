@@ -28,7 +28,8 @@ from project_data import link_outcome_failure, link_outcome_success, node_coords
 from project_data import node_coords_large, color_canvas_rgb, node_coords_detailed
 from project_data import site_scale_factor, massing_height
 from project_data import ucl_east_development_area, ucl_east_student_population, ucl_east_research_area
-
+from project_data import ratio_accomodation_base, ratio_accomodation_plinth, ratio_accomodation_tower, m2accomodation_per_student
+from project_data import ratio_research_base, ratio_research_plinth, ratio_research_tower
 
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
@@ -84,7 +85,6 @@ def site_area():
     # white canvas
     img= np.zeros((700,700,3), np.uint8)
     img.fill(255)
-    
     # draws an outline with detailed nodes
     pts=np.array(node_coords_detailed, np.int32)    
     pts=pts.reshape((-1,1,2))    
@@ -354,7 +354,17 @@ def draw_land_use_analysis (polylines, line_type, folder, file_name):
         land_use.append(result)
         built_area = built_area + result
     FAR = built_area/site_area()
-    return land_use, built_area, FAR
+    area_base = land_use[1]
+    area_plinth = land_use[2]
+    area_tower = land_use[3] 
+    area_cafe = land_use[4]
+    area_gathering = land_use[5]
+
+    area_accomodation = area_base*ratio_accomodation_base + area_plinth*ratio_accomodation_plinth + area_tower*ratio_accomodation_tower
+    students = area_accomodation/m2accomodation_per_student
+    area_research = area_base*ratio_research_base + area_plinth*ratio_research_plinth + area_tower*ratio_research_tower
+
+    return land_use, built_area, FAR, area_accomodation, students, area_research
 
 
 # ------------------------------------------------------------------------------------
@@ -391,15 +401,7 @@ def report_land_use (data, file_name, session_folder, folder_name):
         #defines size of image pasted larger than other recommendation
         thumb_large_x = int(thumb_x * 1.5)
         thumb_large_y = int(thumb_y * 1.5)
-        
-        # place original image on the top
-        img=cv2.imread(link_base_image)
-        im_source=draw_paths_base (polylines, linetype, session_folder,file_name, img)
-        im_source = cv2.cvtColor(im_source, cv2.COLOR_BGR2RGB)
-        im_source=cv2.rectangle(im_source,(0,0),(thumb_large_x,thumb_large_y),(0,0,0),3)
-        im_source_pil = Image.fromarray(im_source)
-        canvas.paste(im_source_pil,(0,30 + 56 + padding))
-        
+               
         # instantiates class for text. Uses larger text than other since information is lower
         sz1=80
         sz2=70
@@ -408,25 +410,19 @@ def report_land_use (data, file_name, session_folder, folder_name):
         draw = ImageDraw.Draw(canvas)
         
         # writes text
-        draw.text((15, 30),"YOU DREW THIS...",(0,0,0),font=font_large)
-        draw.text((15, thumb_large_y + padding+30),"WHICH MEANS..." ,(0,0,0),font=font_large) 
-        draw.text((15, thumb_large_y + padding + 30 + sz1*1.5),'BUILT AREA = ' + str(int(data_land_use[1])) + 'm2',(0,0,0),font=font_small)    
-        draw.text((15, thumb_large_y + padding + 30 + sz1*2*1.5),'FAR = ' + str(round(data_land_use[2],2)),(0,0,0),font=font_small)    
+        draw.text((15, 30 + padding + sz1*1.5),'TOTAL BUILT AREA: ' + str(int(data_land_use[1])) + 'm2',(0,0,0),font=font_small)   
+        draw.text((15, 30 + padding + sz1*2*1.5), '     ' + str(int(data_land_use[1] / ucl_east_development_area*100)) + ' % of ' + str(ucl_east_development_area) + ' target',(255,0,0),font=font_small)
 
-        # placwes image of original proposal
-        im_source=cv2.imread(ucl_east_image)
-        im_source = cv2.cvtColor(im_source, cv2.COLOR_BGR2RGB)
-        im_source=cv2.rectangle(im_source,(0,0),(thumb_large_x,thumb_large_y),(0,0,0),3)
-        im_source_pil = Image.fromarray(im_source)
-        canvas.paste(im_source_pil,(int(canvas_y/2),30 + 56 + padding))
+        draw.text((15, 30 + padding + sz1*4*1.5),'TOTAL RESEARCH FACILITIES OF ' + str(int(data_land_use[5])) + 'm2',(0,0,0),font=font_small)            
+        draw.text((15, 30 + padding + sz1*5*1.5), '    ' + str(int(data_land_use[5] / ucl_east_research_area*100)) + ' % of ' + str(ucl_east_research_area) + ' target',(255,0,0),font=font_small)
 
-        # writes text about exsiting proposal
-        draw.text((15 + int(canvas_x/2),30),"COMPARED TO...",(0,0,0),font=font_large)
-        draw.text((15 + int(canvas_x/2), thumb_large_y + padding+30),"WHICH MEANS..." ,(0,0,0),font=font_large) 
-        draw.text((15 + int(canvas_x/2), thumb_large_y + padding + 30 + sz1*1.5),'BUILT AREA = ' + str(ucl_east_development_area) + 'm2',(0,0,0),font=font_small)    
-        draw.text((15 + int(canvas_x/2), thumb_large_y + padding + 30 + sz1*2*1.5),'STUDENTS = ' + str(ucl_east_student_population),(0,0,0),font=font_small)    
+        draw.text((15, 30 + padding + sz1*7*1.5),'ACCOMODATION FOR STUDENTS' + str(int(data_land_use[4])),(0,0,0),font=font_small)    
+        draw.text((15, 30 + padding + sz1*8*1.5), '     ' + str(int(data_land_use[4] / ucl_east_student_population*100)) + ' % of ' + str(ucl_east_student_population) + ' target',(255,0,0),font=font_small)
+     
+        draw.text((15, 30 + padding + sz1*10*1.5),"IF YOU WANT TO TRY AGAIN :",(0,0,255),font=font_small)
+        draw.text((15, 30 + padding + sz1*11*1.5),"     -Towers ->> accomodation",(0,0,255),font=font_small)
+        draw.text((15, 30 + padding + sz1*12*1.5),"     -Bases and plynths ->> research ",(0,0,255),font=font_small)
 
-        
         # saves file
         b=os.path.join(session_folder,file_name +'_land_use_output'+'.jpg')
         canvas=canvas.resize((shape_x,shape_y), Image.ANTIALIAS)

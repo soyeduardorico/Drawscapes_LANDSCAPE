@@ -149,6 +149,16 @@
         });
     });
 
+
+    $(document).ready(function() {
+        $("#btn6").on("click", function() {
+            color_buttons_neutral()
+            document.getElementById("btn6").style.background = color1;
+            $('html').css('background', color1);
+        });
+    });
+
+
     function myBack() {
         window.location.replace("{{url_for ('drawscapes') }}");
     }

@@ -149,3 +149,14 @@ site_scale_factor = 250/461
 ucl_east_development_area = 40000
 ucl_east_student_population = 500
 ucl_east_research_area = 5000
+
+# data for conversion of massign m2 to land uses
+ratio_accomodation_base = 0
+ratio_accomodation_plinth = 0.3
+ratio_accomodation_tower = 0.7
+
+m2accomodation_per_student = 15
+
+ratio_research_base = 0.5
+ratio_research_plinth = 0.3
+ratio_research_tower = 0
