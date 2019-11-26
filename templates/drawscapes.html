@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
     <base target="_top">
-    <meta name="viewport" content="width=device-width, initial-scale=0.3">
+    <meta name="viewport" content="width=device-width, initial-scale=0.2">
 
 </head>
 
@@ -162,6 +162,13 @@
 
         });
     });
+    $(document).ready(function() {
+        $("#b3_1").on("click", function() {
+            color_buttons_neutral()
+            document.getElementById("btn3").style.background = color1;
+        });
+    });
+
 
 
     //----------------------------------------------------------------------------------------------

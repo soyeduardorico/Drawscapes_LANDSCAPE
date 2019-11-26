@@ -396,7 +396,7 @@ def report_land_use (data, file_name, session_folder, folder_name):
         data_land_use = draw_land_use_analysis (polylines, linetype, session_folder, name)
     
         # generate new canvas
-        canvas =Image.new('RGB',(canvas_x,canvas_y), color = 'white')
+        canvas =Image.new('RGB',(canvas_x,canvas_y), color = (29, 41, 82))
     
         #defines size of image pasted larger than other recommendation
         thumb_large_x = int(thumb_x * 1.5)
@@ -410,18 +410,57 @@ def report_land_use (data, file_name, session_folder, folder_name):
         draw = ImageDraw.Draw(canvas)
         
         # writes text
-        draw.text((15, 30 + padding + sz1*1.5),'TOTAL BUILT AREA: ' + str(int(data_land_use[1])) + 'm2',(0,0,0),font=font_small)   
-        draw.text((15, 30 + padding + sz1*2*1.5), '     ' + str(int(data_land_use[1] / ucl_east_development_area*100)) + ' % of ' + str(ucl_east_development_area) + ' target',(255,0,0),font=font_small)
+        draw.text((15, 30 + padding + sz1*1.5),'TOTAL BUILT AREA: ' + str(int(data_land_use[1])) + 'm2',(255,255,255),font=font_small)   
+        ratio_built = data_land_use[1] / ucl_east_development_area*100
+        draw.text((15, 30 + padding + sz1*2*1.5), '     ' + str(int(ratio_built)) + ' % of ' + str(ucl_east_development_area) + ' target',(116, 177, 237),font=font_small)
+ 
+        draw.text((15, 30 + padding + sz1*4*1.5),'TOTAL RESEARCH FACILITIES OF ' + str(int(data_land_use[5])) + 'm2',(255,255,255),font=font_small)            
+        ratio_research = data_land_use[5] / ucl_east_research_area*100
+        draw.text((15, 30 + padding + sz1*5*1.5), '    ' + str(int(ratio_research)) + ' % of ' + str(ucl_east_research_area) + ' target',(116, 177, 237),font=font_small)
 
-        draw.text((15, 30 + padding + sz1*4*1.5),'TOTAL RESEARCH FACILITIES OF ' + str(int(data_land_use[5])) + 'm2',(0,0,0),font=font_small)            
-        draw.text((15, 30 + padding + sz1*5*1.5), '    ' + str(int(data_land_use[5] / ucl_east_research_area*100)) + ' % of ' + str(ucl_east_research_area) + ' target',(255,0,0),font=font_small)
+        draw.text((15, 30 + padding + sz1*7*1.5),'ACCOMODATION FOR STUDENTS OF ' + str(int(data_land_use[4])),(255,255,255),font=font_small)    
+        ratio_students = data_land_use[4] / ucl_east_student_population*100
+        draw.text((15, 30 + padding + sz1*8*1.5), '     ' + str(int(ratio_students)) + ' % of ' + str(ucl_east_student_population) + ' target',(116, 177, 237),font=font_small)
 
-        draw.text((15, 30 + padding + sz1*7*1.5),'ACCOMODATION FOR STUDENTS' + str(int(data_land_use[4])),(0,0,0),font=font_small)    
-        draw.text((15, 30 + padding + sz1*8*1.5), '     ' + str(int(data_land_use[4] / ucl_east_student_population*100)) + ' % of ' + str(ucl_east_student_population) + ' target',(255,0,0),font=font_small)
-     
-        draw.text((15, 30 + padding + sz1*10*1.5),"IF YOU WANT TO TRY AGAIN :",(0,0,255),font=font_small)
-        draw.text((15, 30 + padding + sz1*11*1.5),"     -Towers ->> accomodation",(0,0,255),font=font_small)
-        draw.text((15, 30 + padding + sz1*12*1.5),"     -Bases and plynths ->> research ",(0,0,255),font=font_small)
+        text1 = " "
+        text2 = " "
+        text3 = " "
+
+        if ratio_built > 100:
+            if ratio_built < 150:
+                text1 = "You added a bit too much built mass overall"
+                if ratio_students > 150:
+                    text2 = "You have too many students. Try removing towers"
+                if ratio_students < 50:
+                    text2 = "You do not have enough students. Try adding towers"
+
+                if ratio_research > 150:
+                    text3 = "You have too much research area. Try removing bases"
+                if ratio_research < 50:
+                    text3 = "You do not have enough students. Try adding bases"             
+            else:
+                text1 = "You added much more than required"
+                text2 = "Try repeatign and halving the drawn area in general"
+        
+        else:
+            if ratio_built > 75:
+                text1 = "You are a bit short of built aera"
+                if ratio_students > 150:
+                    text2 = "You have too many students. Try removing towers"
+                if ratio_students < 50:
+                    text2 = "You do not have enough students. Try adding towers"
+
+                if ratio_research > 150:
+                    text3 = "You have too much research area. Try removing bases"
+                if ratio_research < 50:
+                    text3 = "You do not have enough students. Try adding bases"              
+            else:
+                text1 = "You are quite short of building area"
+                text2 = "Try repeatign and doubling the drawn area at least"                            
+
+        draw.text((15, 30 + padding + sz1*10*1.5),text1,(255,255,0),font=font_small)
+        draw.text((15, 30 + padding + sz1*11*1.5),text2,(255,255,0),font=font_small)
+        draw.text((15, 30 + padding + sz1*12*1.5),text3,(255,255,0),font=font_small)
 
         # saves file
         b=os.path.join(session_folder,file_name +'_land_use_output'+'.jpg')

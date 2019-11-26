@@ -34,7 +34,7 @@ from project_data import link_outcome_failure, link_outcome_success, node_coords
 from project_data import node_coords_large, color_canvas_rgb, node_coords_detailed
 from project_data import site_scale_factor, massing_height
 from project_data import ucl_east_development_area, ucl_east_student_population, ucl_east_research_area
-
+from project_data import website_colour
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
 # ------------------------------------------------------------------------------------  
@@ -45,52 +45,6 @@ from overall_analysis import basic_line_drawing, bundle_drawing
 from tSNE import plot_tsne
 
 #%%
-# ------------------------------------------------------------------------------------
-# Generates conclussion drawings for all categories (lines, massing and land uses)
-# ------------------------------------------------------------------------------------  
-
-#session_user =  '1574548541279'
-#millis = 1574548557738
-#
-#root_data = root_participation_directory
-#session_folder=os.path.join(root_data, session_user)
-#folder_name = session_user
-#file_name= session_user + '_' + str(millis)
-#
-#
-#filepath_np_massing = os.path.join(session_folder, session_user + '_massing.npy')
-#filepath_np_massing_type = os.path.join(session_folder, session_user + '_massing_type.npy')
-#
-#ptexport=np.load(filepath_np_massing).astype(int)
-#points=ptexport.tolist()
-#print (points)
-#line_type=np.load(filepath_np_massing_type).astype(int)
-#print (line_type)
-#polylines  = pts_to_polylines(points, line_type)[0]
-#linetype = pts_to_polylines (points, line_type) [1]
-##
-#
-#land_uses = draw_land_use_analysis (polylines, line_type, session_folder, session_user)
-#print(land_uses)
-
-#%%
-
-#generates data
-#style_save = [4]
-#data=[]
-#data.append(style_save)
-#data.append(points[0])
-#data.append(points[1])
-#data.append(points[2])
-#data.append(line_type.tolist())
-#print (data)
-#file_name = session_user
-#report_land_use (data, file_name, session_folder, folder_name)
-
-
-#%%
-
-sketches=os.listdir(overall_results_directory)
 #----------------------------------------------------------------------------------------
 # Generate lists of np data of sketches in directory
 #----------------------------------------------------------------------------------------
@@ -164,80 +118,115 @@ def clean_line_list_dir():
                 draw_paths (polylines, massing_type, overall_results_directory,image_file)
                 
     return list_line_dir()
+ 
 
-list_directory = clean_line_list_dir()        
+#----------------------------------------------------------------------------------------
+# calls image list and goes thogugh all images to generate images and feature files
+#----------------------------------------------------------------------------------------
+def feature_generation(exercise):
+    item = item_list[exercise]
+    item_number = item_number_list [exercise]
+    
+    #loads model
+    list_directory = clean_line_list_dir()    
+    print("Loading VGG19 pre-trained model...")
+    base_model = VGG19(weights='imagenet')
+    model = Model(input=base_model.input, output=base_model.get_layer('block5_pool').output)
+    
+    #develops features form images
+    imgs, X = [], []
+    for sketch in list_directory[item_number]:
+        sketch = sketch.replace('npy','jpg')
+        filename_full = os.path.join(overall_results_directory,sketch)
+        img = image.load_img(filename_full, target_size=(224, 224))  # load image
+        imgs.append(np.array(img))  # Adds it into the overall list
+    
+        # Pre-process for model input
+        img = image.img_to_array(img)  # convert to array
+        img = np.expand_dims(img, axis=0)
+        img = preprocess_input(img)
+        print('extracting features for' + sketch)
+        features = model.predict(img).flatten()  # features
+        X.append(features)  # append feature extractor
+    
+    feature_file_name = os.path.join(overall_results_directory, 'overall_features_' + item + '.npy')
+    image_file_name = os.path.join(overall_results_directory, 'overall_images_' + item + '.npy')
+    # appends the featueres and images into large file
+    X = np.array(X)  # feature vectors
+    np.save(feature_file_name, X)
+    imgs = np.array(imgs)  # images
+    np.save(image_file_name, imgs)
 
 
-#%%
-
-
-#def tsne_generation(item):
-item='lines'
-
-#loads model
-list_directory = clean_line_list_dir()    
-print("Loading VGG19 pre-trained model...")
-base_model = VGG19(weights='imagenet')
-model = Model(input=base_model.input, output=base_model.get_layer('block5_pool').output)
-
-#develops features form images
-imgs, X = [], []
-for sketch in list_directory[1]:
-    sketch = sketch.replace('npy','jpg')
-    filename_full = os.path.join(overall_results_directory,sketch)
-    img = image.load_img(filename_full, target_size=(224, 224))  # load image
-    imgs.append(np.array(img))  # Adds it into the overall list
-
-    # Pre-process for model input
-    img = image.img_to_array(img)  # convert to array
-    img = np.expand_dims(img, axis=0)
-    img = preprocess_input(img)
-    print('extracting features for' + sketch)
-    features = model.predict(img).flatten()  # features
-    X.append(features)  # append feature extractor
-
-# appends the featueres and images into large file
-X = np.array(X)  # feature vectors
-imgs = np.array(imgs)  # images
-
-
-
-#%%
-
-item='lines'
-
+#----------------------------------------------------------------------------------------
 #develps Tsne of drawings
-tsne = manifold.TSNE(n_components=2, init='pca', random_state=0, perplexity=10, early_exaggeration=100)
-X_tsne = tsne.fit_transform(X)
+#----------------------------------------------------------------------------------------
+def tsne_plot(exercise):
+    item = item_list[exercise]
+    item_number = item_number_list [exercise]
+    #loads files
+    feature_file_name = os.path.join(overall_results_directory, 'overall_features_' + item + '.npy')
+    X = np.load(feature_file_name )
+    # loads parameters for tsne
+    perplexity = perplexity_list[exercise]
+    early_exaggeration = early_exaggeration_list[exercise] 
+    #develops tsne
+    tsne = manifold.TSNE(n_components=2, init='pca', random_state=0, perplexity=perplexity, early_exaggeration=early_exaggeration)
+    X_tsne = tsne.fit_transform(X)
+    #remaps X-tsne to 0-1 in x,y
+    x_min, x_max = np.min(X_tsne, 0), np.max(X_tsne, 0)
+    X_tsne = (X_tsne - x_min) / (x_max - x_min)
+    
+    #develops scatergraph with images image
+    overall_canvas_size = 1400
+    margin = 150
+    drawing_size = overall_canvas_size-2*margin #  area where drawings will be circumscribed
+    if len(list_directory[item_number]) < 40: # defining sketch size acccording to number
+        sketch_size = 150
+    else:
+        if len(list_directory[item_number]) < 100:
+            sketch_size = 80
+        else: 
+            sketch_size = 40  
+            
+    canvas =Image.new('RGB',(overall_canvas_size,overall_canvas_size), color = 'white') # generates base canvas  
+    for i in range(0,len(list_directory[item_number])): # adds resized images into it
+        sketch_filename = os.path.join(overall_results_directory, list_directory[item_number][i].replace('npy','jpg'))
+        im_source=cv2.imread(sketch_filename)
+        im_source=cv2.cvtColor(im_source, cv2.COLOR_BGR2RGB)
+        im_source_pil = Image.fromarray(im_source)
+        im_source_pil = im_source_pil.resize((sketch_size,sketch_size), Image.ANTIALIAS)
+        x = int(X_tsne[i][0]*drawing_size + margin-sketch_size/2)
+        y = int(X_tsne[i][1]*drawing_size + margin-sketch_size/2)
+        canvas.paste(im_source_pil,(x,y))
+    
+    #saves file
+    tsne_filename_2 = os.path.join(overall_results_directory, 'tsne_images_' +  item + '.jpg')
+    canvas.save(tsne_filename_2)
 
-#remaps X-tsne 0-1 both directions
-x_min, x_max = np.min(X_tsne, 0), np.max(X_tsne, 0)
-X_tsne = (X_tsne - x_min) / (x_max - x_min)
 
 
-overall_canvas_size = 1400
-margin = 150
-drawing_size = overall_canvas_size-2*margin
-sketch_size = 70
-point_size = 5
+#%%
+list_directory = clean_line_list_dir()       
 
 
-#generates base canvas
-canvas =Image.new('RGB',(overall_canvas_size,overall_canvas_size), color = 'white')
-
-#adds images
-for i in range(0,len(list_directory[1])):
-    sketch_filename = os.path.join(overall_results_directory, list_directory[1][i].replace('npy','jpg'))
-    im_source=cv2.imread(sketch_filename)
-    im_source_pil = Image.fromarray(im_source)
-    im_source_pil = im_source_pil.resize((sketch_size,sketch_size), Image.ANTIALIAS)
-    x = int(X_tsne[i][0]*drawing_size + margin-sketch_size/2)
-    y = int(X_tsne[i][1]*drawing_size + margin-sketch_size/2)
-    canvas.paste(im_source_pil,(x,y))
+#%%
 
 
-#savs file
-tsne_filename_2 = os.path.join(overall_results_directory, 'tsne_images_' +  item + '.jpg')
-canvas.save(tsne_filename_2)
+exercise = 1 # 0: lines, 1: massing
+item_list=['lines','massing']
+item_number_list = [1,4]
+perplexity_list = [5,10]
+early_exaggeration_list = [100,100]
+tsne_plot(1)
+#%%
 
-
+exercise = 0
+item = item_list[exercise]
+item_number = item_number_list [exercise]
+#loads files
+feature_file_name = os.path.join(overall_results_directory, 'overall_features_' + item + '.npy')
+image_file_name = os.path.join(overall_results_directory, 'overall_images_' + item + '.npy')
+X = np.load(feature_file_name)
+print (X.shape)
+print(len(list_directory[item_number]))

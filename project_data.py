@@ -33,6 +33,9 @@ ucl_east_image = os.path.join(interface_images, 'ucl_east_marshgate.jpg')
 # Generic data on image size and typical colours
 # ------------------------------------------------------------------------------------  
 
+website_colour = (29, 41, 82)
+
+
 threshold_distance=20 # threshold for snapping lines into origin points
 
 n_neighbours=2 # neighborxs for recommendation
