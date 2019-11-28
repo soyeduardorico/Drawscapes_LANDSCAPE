@@ -37,6 +37,7 @@ from project_data import ratio_research_base, ratio_research_plinth, ratio_resea
 from imagenet_utils import preprocess_input
 from graph_form_image import path_graph
 from overall_analysis import basic_line_drawing, bundle_drawing
+from database_management import data_to_database
 
 
 # -------------------------------------------------
@@ -175,7 +176,9 @@ def drawscapes_draw_base (data, file_name, session_folder, folder_name):
         data.pop(0) # removes style array (one element) from list
         ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
         points=ptexport.tolist()
-        pols  = pts_to_polylines(points, line_type)[0]
+        pts_to_polylines_list  = pts_to_polylines(points, line_type)[0]
+        polylines  = pts_to_polylines_list [0]
+        linetype = pts_to_polylines_list [1]        
         
         # saves line and stlyle data as numpy with base name as most up to date option both in the folder and the overall results dir
         line_type_export = np.array(line_type).astype(int)
@@ -188,9 +191,12 @@ def drawscapes_draw_base (data, file_name, session_folder, folder_name):
         file_path = os.path.join(overall_results_directory, folder_name + '_lines_type.npy')
         np.save(file_path, line_type_export)         
 
+        if len(polylines[0])>1:
+            data_to_database (polylines, linetype, folder_name, exercise = 'lines', extract_features = 'True')
+
         # generates drawing base
         img=cv2.imread(link_base_image)
-        draw_paths_base (pols, line_type, session_folder, file_name, img)
+        draw_paths_base (polylines, linetype, session_folder, file_name, img)
     else:
         base=cv2.imread(link_base_image_warning)
         b=os.path.join(session_folder,file_name +'_base'+'.jpg')
@@ -268,16 +274,17 @@ def draw_paths (polylines, line_type, folder,file_name):
 # ------------------------------------------------------------------------------------
 # line drawing over base
 # ------------------------------------------------------------------------------------
-def draw_paths_base (polylines, line_type, folder,file_name, img):
+def draw_paths_base (polylines, linetype, folder,file_name, img, save='True'):
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR) # needs to invert colors first for the case of multiple line drawing. Does not affect individual ones which come greyscale
     for i in range(0, len(polylines)):
-        thickness = thickness_lines[line_type[i]]
-        color = color_canvas_rgb[line_type[i]]        
+        thickness = thickness_lines[linetype[i]]
+        color = color_canvas_rgb[linetype[i]]        
         for j in range(0, int(len(polylines[i])-1)):
             cv2.line(img,(int(polylines[i][j][0]),int(shape_y-polylines[i][j][1])),(int(polylines[i][j+1][0]),int(shape_y-polylines[i][j+1][1])),color,thickness)
-    b2=os.path.join(folder, file_name + '_base.jpg')
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    cv2.imwrite(b2,img)
+    if save == 'True':
+        b2=os.path.join(folder, file_name + '_base.jpg')
+        cv2.imwrite(b2,img)
     return img
 
 
@@ -341,9 +348,9 @@ def generate_all_drawings (session_user):
 # ------------------------------------------------------------------------------------
 # Develops massing calculations from drawn polylines
 # ------------------------------------------------------------------------------------
-def draw_land_use_analysis (polylines, line_type, folder, file_name):
+def draw_land_use_analysis (polylines, linetype, folder, file_name):
     # generates and saves land use drawing
-    image  = draw_paths (polylines, line_type, folder, file_name)
+    image  = draw_paths (polylines, linetype, folder, file_name)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # develops pixel count on drawing going through the list of land thickness
     land_use = []
@@ -623,16 +630,23 @@ def draw_skeleton_graphs (img, session_folder, file_name, folder_name):
 # ----------------------------------------------------------------------------------
 def generate_image (ptexport, line_type, session_folder, file_name, folder_name, declared_style, task):
     points=ptexport.tolist()
-    pols  = pts_to_polylines(points, line_type)[0]
+    pts_to_polylines_list  = pts_to_polylines(points, line_type)[0]
+    polylines  = pts_to_polylines_list [0]
+    linetype = pts_to_polylines_list [1]
+
+    if len(polylines[0])>1:
+        data_to_database (polylines, linetype, folder_name, exercise = 'lines', extract_features = 'True')
+
     img=draw_paths (pols, line_type, session_folder,file_name) # draws paths in the small scale drawing ovwer white canvas for further processing
     img2=cv2.imread(link_base_image)
-    draw_paths_base (pols, line_type, session_folder,file_name,img2) # Draws paths in the small scale base
-    draw_base_large(pols, session_folder,file_name)
+    draw_paths_base (polylines, linetype, session_folder,file_name,img2) # Draws paths in the small scale base
+    draw_base_large(polylines, session_folder,file_name)
     # will develop connectivity even for style to ensure final drawing considered at the end
+    
     draw_skeleton_graphs(img, session_folder,file_name, folder_name)
     keras.backend.clear_session() # Needs to clean backend to perform more sessions
     # calls for feedbcak on style if task = 1 otherwise skips task if only connecitivty
-    if task ==1: 
+    if task ==1: # ==1 for style check. otherwise 0 for connectivity only
         generate_neighbour_report(session_folder,file_name,declared_style)
 
 

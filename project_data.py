@@ -27,7 +27,7 @@ link_outcome_success = os.path.join(interface_images, 'outcome_success.jpg')
 link_outcome_failure = os.path.join(interface_images, 'outcome_failure.jpg')
 click_on_screen = os.path.join(interface_images, 'cick_on_screen.jpg')
 ucl_east_image = os.path.join(interface_images, 'ucl_east_marshgate.jpg')
-
+databse_filepath = os.path.join (overall_results_directory,'database.json')  
 
 # ------------------------------------------------------------------------------------
 # Generic data on image size and typical colours
@@ -35,10 +35,9 @@ ucl_east_image = os.path.join(interface_images, 'ucl_east_marshgate.jpg')
 
 website_colour = (29, 41, 82)
 
-
 threshold_distance=20 # threshold for snapping lines into origin points
 
-n_neighbours=2 # neighborxs for recommendation
+n_neighbours=2 # neighborxs for style recommendation
 
 # size of canvas
 shape_x=700

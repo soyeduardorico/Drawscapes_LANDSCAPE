@@ -1,8 +1,5 @@
-
-import numpy as np
-
 import os
-#import os
+import os
 import numpy as np
 import cv2
 import os
@@ -36,7 +33,7 @@ from project_data import ucl_east_development_area, ucl_east_student_population,
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
 # ------------------------------------------------------------------------------------  
-from drawing_app_functions import draw_paths, generate_image, pts_to_polylines, draw_paths_base, draw_land_use_analysis, report_land_use
+from drawing_app_functions import generate_image, pts_to_polylines, draw_paths_base, draw_land_use_analysis, report_land_use
 from imagenet_utils import preprocess_input
 from graph_form_image import path_graph
 from overall_analysis import basic_line_drawing, bundle_drawing
@@ -47,44 +44,57 @@ from tSNE import plot_tsne
 # Generates conclussion drawings for all categories (lines, massing and land uses)
 # ------------------------------------------------------------------------------------  
 
-session_user =  '1574548541279'
-millis = 1574548557738
-
-root_data = root_participation_directory
-session_folder=os.path.join(root_data, session_user)
-folder_name = session_user
-file_name= session_user + '_' + str(millis)
-
-
-filepath_np_massing = os.path.join(session_folder, session_user + '_massing.npy')
-filepath_np_massing_type = os.path.join(session_folder, session_user + '_massing_type.npy')
-
-ptexport=np.load(filepath_np_massing).astype(int)
-points=ptexport.tolist()
-print (points)
-line_type=np.load(filepath_np_massing_type).astype(int)
-print (line_type)
-polylines  = pts_to_polylines(points, line_type)[0]
-linetype = pts_to_polylines (points, line_type) [1]
+#session_user =  '1574548541279'
+#millis = 1574548557738
 #
-
-land_uses = draw_land_use_analysis (polylines, line_type, session_folder, session_user)
-print(land_uses)
+#root_data = root_participation_directory
+#session_folder=os.path.join(root_data, session_user)
+#folder_name = session_user
+#file_name= session_user + '_' + str(millis)
+#
+#
+#filepath_np_massing = os.path.join(session_folder, session_user + '_massing.npy')
+#filepath_np_massing_type = os.path.join(session_folder, session_user + '_massing_type.npy')
+#
+#ptexport=np.load(filepath_np_massing).astype(int)
+#points=ptexport.tolist()
+#print (points)
+#line_type=np.load(filepath_np_massing_type).astype(int)
+#print (line_type)
+#polylines  = pts_to_polylines(points, line_type)[0]
+#linetype = pts_to_polylines (points, line_type) [1]
+##
+#
+#land_uses = draw_land_use_analysis (polylines, line_type, session_folder, session_user)
+#print(land_uses)
 
 #%%
 
 #generates data
-style_save = [4]
-data=[]
-data.append(style_save)
-data.append(points[0])
-data.append(points[1])
-data.append(points[2])
-data.append(line_type.tolist())
-print (data)
-file_name = session_user
-report_land_use (data, file_name, session_folder, folder_name)
+#style_save = [4]
+#data=[]
+#data.append(style_save)
+#data.append(points[0])
+#data.append(points[1])
+#data.append(points[2])
+#data.append(line_type.tolist())
+#print (data)
+#file_name = session_user
+#report_land_use (data, file_name, session_folder, folder_name)
 
 
 #%%
+
+from tinydb import TinyDB, Query
+
+var1 = [1,2]
+
+databse_filepath = os.path.join (overall_results_directory,'db.json')
+db = TinyDB(databse_filepath)
+#db.insert({'id': 'apple', 'count': var1})
+##db.insert({'id': 'peach', 'count':  var1})
+#identification = Query()
+#db.update({'count2':var1*2}, identification.id == 'apple')
+#db.remove(identification.id='peach')
+db.all()
 
