@@ -38,11 +38,12 @@ from project_data import website_colour
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
 # ------------------------------------------------------------------------------------  
-from drawing_app_functions import draw_paths, generate_image, pts_to_polylines, draw_paths_base, draw_land_use_analysis, report_land_use
+from drawing_app_functions import generate_image, draw_land_use_analysis, report_land_use
 from imagenet_utils import preprocess_input
 from graph_form_image import path_graph
 from overall_analysis import basic_line_drawing, bundle_drawing
 from tSNE import plot_tsne
+from basic_drawing_functions import pts_to_polylines, draw_paths, draw_paths_base
 
 #%%
 #----------------------------------------------------------------------------------------

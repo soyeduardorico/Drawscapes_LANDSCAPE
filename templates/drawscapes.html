@@ -53,7 +53,7 @@
         <div id="b3" class="containerTab" style="display:none;background:none">
             <div class="row">
                 <div class="column_below" id="b3_1" onclick="myClear(1,0);"> <img id="erase" width="80" height="80"> </img> <br> ERASE </div>
-                <div class="column_below" > </div>
+                <div class="column_below" id="b3_2" onclick="myUnDo(0);"> <img id="undo" width="80" height="80"> </img> <br> UNDO </div>
                 <div class="column_below" > </div>
                 <div class="column_below" > </div>
                 <div class="column_below" > </div>
@@ -171,39 +171,12 @@
 
 
 
-    //----------------------------------------------------------------------------------------------
-    // Functions passing data to backend and bringing feedback to front end
-    //----------------------------------------------------------------------------------------------
-    function myPassData(declared_style) {
-        var js_data = JSON.stringify(mySave(declared_style));
-        document.getElementById("overlay").style.visibility = "visible";
-        document.getElementById("ldr").style.visibility = "visible";
-        $.ajax({
-            url: '/drawscapes_feedback',
-            type: 'post',
-            contentType: 'application/json',
-            dataType: 'json',
-            data: js_data
-        }).done(function(result) {
-            image_feedback_link = result;
-            console.log(result);
-            image_back.src = "{{url_for ('data', filename='ADDSHARE') }}".replace("ADDSHARE", image_feedback_link);
-            image_back.onload = function() {
-                document.getElementById("feedback").src = image_back.src;
-                document.getElementById("overlay").style.visibility = "hidden";
-                document.getElementById("ldr").style.visibility = "hidden";
-            };
-            $("#data").html(result);
-        }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.log("fail: ", textStatus, errorThrown);
-        });
-    }
-
     function myPassDataConnectivity(declared_style) {
         var list_pass = mySave(declared_style)
         
         if (list_pass[1].length > 1){ //checks that w are not passing a null array for evaluation
-            console.log(list_pass[1]);
+            console.log(list_pass.length);
+            console.log(list_pass);
             var js_data = JSON.stringify(list_pass);
             document.getElementById("overlay").style.visibility = "visible";
             document.getElementById("ldr").style.visibility = "visible";
@@ -263,6 +236,11 @@
 
 
     }
+
+
+
+
+
 
 </script>
 </html>

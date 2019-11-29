@@ -108,7 +108,9 @@ function newWhiteCanvas(ln_type){
 function newCanvasStroke(ln_type){
     ctx.strokeStyle = color_canvas_scheme[ln_type];
     ctx.lineWidth = thickness_canvas_scheme[ln_type];
+    ctx.lineCap = "round";
     line_var=ln_type;
+
 }
 
 
@@ -151,6 +153,59 @@ function myClear(opacity, ln_type){
   point = []
   point_time=[];
   exportText=[];
+}
+
+//----------------------------------------------------------------------------------------------
+// Removes last line from canvas and data lists and leaves line_type as default
+//----------------------------------------------------------------------------------------------
+function myUnDo (default_thickness){
+    console.log(xcoords.length);
+    console.log(ycoords.length);
+    console.log(point.length);
+    console.log(linetype.length);
+
+    n = xcoords.length;    
+    while (point[n-1]>1) {
+        xcoords.pop();
+        ycoords.pop();
+        point.pop();
+        linetype.pop();
+        n--
+    }
+
+    xcoords.pop();
+    ycoords.pop();
+    point.pop();
+    linetype.pop();
+
+    console.log(xcoords.length);
+    console.log(ycoords.length);
+    console.log(point.length);
+    console.log(linetype.length);
+
+    newcanvas(image_canvas,1);
+    n2 = xcoords.length;
+    i=0
+    while (i<n2){
+        if (point[i] < 2){
+            ctx.beginPath();
+            x=xcoords[i]
+            y=ycoords[i]
+            ctx.moveTo(x,y);
+
+        }
+        if (point[i] > 2){
+            x=xcoords[i]
+            y=ycoords[i]
+            ctx.strokeStyle = color_canvas_scheme[linetype[i]];
+            ctx.lineWidth = thickness_canvas_scheme[linetype[i]];
+            ctx.lineTo(x,y);
+            ctx.stroke();
+
+        }
+        newCanvasStroke(default_thickness);
+        i++
+    }
 }
 
 

@@ -5,7 +5,8 @@ import utils
 import os
 from matplotlib import pyplot as plt #used for debuggin purposes
 
-from drawing_app_functions import pts_to_polylines
+
+from basic_drawing_functions import pts_to_polylines
 
 from project_data  import node_coords_detailed, link_base_image, link_base_image_warning, model_directory, shape_y
 from project_data  import shape_x, thickness_lines, color_canvas_rgb, content_target_resize_list, model_list

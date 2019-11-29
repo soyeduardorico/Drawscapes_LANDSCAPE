@@ -2,6 +2,7 @@ import os
 import numpy as np
 import cv2
 import re
+import time
 from sklearn import manifold
 from tinydb import TinyDB, Query
 from keras.preprocessing import image
@@ -24,14 +25,14 @@ from project_data import ucl_east_development_area, ucl_east_student_population,
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
 # ------------------------------------------------------------------------------------  
-from drawing_app_functions import draw_paths, generate_image, pts_to_polylines, draw_paths_base, draw_land_use_analysis, report_land_use
+from basic_drawing_functions import draw_paths_base, pts_to_polylines
 from imagenet_utils import preprocess_input
+
 
 #%%
 # Locates database to use and VGG19 loads model
-base_model = VGG19(weights='imagenet')
-model = Model(input=base_model.input, output=base_model.get_layer('block5_pool').output) 
-db = TinyDB(databse_filepath)
+
+
 
 #%%
 #----------------------------------------------------------------------------------------
@@ -51,6 +52,8 @@ def list_files_dir():
 # Generates VVG19 image extratced features from polylines
 #----------------------------------------------------------------------------------------
 def feature_extract (polylines, linetype):
+    base_model = VGG19(weights='imagenet')
+    model = Model(input=base_model.input, output=base_model.get_layer('block5_pool').output) 
     img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
     img.fill(255)
     img = draw_paths_base (polylines, linetype, overall_results_directory, 'anyname', img, save='False')
@@ -61,6 +64,17 @@ def feature_extract (polylines, linetype):
     img = preprocess_input(img)
     features = model.predict(img).flatten()  # features
     return features.tolist()
+
+
+# ------------------------------------------------------------------------------------
+# Sends sketch to feature_extract and uses the features to classify it 
+# ------------------------------------------------------------------------------------
+def style_classify (sketch_to_analyze):
+    model_name=os.path.join(reference_directory, 'finalized_model.sav') 
+    loaded_model = joblib.load(model_name)
+    test_feature = feature_extract(sketch_to_analyze).reshape(1, -1)
+    predicted_style=loaded_model.predict(test_feature)[0]
+    return predicted_style
 
 #----------------------------------------------------------------------------------------
 # Reads image and type of exervice (massing or line), generates all fields and updates database (upsert method)
@@ -97,23 +111,24 @@ def test_and_file (db, sketch, exercise, extract_features = 'True'):
             db.upsert( {'id': file_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == file_name) # inserts or udates
 
 def data_to_database (polylines, linetype, id_name, exercise, extract_features = 'True'):
+    db = TinyDB(databse_filepath)
     field_polylines = exercise + '_polylines'
     field_linetype = exercise + '_linetype'
     field_features = exercise + '_features'
-    print('processing data for ' + id_name)
+    millis2 = int(round(time.time() * 1000))
+    print('processing data for ' + id_name + str(millis2))
     
     # in case we do not want to extract features we can bypass this
     if extract_features == 'True':
         feature_values=feature_extract (polylines, linetype)
     else:
-        feature_values = []    
-    
+        feature_values = []        
     linetype = [float(i) for i in linetype]            
     polylines[0]= np.array(polylines[0]).astype(float).tolist()
     sketch_query=Query()
     #update / instert (upsert)
     db.upsert( {'id': id_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == id_name) # inserts or udates
-
+    db.close()
 #----------------------------------------------------------------------------------------
 # Develops TSNE reading features and geometries from database for an exercise (lines =0 or massing =1)
 #----------------------------------------------------------------------------------------
@@ -131,9 +146,9 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
     
     sketch_item=Query()
     if exercise == 0:
-        db2 = db.search(sketch_item.lines_features.exists())
+        db2 = db.search(sketch_item.lines_features != [])
     else:
-        db2 = db.search(sketch_item.massing_features.exists())
+        db2 = db.search(sketch_item.massing_features != [])
     
     number_items = len(db2)
     
@@ -243,7 +258,19 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
 
 #%%
 #sketch_item=Query()
-#id_name = '1574548541279_test'
+#id_name = '1575016808957'
 #for item in db:
-#    name = item.get('id')
-#    print (name)
+#    features = item.get('lines_features')
+#    print (len(features))
+#
+#
+#db2 = db.search(sketch_item.lines_features != [])    
+#for item in db2:
+#    features = item.get('lines_features')
+#    print (len(features))  
+#    
+    
+    
+    
+#%%
+#tsne_embedding (db, 1, id_name)
