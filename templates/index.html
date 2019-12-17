@@ -79,21 +79,6 @@ img {vertical-align: middle;}
   top: 0;
 }
 
-/* The dots/bullets/indicators */
-.dot {
-  cursor: pointer;
-  height: 15px;
-  width: 15px;
-  margin: 0 2px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-  transition: background-color 0.6s ease;
-}
-
-.active, .dot:hover {
-  background-color: #717171;
-}
 
 /* Fading animation */
 .fade {
@@ -187,53 +172,36 @@ img {vertical-align: middle;}
   </a>
 </div>
 
-
-<br>
-<div style="text-align:center">
-  <span class="dot" onclick="currentSlide(1)"></span> 
-  <span class="dot" onclick="currentSlide(2)"></span> 
-  <span class="dot" onclick="currentSlide(3)"></span> 
-  <span class="dot" onclick="currentSlide(4)"></span> 
-  <span class="dot" onclick="currentSlide(5)"></span>
-  <span class="dot" onclick="currentSlide(6)"></span>
-  <span class="dot" onclick="currentSlide(7)"></span>
-  <span class="dot" onclick="currentSlide(8)"></span>
-  <span class="dot" onclick="currentSlide(9)"></span>
-  <span class="dot" onclick="currentSlide(10)"></span>
-</div>
-
-
-
 <script>
 
-image1.src ="{{url_for ('static', filename='images/VIDEO0/Slide1.jpg') }}"
+image1.src ="{{url_for ('static', filename='images/slideshow/Slide1.jpg') }}"
 document.getElementById("image1").src = image1.src;
 
-image2.src ="{{url_for ('static', filename='images/VIDEO0/Slide2.jpg') }}"
+image2.src ="{{url_for ('static', filename='images/slideshow/Slide2.jpg') }}"
 document.getElementById("image2").src = image2.src;
 
-image3.src ="{{url_for ('static', filename='images/VIDEO0/Slide3.jpg') }}"
+image3.src ="{{url_for ('static', filename='images/slideshow/Slide3.jpg') }}"
 document.getElementById("image3").src = image3.src;
 
-image4.src ="{{url_for ('static', filename='images/VIDEO0/Slide4.jpg') }}"
+image4.src ="{{url_for ('static', filename='images/slideshow/Slide4.jpg') }}"
 document.getElementById("image4").src = image4.src;
 
-image5.src ="{{url_for ('static', filename='images/VIDEO0/Slide5.jpg') }}"
+image5.src ="{{url_for ('static', filename='images/slideshow/Slide5.jpg') }}"
 document.getElementById("image5").src = image5.src;
 
-image6.src ="{{url_for ('static', filename='images/VIDEO0/Slide6.jpg') }}"
+image6.src ="{{url_for ('static', filename='images/slideshow/Slide6.gif') }}"
 document.getElementById("image6").src = image6.src;
 
-image7.src ="{{url_for ('static', filename='images/VIDEO0/Slide7.jpg') }}"
+image7.src ="{{url_for ('static', filename='images/slideshow/Slide7.gif') }}"
 document.getElementById("image7").src = image7.src;
 
-image8.src ="{{url_for ('static', filename='images/VIDEO0/Slide8.jpg') }}"
+image8.src ="{{url_for ('static', filename='images/slideshow/Slide8.gif') }}"
 document.getElementById("image8").src = image8.src;
 
-image9.src ="{{url_for ('static', filename='images/VIDEO0/Slide9.jpg') }}"
+image9.src ="{{url_for ('static', filename='images/slideshow/Slide9.jpg') }}"
 document.getElementById("image9").src = image9.src;
 
-image10.src ="{{url_for ('static', filename='images/VIDEO0/Slide10.jpg') }}"
+image10.src ="{{url_for ('static', filename='images/slideshow/Slide10.jpg') }}"
 document.getElementById("image10").src = image10.src;
 
 var slideIndex = 1;
@@ -247,21 +215,26 @@ function currentSlide(n) {
   showSlides(slideIndex = n);
 }
 
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function moveOn(){
+  window.location.replace("{{url_for ('drawscapes_intro') }}");
+}
+
 function showSlides(n) {
   var i;
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");
-  if (n > slides.length) {slideIndex = 1}    
+  if (n > slides.length) {moveOn()}    
   if (n < 1) {slideIndex = slides.length}
   for (i = 0; i < slides.length; i++) {
       slides[i].style.display = "none";  
   }
-  for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-  }
   slides[slideIndex-1].style.display = "block";  
-  dots[slideIndex-1].className += " active";
 }
+
 </script>
 
 </body>

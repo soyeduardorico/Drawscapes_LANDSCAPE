@@ -20,10 +20,10 @@
         <!--container centering items-->
         <div class="row">
             <div class="column" id="btn1" style="color: #4a4a4a;"> </div>
-            <div class="column" id="btn2" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn2" > </div>
             <div class="column" id="btn3" > </div>
             <div class="column" id="btn4" > </div>
-            <div class="column" id="btn5" > </div>
+            <div class="column" id="btn5" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn6" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn7" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn8" style="color: #4a4a4a;"> </div>
@@ -48,12 +48,20 @@
 
     <!-- full menus below  -->
     <div class=container6><!--container centering items-->
-
-        <!-- Stage 3: PATHS -->
-        <div id="b3" class="containerTab" style="display:none;background:none">
+        <!-- Stage 2: PATHS -->
+        <div id="b2" class="containerTab" style="display:none;background:none">
             <div class="row">
-                <div class="column_below" id="b3_1" onclick="myClear(1,0);"> <img id="erase" width="80" height="80"> </img> <br> ERASE </div>
-                <div class="column_below" id="b3_2" onclick="myUnDo(0);"> <img id="undo" width="80" height="80"> </img> <br> UNDO </div>
+                <div class="column_below" id="b2_1" onclick="myUnDo(0);"> <img class = "lower_menu_button" id="undo"> </img> <br> UNDO </div>
+                <div class="column_below" id="b2_2" onclick="myPopFunction(pop1);">
+                    <div class="popup">
+                        <span class="popuptext" id="myPopup1">
+                            Try to link at least two different nodes <br> <br>
+                            Remember the barrier effect caused by the raiway tracks <br> <br>
+                            Think of where public transport is located <br>
+                        </span> 
+                        <img class = "lower_menu_button" id="tips"> </img> <br> TIPS 
+                    </div>
+                </div>
                 <div class="column_below" > </div>
                 <div class="column_below" > </div>
                 <div class="column_below" > </div>
@@ -64,8 +72,6 @@
                 <div class="column_below" > </div>
             </div>
         </div>
-
-
     </div>
 
 </body>
@@ -106,6 +112,7 @@
     var element = document.getElementById("btn10");
     element.innerHTML = title10;
 
+
     //--------------------------------------------------------------------------
     //imports images for canvas background, feedback screen and sets new canvas and colors buttons
     //--------------------------------------------------------------------------
@@ -113,22 +120,25 @@
     ctx = document.getElementById('canvas').getContext("2d"); //imports data from previosly defined canvas
     document.addEventListener("load", newWhiteCanvas(0)); //Initializes canvas when background image is ready 
     image_canvas.onload = function() {
-        openTab('b3')
+        openTab('b2')
         color_buttons_neutral() //turns all the rest of buttons to neutral color
-        document.getElementById("btn3").style.background = color1; // colors button in stage color
+        document.getElementById("btn2").style.background = color1; // colors button in stage color
         image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_03_right);
         document.getElementById("feedback").src = image_video.src;
         $('html').css('background', color1);
         newcanvas(image_canvas, 1, 0);
         document.getElementById("feedback").src = image_video.src;
         document.getElementById("erase").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/erase.jpg");
+        document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
+        document.getElementById("tips").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/tips.jpg");
+        document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
         document.getElementById("overlay").style.visibility = "hidden";
         document.getElementById("ldr").style.visibility = "hidden";
     }
 
 
     //--------------------------------------------------------------------------
-    // Reloads gif video. For some reason does not work if placed in .js file
+    // Reloads gif video. For some reason does not work if placed in .js file. Currently not used. left just in case
     //--------------------------------------------------------------------------
     function myReplay(video_name){
               image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/".concat(video_name));
@@ -140,7 +150,7 @@
     //functinality for header buttons
     //--------------------------------------------------------------------------
     $(document).ready(function() {
-        $("#btn3").on("click", function() {
+        $("#btn2").on("click", function() {
             color_buttons_neutral()
             document.getElementById("btn3").style.background = color1;
             image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_03_right);
@@ -149,31 +159,26 @@
     });
 
     $(document).ready(function() {
-        $("#btn4").on("click", function() {
+        $("#btn3").on("click", function() {
             color_buttons_neutral()
             myPassDataConnectivity(4)
-            document.getElementById("btn4").style.background = color1;
-        });
-    });
-
-    $(document).ready(function() {
-        $("#btn5").on("click", function() {
-            myPassBuildings(4)
-
-        });
-    });
-    $(document).ready(function() {
-        $("#b3_1").on("click", function() {
-            color_buttons_neutral()
             document.getElementById("btn3").style.background = color1;
         });
     });
 
+    $(document).ready(function() {
+        $("#btn4").on("click", function() {
+            myPassBuildings(4)
+
+        });
+    });
 
 
+    //--------------------------------------------------------------------------
+    //functinality for backend communication
+    //--------------------------------------------------------------------------
     function myPassDataConnectivity(declared_style) {
-        var list_pass = mySave(declared_style)
-        
+        var list_pass = mySave(declared_style)        
         if (list_pass[1].length > 1){ //checks that w are not passing a null array for evaluation
             console.log(list_pass.length);
             console.log(list_pass);
@@ -181,7 +186,7 @@
             document.getElementById("overlay").style.visibility = "visible";
             document.getElementById("ldr").style.visibility = "visible";
             $.ajax({
-                url: '/drawscapes_connection_feedback',
+                url: '/drawscapes_connectivity_feedback',
                 type: 'post',
                 contentType: 'application/json',
                 dataType: 'json',
@@ -198,7 +203,6 @@
                 $("#data").html(result);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.log("fail: ", textStatus, errorThrown);
-
             });
         }
 
@@ -237,14 +241,9 @@
 
     }
 
-
-
-
-
-
 </script>
-</html>
 
+</html>
 <!--Useful Sources
 For color choice: 
     https://www.google.com/search?q=color+picker
@@ -254,5 +253,9 @@ For quick html formatting in order to make it easier to follow:
     https://htmlformatter.com/
 For GIF generation
     https://ezgif.com/maker
+For collapsible menus
+    https://www.w3schools.com/howto/howto_js_collapsible.asp
+For pop up windows
+    https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_popup
 -->
 

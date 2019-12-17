@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for ('static', filename='drawscapes_scripts.js')}}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=0.2">
+
+</head>
+
+<body>
+    <br> </br>
+    <!-- Centered top menu with stages-->
+    <div class=container6>
+        <!--container centering items-->
+        <div class="row">
+            <div class="column" id="btn1" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn2" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn3" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn4" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn5" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn6" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn7" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn8"> </div>
+            <div class="column" id="btn9"> </div>
+            <div class="column" id="btn10" style="color: #4a4a4a;"> </div>
+        </div>
+    </div>
+
+    <p> </p>
+
+    <div class="central-container">
+        <button class="collapsible">
+            <h2> This is what happens when we ask a machine to look at all of the LINE drawings and group them </h2></button>
+        <div class="content">
+            <img id="curiosities_tsne_lines"> </img>
+        </div>
+
+        <p> </p>
+
+        <button class="collapsible">
+            <h2> This is what happens when we ask a machine to look at all of the BUILDING drawings and group them  </h2> </button>
+        <div class="content">
+            <img id="curiosities_tsne_massing"> </img>
+        </div>
+
+        <p> </p>
+
+        <button class="collapsible">
+            <h2> This is what happens when you simplify all drawings to the bare minimum and take an average </h2></button>
+        <div class="content">
+            <img id="curiosities_average_line_connections"> </img>
+        </div>
+    </div>
+
+</body>
+
+<script>
+    $(document).ready(function() {
+        $('html').css('background', color1);
+    });
+
+    //--------------------------------------------------------------------------
+    //brings titles into header buttons
+    //--------------------------------------------------------------------------
+    var element = document.getElementById("btn1");
+    element.innerHTML = title1;
+
+    var element = document.getElementById("btn2");
+    element.innerHTML = title2;
+
+    var element = document.getElementById("btn3");
+    element.innerHTML = title3;
+
+    var element = document.getElementById("btn4");
+    element.innerHTML = title4;
+
+    var element = document.getElementById("btn5");
+    element.innerHTML = title5;
+
+    var element = document.getElementById("btn6");
+    element.innerHTML = title6;
+
+    var element = document.getElementById("btn7");
+    element.innerHTML = title7;
+
+    var element = document.getElementById("btn8");
+    element.innerHTML = title8;
+
+    var element = document.getElementById("btn9");
+    element.innerHTML = title9;
+
+    var element = document.getElementById("btn10");
+    element.innerHTML = title10;
+
+    //--------------------------------------------------------------------------
+    // Sets up colors and buttons
+    //--------------------------------------------------------------------------
+    color_buttons_neutral() //turns all the rest of buttons to neutral color
+    document.getElementById("btn8").style.background = color1; // colors 
+
+    $(document).ready(function() {
+        $("#btn9").on("click", function() {
+            window.location.replace("{{url_for ('drawscapes_form') }}")
+        });
+    });
+
+    //--------------------------------------------------------------------------
+    // organises collapsable set of tools
+    //--------------------------------------------------------------------------
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+
+    //--------------------------------------------------------------------------
+    // initialises set of variables and locates files
+    //--------------------------------------------------------------------------
+    curiosities_tsne_lines.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", 'tsne_images_lines.jpg')
+    curiosities_tsne_massing.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", 'tsne_images_massing.jpg')
+    curiosities_average_line_connections.src = "{{url_for ('overall_results', filename='ADDSHARE2') }}".replace("ADDSHARE2", 'basic_line_drawing.jpg')
+
+    document.getElementById("curiosities_tsne_lines").src = curiosities_tsne_lines.src;
+    document.getElementById("curiosities_tsne_massing").src = curiosities_tsne_massing.src;
+    document.getElementById("curiosities_average_line_connections").src = curiosities_average_line_connections.src;
+
+</script>
+
+</html>

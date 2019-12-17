@@ -7,7 +7,7 @@ from flask import Flask, render_template, url_for, request, jsonify, send_from_d
 import time
 import os
 
-from drawing_app_functions import drawscapes_feedback_function, report_land_use, drawscapes_draw_base, drawscapes_draw_base_2, save_land_uses 
+from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing, drawscapes_draw_base, drawscapes_draw_base_2, save_land_uses 
 from style_transfer import call_montage
 
 # ----------------------------------------------------------------------------------
@@ -70,6 +70,11 @@ def overall_results(filename):
 # -----------------------------------------------------------------------------------------
 # Routes to different web pages
 # -----------------------------------------------------------------------------------------
+@app.route('/drawscapes_intro')
+def drawscapes_intro():
+    return render_template ('drawscapes_intro.html', 
+        title = 'network design for session ' + session['user'])
+
 @app.route('/drawscapes')
 def drawscapes():
     # defines session number and generates folder for further saving files 
@@ -77,11 +82,6 @@ def drawscapes():
     # res = make_response("Setting a cookie")
     # res.set_cookie('session_number', variable, max_age=60*60*24*365*2)
     return render_template ('drawscapes.html', 
-        title = 'network design for session ' + session['user'])
-
-@app.route('/drawscapes_intro')
-def drawscapes_intro():
-    return render_template ('drawscapes_intro.html', 
         title = 'network design for session ' + session['user'])
 
 @app.route('/drawscapes_massing/<filename>')
@@ -96,32 +96,37 @@ def drawscapes_land_use(filename):
         title = 'massing design for session ' + session['user'], 
         imagename=filename)
 
-@app.route('/drawscapes_conclussion')
-def drawscapes_conclussion():
-    return render_template ('drawscapes_conclussion.html', title = session['user'])
+@app.route('/drawscapes_feedback')
+def drawscapes_feedback():
+    # return render_template ('drawscapes_feedback.html', title = session['user'])
+    return render_template ('drawscapes_feedback.html') # no title during tests
+
+@app.route('/drawscapes_curiosities')
+def drawscapes_curiosities():
+    # return render_template ('drawscapes_curiosities.html', title = session['user'])
+    return render_template ('drawscapes_curiosities.html')# no title during tests
 
 @app.route('/drawscapes_form')
 def drawscapes_form():
-    return render_template ('drawscapes_form.html', title = session['user'])
+    # return render_template ('drawscapes_curiosities.html', title = session['user'])
+    return render_template ('drawscapes_form.html')# no title during tests
 
 
-   
-@app.route('/drawscapes_connection_feedback', methods=["GET", "POST"])
-def drawscapes_connection_feedback():
-    # use the line below to work with cookies in the browser as opposed to sessions
-    # session = request.cookies.get("session_number")
-    # defines drawing number within the session
+# -----------------------------------------------------------------------------------------
+# Develops feedback on connectivity of lines and serves it to front end
+# -----------------------------------------------------------------------------------------  
+@app.route('/drawscapes_connectivity_feedback', methods=["GET", "POST"])
+def drawscapes_connectivity_feedback():
     millis = int(round(time.time() * 1000))
     session_folder=os.path.join(root_data,  str(session['user'])) # uses same folder as folder session
     file_name = str(session['user']) + '_' +str(millis)
     folder_name=session['user']
-    task = 2 # 1 for style, 2 for connectivity. This will tell feedack function to not carry all tasks 
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
     # data = request.json
-    # job = q.enqueue(drawscapes_feedback_function, data, file_name, session_folder, folder_name, task)
+    # job = q.enqueue(drawscapes_feedback_lines, data, file_name, session_folder, folder_name)
     # while job.is_finished != True:
     #      time.sleep(0.1)
     
@@ -129,14 +134,16 @@ def drawscapes_connection_feedback():
     # brings json data and calls drawing feedback. Activate on Windows
     # ----------------------------------------------------------------------------------
     data = request.json
-    drawscapes_feedback_function(data, file_name, session_folder, folder_name, task)
+    drawscapes_feedback_lines (data, file_name, session_folder, folder_name)
 
     # sends name of file back to browswer        
-    image_feedback=  file_name + '_ln.jpg' # defines name of image for feedbak and passes it to template
+    image_feedback=  file_name + '_graph.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
 
 
-
+# -----------------------------------------------------------------------------------------
+# Generates a bsase for massign exercise and saves also to database
+# -----------------------------------------------------------------------------------------  
 @app.route('/drawscapes_massing_base', methods=["GET", "POST"])
 def drawscapes_massing_base():
     # defines drawing number within the session
@@ -144,7 +151,7 @@ def drawscapes_massing_base():
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
     file_name= session['user']+'_'+ str(millis)
     folder_name=session['user']
-
+    exercise = 'lines'
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
@@ -158,14 +165,44 @@ def drawscapes_massing_base():
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
     data = request.json
-    drawscapes_draw_base (data, file_name, session_folder, folder_name) # Draws paths in the small scale base
+    drawscapes_draw_base (data, exercise, file_name, session_folder, folder_name) # Draws paths in the small scale base
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_base.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
 
-@app.route('/drawscapes_landscape_base', methods=["GET", "POST"])
-def drawscapes_landscape_base():
+# -----------------------------------------------------------------------------------------
+# Develops feedback on massing quantities and serves it to front end
+# -----------------------------------------------------------------------------------------  
+@app.route('/drawscapes_massing_feedback', methods=["GET", "POST"])
+def drawscapes_massing_feedback():
+    # defines drawing number within the session
+    millis = int(round(time.time() * 1000))
+    file_name= session['user']+'_'+ str(millis)
+    user_id = session['user']
+    
+    # ----------------------------------------------------------------------------------
+    # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
+    # ----------------------------------------------------------------------------------
+    # data = request.json
+    # job = q.enqueue(drawscapes_feedback_massing, data, file_name, user_id)
+    # while job.is_finished != True: 
+    #     time.sleep(0.1)
+    
+    # ----------------------------------------------------------------------------------
+    # brings json data and calls drawing feedback. Activate on Windows
+    # ----------------------------------------------------------------------------------
+    data = request.json
+    drawscapes_feedback_massing (data, file_name, user_id)
+
+    # sends name of file back to browswer
+    image_feedback=  file_name + '_land_use_output.jpg' # defines name of image for feedbak and passes it to template
+    return jsonify(image_feedback)  
+
+
+
+@app.route('/drawscapes_land_use_base', methods=["GET", "POST"])
+def drawscapes_land_use_base():
     # defines drawing number within the session
     millis = int(round(time.time() * 1000))
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
@@ -206,7 +243,6 @@ def drawscapes_save_land_uses():
     # while job.is_finished != True: 
     #     time.sleep(0.1)
     
-    
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
@@ -217,31 +253,7 @@ def drawscapes_save_land_uses():
     image_feedback=  folder_name + '_combined.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(folder_name)
 
-@app.route('/drawscapes_land_use_analysis', methods=["GET", "POST"])
-def drawscapes_land_use_analysis():
-    # defines drawing number within the session
-    millis = int(round(time.time() * 1000))
-    session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
-    file_name= session['user']+'_'+ str(millis)
-    folder_name=session['user']
-    
-    # ----------------------------------------------------------------------------------
-    # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
-    # ----------------------------------------------------------------------------------
-    # data = request.json
-    # job = q.enqueue(report_land_use, data, file_name, session_folder, folder_name)
-    # while job.is_finished != True: 
-    #     time.sleep(0.1)
-    
-    # ----------------------------------------------------------------------------------
-    # brings json data and calls drawing feedback. Activate on Windows
-    # ----------------------------------------------------------------------------------
-    data = request.json
-    report_land_use (data, file_name, session_folder, folder_name)
-
-    # sends name of file back to browswer
-    image_feedback=  file_name + '_land_use_output.jpg' # defines name of image for feedbak and passes it to template
-    return jsonify(image_feedback)   
+ 
 
 @app.route('/drawscapes_save_text', methods=["GET", "POST"])
 def drawscapes_save_text():
@@ -258,7 +270,6 @@ def drawscapes_save_text():
     textfile.write(data)
     textfile.close()
     dropsession()   
-
 
 if __name__ == "__main__":
     millis=0

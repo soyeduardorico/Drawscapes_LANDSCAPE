@@ -1,12 +1,12 @@
-
 //----------------------------------------------------------------------------------------------
 // Common variables for all pages
 //----------------------------------------------------------------------------------------------
 var data_exercise = 1; //0 = draw over park, 1 = draw your own park
 var data_canvas_x = 700; //size of canvas
 var data_canvas_y = 700; //size of canvas
-var color_canvas_scheme  = ['#000000','#e6c48a', '#ff6e5e','#ff0000','#2f5b7d', '#2c700f']; //pencil colors for paths (0), massing (1,2,3) and land use (4,5)  
-var thickness_canvas_scheme =  [5,30,22,15, 10, 10];
+var color_canvas_scheme  = ['#000000','#e6c48a', '#ff6e5e','#ff0000','#baa30d', '#7030a0', '#cc6618', '#2c700f']; //pencil colors for paths (0), massing (1,2,3) and land use (4,5, 6)  
+var thickness_canvas_scheme =  [5,30,22,15, 10, 10, 10, 10];
+
 
 //--------------------------------------------------------------------------
 //initialises variables
@@ -26,17 +26,18 @@ var timeStep = 1000;
 var exportText = new String ();
 var image_feedback_link = new String ();
 var basename = new String ();
+var color1 = '#1d2952';
+var color_generic = '#000000';
 
-var color1 = '#1d2952'
-var color_generic = '#000000'
 
-
+//----------------------------------------------------------------------------------------------
 //file paths for images and titles for header buttons
+//----------------------------------------------------------------------------------------------
 Screen_01_left = "images/screens/Slide1.jpg"
 Screen_01_right = "images/screens/Slide2.jpg"
 
-Screen_02_left = "images/Screen_02_left.gif"
-Screen_02_right = "images/screens/Slide3.jpg"
+Screen_02_left = "images/screens/Slide3.jpg"
+Screen_02_right = "images/tips.gif"
 
 Screen_03_left = "images/base_for_canvas.jpg"
 Screen_03_right = "images/base_image_large_annotated.jpg"
@@ -58,17 +59,30 @@ basename = "images/base_image.jpg"
 fail_image = "images/screens/Slide6.jpg"
 
 
+//--------------------------------------------------------------------------
+//defines names for pop up windows
+//--------------------------------------------------------------------------
+var pop1 = "myPopup1"
+var pop2 = "myPopup2"
+var pop3 = "myPopup3"
+var pop4 = "myPopup4"
+var pop5 = "myPopup5"
+
+
+//----------------------------------------------------------------------------------------------
 //titles for header buttons
-title1 = '1 <br> screen fit'
-title2 = '2 <br> some tips'
-title3 = '3 <br> draw paths'
-title4 = '4 <br> check lines'
-title5 = '5 <br> draw buildings'
-title6 = '6 <br> check numbers'
-title7 = '7 <br> locate key uses'
+//----------------------------------------------------------------------------------------------
+title1 = '1 <br> some tips'
+title2 = '2 <br> draw paths'
+title3 = '3 <br> check lines'
+title4 = '4 <br> draw buildings'
+title5 = '5 <br> check numbers'
+title6 = '6 <br> locate key uses'
+title7 = '7 <br> feedback'
 title8 = '8 <br> survey'
-title9 = '9 <br> feedback'
+title9 = '9 <br> -'
 title10 = '10 <br> -'
+
 
 //----------------------------------------------------------------------------------------------
 // fucntion that sets all button colors to neutral
@@ -110,7 +124,15 @@ function newCanvasStroke(ln_type){
     ctx.lineWidth = thickness_canvas_scheme[ln_type];
     ctx.lineCap = "round";
     line_var=ln_type;
+}
 
+
+//----------------------------------------------------------------------------------------------
+// Activates popup
+//----------------------------------------------------------------------------------------------
+function myPopFunction(popupToShow) {
+  var popup = document.getElementById(popupToShow);
+  popup.classList.toggle("show");
 }
 
 
@@ -155,62 +177,81 @@ function myClear(opacity, ln_type){
   exportText=[];
 }
 
+
 //----------------------------------------------------------------------------------------------
 // Removes last line from canvas and data lists and leaves line_type as default
 //----------------------------------------------------------------------------------------------
 function myUnDo (default_thickness){
-    console.log(xcoords.length);
-    console.log(ycoords.length);
-    console.log(point.length);
-    console.log(linetype.length);
+    // console.log(xcoords.length);
+    // console.log(ycoords.length);
+    // console.log(point.length);
+    // console.log(linetype.length);
 
-    n = xcoords.length;    
-    while (point[n-1]>1) {
-        xcoords.pop();
-        ycoords.pop();
-        point.pop();
-        linetype.pop();
-        n--
+    n_lines=0
+    n = point.length;
+
+    for (j = 0; j < n; j++) {
+      if (point[j]<2){
+        n_lines++
+      }
     }
 
-    xcoords.pop();
-    ycoords.pop();
-    point.pop();
-    linetype.pop();
-
-    console.log(xcoords.length);
-    console.log(ycoords.length);
+    console.log(n_lines);
     console.log(point.length);
-    console.log(linetype.length);
 
-    newcanvas(image_canvas,1);
-    n2 = xcoords.length;
-    i=0
-    while (i<n2){
-        if (point[i] < 2){
-            ctx.beginPath();
-            x=xcoords[i]
-            y=ycoords[i]
-            ctx.moveTo(x,y);
+    if (n_lines>1){
+      if (n>2){
 
-        }
-        if (point[i] > 2){
-            x=xcoords[i]
-            y=ycoords[i]
-            ctx.strokeStyle = color_canvas_scheme[linetype[i]];
-            ctx.lineWidth = thickness_canvas_scheme[linetype[i]];
-            ctx.lineTo(x,y);
-            ctx.stroke();
+      while (point[n-1]>1) {
+          xcoords.pop();
+          ycoords.pop();
+          point.pop();
+          linetype.pop();
+          n--
+      }
 
-        }
-        newCanvasStroke(default_thickness);
-        i++
+      xcoords.pop();
+      ycoords.pop();
+      point.pop();
+      linetype.pop();
+
+      // console.log(xcoords.length);
+      // console.log(ycoords.length);
+      // console.log(point.length);
+      // console.log(linetype.length);
+
+      // redraw the canvas again with lines left
+      newcanvas(image_canvas,1);
+      n2 = xcoords.length;
+      i=0
+      while (i<n2){
+          if (point[i] < 2){
+              ctx.beginPath();
+              x=xcoords[i]
+              y=ycoords[i]
+              ctx.moveTo(x,y);
+          }
+
+          if (point[i] > 2){
+              x=xcoords[i]
+              y=ycoords[i]
+              ctx.strokeStyle = color_canvas_scheme[linetype[i]];
+              ctx.lineWidth = thickness_canvas_scheme[linetype[i]];
+              ctx.lineTo(x,y);
+              ctx.stroke();
+          }
+
+          newCanvasStroke(default_thickness);
+          i++
+      }
+
     }
+  }
 }
 
 
 //----------------------------------------------------------------------------------------------
-// Waiting function
+// Waiting function (not used for the time being, but let us leave it just in case)
 //----------------------------------------------------------------------------------------------
 function wait(ms){
      var start = new Date().getTime();

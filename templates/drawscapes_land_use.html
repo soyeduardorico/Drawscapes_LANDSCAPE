@@ -23,9 +23,9 @@
             <div class="column" id="btn3" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn4" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn5" style="color: #4a4a4a;"> </div>
-            <div class="column" id="btn6" style="color: #4a4a4a;"> </div>
-            <div class="column" id="btn7" onclick="openTab('b7');"> </div>
-            <div class="column" id="btn8" onclick="myPassLandUses(4);"> </div>
+            <div class="column" id="btn6" onclick="openTab('b6');"> </div>
+            <div class="column" id="btn7" onclick="myPassLandUses(4);"> </div>
+            <div class="column" id="btn8" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn9" style="color: #4a4a4a;"> </div>
             <div class="column" id="btn10" style="color: #4a4a4a;"> </div>
         </div>
@@ -49,19 +49,26 @@
     <div class=container6>
         <!--container centering items-->
 
-        <!-- Stage 7: DRAW LAND USES  -->
-        <div id="b7" class="containerTab" style="display:none;background:none">
+        <!-- Stage 6: DRAW LAND USES  -->
+        <div id="b6" class="containerTab" style="display:none;background:none">
             <div class="row">
-                <div class="column_below" id="b5_1" onclick="myClear(1,4);"> <img id="erase" width="80" height="80"> </img> <br> ERASE </div>
-                <div class="column_below" id="b5_2" onclick="myUnDo(4);">  <img id="undo" width="80" height="80"> </img> <br> UNDO</div>
-                <div class="column_below" id="b5_3" onclick="newCanvasStroke(4);">  <img id="draw_use_food" width="80" height="80"> </img> <br> FOOD </div>
-                <div class="column_below" id="b5_4" onclick="newCanvasStroke(5);">  <img id="draw_use_gathering" width="80" height="80"> </img> <br> GATHERING </div>
-                <div class="column_below" id="b5_5"> </div>
-                <div class="column_below" id="b5_6"> </div>
-                <div class="column_below" id="b5_7"> </div>
-                <div class="column_below" id="b5_8"> </div>
-                <div class="column_below" id="b5_9"> </div>
-                <div class="column_below" id="b5_10"> </div>
+                <div class="column_below" id="b6_1" onclick="myUnDo(4);">  <img id="undo" width="80" height="80"> </img> <br> UNDO</div>
+                <div class="column_below" id="b6_2" onclick="newCanvasStroke(4);">  <img id="draw_use_food" width="80" height="80"> </img> <br> FOOD </div>
+                <div class="column_below" id="b6_3" onclick="newCanvasStroke(5);">  <img id="draw_use_flexible" width="80" height="80"> </img> <br> FLEXIBLE SPACE </div>
+                <div class="column_below" id="b6_4" onclick="newCanvasStroke(6);">  <img id="draw_use_public" width="80" height="80"> </img> <br> PUBLIC GATHERING </div>
+                <div class="column_below" id="b6_5" onclick="newCanvasStroke(7);">  <img id="draw_use_public" width="80" height="80"> </img> <br> GREEN SPACE </div>                
+                <div class="column_below" id="b6_6" onclick="myPopFunction(pop1);"> 
+                    <div class="popup">                    
+                        <span class="popuptext" id="myPopup1">
+                            Think on landscape value of canals for public spaces <br>
+                        </span> 
+                        <img class = "lower_menu_button" id="tips"> </img> <br> TIPS 
+                    </div>
+                </div>
+                <div class="column_below"> </div>
+                <div class="column_below"> </div>
+                <div class="column_below"> </div>
+                <div class="column_below"> </div>
             </div>
         </div>
 
@@ -113,16 +120,19 @@
     document.addEventListener("load", newWhiteCanvas(0)); //Initializes canvas when background image is ready 
     image_canvas.onload = function() {
         color_buttons_neutral() //turns all the rest of buttons to neutral color
-        document.getElementById("btn7").style.background = color1; // colors button in stage color
+        document.getElementById("btn6").style.background = color1; // colors button in stage color
         image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_07_right);
         document.getElementById("feedback").src = image_video.src;
         $('html').css('background', color1);
         newcanvas(image_canvas, 1, 4);
         document.getElementById("feedback").src = image_video.src;
         document.getElementById("erase").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/erase.jpg");
+        document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
         document.getElementById("draw_use_food").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_food.jpg");
-        document.getElementById("draw_use_gathering").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_gathering.jpg");
-        openTab('b7')
+        document.getElementById("draw_use_flexible").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_flexible.jpg");
+        document.getElementById("draw_use_public").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_public.jpg");
+        document.getElementById("tips").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/tips.jpg");
+        openTab('b6')
         document.getElementById("overlay").style.visibility = "hidden";
         document.getElementById("ldr").style.visibility = "hidden";
     }
@@ -157,7 +167,7 @@
                 dataType: 'json',
                 data: js_data
             }).done(function() {
-                window.location.replace("{{url_for ('drawscapes_form') }}");
+                window.location.replace("{{url_for ('drawscapes_feedback') }}");
 
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.log("fail: ", textStatus, errorThrown);

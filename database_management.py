@@ -54,6 +54,7 @@ def list_files_dir():
 def feature_extract (polylines, linetype):
     base_model = VGG19(weights='imagenet')
     model = Model(input=base_model.input, output=base_model.get_layer('block5_pool').output) 
+    print ('model loaded')
     img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
     img.fill(255)
     img = draw_paths_base (polylines, linetype, overall_results_directory, 'anyname', img, save='False')
@@ -61,8 +62,11 @@ def feature_extract (polylines, linetype):
     img = img.resize((224,224), Image.ANTIALIAS)
     img = image.img_to_array(img)  # convert to array
     img = np.expand_dims(img, axis=0)
+    print('image geenrated')
     img = preprocess_input(img)
+    print('image preprocessed')
     features = model.predict(img).flatten()  # features
+    print('features extracted')   
     return features.tolist()
 
 
@@ -110,8 +114,7 @@ def test_and_file (db, sketch, exercise, extract_features = 'True'):
             #update / instert (upsert)
             db.upsert( {'id': file_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == file_name) # inserts or udates
 
-def data_to_database (polylines, linetype, id_name, exercise, extract_features = 'True'):
-    db = TinyDB(databse_filepath)
+def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, extract_features = 'True'):
     field_polylines = exercise + '_polylines'
     field_linetype = exercise + '_linetype'
     field_features = exercise + '_features'
@@ -120,15 +123,40 @@ def data_to_database (polylines, linetype, id_name, exercise, extract_features =
     
     # in case we do not want to extract features we can bypass this
     if extract_features == 'True':
+        print(polylines)
+        print(linetype)
         feature_values=feature_extract (polylines, linetype)
+        print('features extarcted for ' + id_name + str(millis2))
+
     else:
         feature_values = []        
     linetype = [float(i) for i in linetype]            
     polylines[0]= np.array(polylines[0]).astype(float).tolist()
+    db = TinyDB(databse_filepath)
     sketch_query=Query()
     #update / instert (upsert)
     db.upsert( {'id': id_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == id_name) # inserts or udates
     db.close()
+    print('process finished for ' + id_name + str(millis2))
+
+
+#----------------------------------------------------------------------------------------
+# Reads line data from database 
+#----------------------------------------------------------------------------------------
+def line_data_from_database (databse_filepath, user_id, exercise):
+    db = TinyDB(databse_filepath)
+    sketch_item=Query()
+    field_polylines = exercise + '_polylines'
+    field_linetype = exercise + '_linetype'
+    data_polylines_float = db.search(sketch_item.id==user_id)[0].get(field_polylines)
+    data_polylines = []
+    for i in data_polylines_float:
+        data_polylines.append(np.array(i).astype(int).tolist()) # needs reconverting to integer from float in database
+    data_linetype = db.search(sketch_item.id==user_id)[0].get(field_linetype)
+    data_linetype =  np.array(data_linetype).astype(int).tolist() # needs reconverting to integer from float in database
+    return data_polylines, data_linetype
+
+
 #----------------------------------------------------------------------------------------
 # Develops TSNE reading features and geometries from database for an exercise (lines =0 or massing =1)
 #----------------------------------------------------------------------------------------
@@ -228,10 +256,6 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
 
 
 #%%
-#tsne_embedding (db, 0)
-
-
-#%%
 
 
 #%%
@@ -273,4 +297,6 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
     
     
 #%%
-#tsne_embedding (db, 1, id_name)
+db = TinyDB(databse_filepath)
+id_name = '1575681037493'
+tsne_embedding (db, 0, id_name)

@@ -2,10 +2,8 @@
 import numpy as np
 
 import os
-#import os
-import numpy as np
 import cv2
-import os
+
 import keras
 import re
 import scipy
@@ -45,9 +43,17 @@ from overall_analysis import basic_line_drawing, bundle_drawing
 from tSNE import plot_tsne
 from basic_drawing_functions import pts_to_polylines, draw_paths, draw_paths_base
 
+
+#%% useful variable definition
+
+item_list=['lines','massing']
+item_number_list = [1,4]
+perplexity_list = [5,10]
+early_exaggeration_list = [100,100]
+
 #%%
 #----------------------------------------------------------------------------------------
-# Generate lists of np data of sketches in directory
+# Generate lists of np data of sketches in directory / currently unused
 #----------------------------------------------------------------------------------------
 def list_line_dir():
     list_files = [] # file names
@@ -182,6 +188,7 @@ def tsne_plot(exercise):
     overall_canvas_size = 1400
     margin = 150
     drawing_size = overall_canvas_size-2*margin #  area where drawings will be circumscribed
+    list_directory = clean_line_list_dir()
     if len(list_directory[item_number]) < 40: # defining sketch size acccording to number
         sketch_size = 150
     else:
@@ -206,28 +213,16 @@ def tsne_plot(exercise):
     canvas.save(tsne_filename_2)
 
 
-
 #%%
-list_directory = clean_line_list_dir()       
-
-
+tsne_plot(0)
 #%%
 
-
-exercise = 1 # 0: lines, 1: massing
-item_list=['lines','massing']
-item_number_list = [1,4]
-perplexity_list = [5,10]
-early_exaggeration_list = [100,100]
-tsne_plot(1)
-#%%
-
-exercise = 0
-item = item_list[exercise]
-item_number = item_number_list [exercise]
-#loads files
-feature_file_name = os.path.join(overall_results_directory, 'overall_features_' + item + '.npy')
-image_file_name = os.path.join(overall_results_directory, 'overall_images_' + item + '.npy')
-X = np.load(feature_file_name)
-print (X.shape)
-print(len(list_directory[item_number]))
+#exercise = 0
+#item = item_list[exercise]
+#item_number = item_number_list [exercise]
+##loads files
+#feature_file_name = os.path.join(overall_results_directory, 'overall_features_' + item + '.npy')
+#image_file_name = os.path.join(overall_results_directory, 'overall_images_' + item + '.npy')
+#X = np.load(feature_file_name)
+#print (X.shape)
+#print(len(list_directory[item_number]))

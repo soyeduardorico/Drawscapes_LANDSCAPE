@@ -171,6 +171,20 @@ class path_graph ():
             if i[1]==n: node=i    
         return (node)
 
+
+    # ------------------------------------------------------------------------------------
+    # returns clusest node to a point if within threshold distance, otherwise leaves the points as it is
+    # ------------------------------------------------------------------------------------ 
+    def snap(self, a):
+        closest = self.closest_point(a,self.nodes)
+        distance = self.dist_nodes(a, closest)
+        if distance < self.threshold:
+            snap_point = closest
+        else:
+            snap_point = a
+        return snap_point
+
+
     # ------------------------------------------------------------------------------------
     # finds end points (end_point_list, degree 1) as well as jucntions  (junction_list, degree 3) 
     # using the stright node to node graph 
@@ -181,8 +195,8 @@ class path_graph ():
         for i in self.pixel_graph().degree:
             if i[1]==1:
                 end_point_list.append(i[0])
-            if i[1]==3:
-                junction_list.append(i[0])        
+            if i[1]>2:
+                junction_list.append(i[0])                       
         return(end_point_list,junction_list)
 
     # ------------------------------------------------------------------------------------
@@ -278,8 +292,7 @@ class path_graph ():
     # makes a drawign of graph (simplifies lines and edges)
     # ------------------------------------------------------------------------------------ 
     def draw_graph (self):
-        img = np.zeros((int(self.shape_x),int(self.shape_y),3), np.uint8)
-        img.fill(255)
+        img=cv2.imread(self.link_base_image)
         node_coords=[]
         for i in self.nodes:
             node_coords.append(self.coords(i))
@@ -287,7 +300,9 @@ class path_graph ():
         #generate lines from simplified graph and draws them
         lines=[]
         for i in self.simplified_graph().edges:
-            lines.append([self.coords(i[0]),self.coords(i[1])])
+            pt0 = self.snap(i[0])
+            pt1 = self.snap(i[1])
+            lines.append([self.coords(pt0),self.coords(pt1)])
         for i in lines:
             cv2.line(img,i[0],i[1],(0,0,0),3)
         
@@ -298,10 +313,15 @@ class path_graph ():
         for i in intersection_nodes:
             cv2.circle(img,i,3,(0,255,0),-1)
             
-        #adds endpoints and plots them with number text
+        #writes node number in all potential end_points
         for i in range (0,len(node_coords)):
-            cv2.circle(img,node_coords[i],5,(0,0,255),-1)
-            cv2.putText(img,' '+str(i), node_coords[i],cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 0, 0), lineType=cv2.LINE_AA)
+            cv2.putText(img,' '+str(i), node_coords[i],cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), lineType=cv2.LINE_AA)
+
+        #for the end_points used (snapped) it adds a circle
+        for i in self.key_points()[0]:
+            pt = self.snap(i)
+            cv2.circle(img,self.coords(pt),8,(0,0,255),-1)
+                   
             
         b=os.path.join(self.dir_write, self.sketch_name + "_graph"+"." + 'jpg')   
         cv2.imwrite(b,img)

@@ -6,6 +6,7 @@ import os
 root_directory = os.path.dirname(__file__)
 root_participation_directory = os.path.join(root_directory, 'data')
 
+
 # ------------------------------------------------------------------------------------
 # Folder references
 # ------------------------------------------------------------------------------------ 
@@ -14,6 +15,7 @@ reference_directory_images=os.path.join(root_directory,'static/recommendation_ou
 interface_images=os.path.join(root_directory,'static/images')
 model_directory=os.path.join(root_directory,'style_transfer_models')
 overall_results_directory = os.path.join(root_directory,'overall_results')
+
 
 # ------------------------------------------------------------------------------------
 # Files references
@@ -25,34 +27,22 @@ link_base_image_large_annotated = os.path.join(interface_images, 'base_image_lar
 link_styles_catalogue = os.path.join(interface_images, 'overall_style.jpg')
 link_outcome_success = os.path.join(interface_images, 'outcome_success.jpg')
 link_outcome_failure = os.path.join(interface_images, 'outcome_failure.jpg')
+link_feedback_massing_base = os.path.join(interface_images, 'feedback_massing_base.jpg')
 click_on_screen = os.path.join(interface_images, 'cick_on_screen.jpg')
 ucl_east_image = os.path.join(interface_images, 'ucl_east_marshgate.jpg')
 databse_filepath = os.path.join (overall_results_directory,'database.json')  
 
+
 # ------------------------------------------------------------------------------------
 # Generic data on image size and typical colours
 # ------------------------------------------------------------------------------------  
-
 website_colour = (29, 41, 82)
-
 threshold_distance=20 # threshold for snapping lines into origin points
-
 n_neighbours=2 # neighborxs for style recommendation
 
 # size of canvas
 shape_x=700
 shape_y=700
-
-# Color of canvas in python rgb needs to remain coordinated with color_canvas_scheme in drawscapes_scripts.js 
-# Use color coder in https://www.google.com/search?q=color+picker
-color_canvas_rgb = [[0,0,0],[230, 196, 138],[255, 110, 94],[255, 0, 0],[47, 91, 125], [44, 112, 15]]
-
-# To be coordinated with thickness_canvas_scheme in drawscapes_scripts.js 
-thickness_lines = [5,30,22,15, 10, 10]
-
-# height in storeys of building massing accordign to layers
-# heigth is measured from the ground, ie, it is NOT stacked in the calculation
-massing_height = [0,2,5,10, 0, 0] # last two colours do will appear in massing clal but the function will loop over all colors incl land uses
 
 # description of styles 
 historic_styles = ['SQUARE, RECTANGULAR',
@@ -61,13 +51,21 @@ historic_styles = ['SQUARE, RECTANGULAR',
                    'SMOOTH CURVES',
                    'NATURAL, WIGGLY']
 
-# size of canvas
-shape_x=700
-shape_y=700
-
 # line colors
 color_lines= (0,0,0)
 color_lines_cv2= (0,0,0)
+
+
+# ------------------------------------------------------------------------------------
+# Color and line thickness definition. Coordinate with drawscapes_scripts.js 
+# ------------------------------------------------------------------------------------  
+# Use color coder in https://www.google.com/search?q=color+picker
+# height in storeys of building massing accordign to layers
+# heigth is measured from the ground, ie, it is NOT stacked in the calculation
+color_canvas_rgb = [[0,0,0],[230, 196, 138],[255, 110, 94],[255, 0, 0],[186, 163, 13], [112, 48, 160],[204, 102, 24], [44, 112, 15]]
+thickness_lines = [5,30,22,15, 10, 10, 10, 10]
+massing_height = [0,2,5,10, 0, 0, 0, 10] # last two colours do will appear in massing clal but the function will loop over all colors incl land uses
+
 
 # ------------------------------------------------------------------------------------
 # Style trasnfer model information
@@ -94,7 +92,7 @@ node_coords=[[146,227],
 [535,307],
 [584,371],
 [410,547],
-[349,578]]
+[344,567]]
 
 node_coords_large =[[266,358],
 [286,353],
@@ -140,7 +138,7 @@ node_coords_detailed=[[146,227],
 [535,307],
 [584,371],
 [410,547],
-[349,578],
+[344,567],
 [226,438],
 [146,273]]
 
@@ -156,9 +154,7 @@ ucl_east_research_area = 5000
 ratio_accomodation_base = 0
 ratio_accomodation_plinth = 0.3
 ratio_accomodation_tower = 0.7
-
 m2accomodation_per_student = 15
-
 ratio_research_base = 0.5
 ratio_research_plinth = 0.3
 ratio_research_tower = 0

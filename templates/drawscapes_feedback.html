@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="{{url_for ('static', filename='drawscapes_scripts.js')}}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for ('static', filename='drawscapes_styles.css')}}">
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=0.2">
+
+</head>
+
+<body>
+    <br> </br>
+    <!-- Centered top menu with stages-->
+    <div class=container6>
+        <!--container centering items-->
+        <div class="row">
+            <div class="column" id="btn1" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn2" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn3" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn4" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn5" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn6" style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn7"> </div>
+            <div class="column" id="btn8"> </div>
+            <div class="column" id="btn9"style="color: #4a4a4a;"> </div>
+            <div class="column" id="btn10" style="color: #4a4a4a;"> </div>
+        </div>
+    </div>
+
+    <p> </p>
+
+    <div class="central-container">
+        <button class="collapsible">
+            <h2>Click here to see how your proposal works with the canals.</h2></button>
+        <div class="content">
+            <img id="feedback_1" onclick="myPopFunction(pop1);"> 
+                <div class="popup">
+                    <span class="popuptext" style="font-size: 25px; margin-left: 300px; width: 500px; "  id="myPopup1">
+                        Canals offer landscape ammenity and also recreation and healthcare benefits <br> <br>
+                        Residential developmetn benefit substantially from canal views <br> <br>
+                        Workplaces benefit only partially from canal views <br>
+                    </span> 
+                </div>
+            </img>
+        </div>
+
+        <p> </p>
+
+        <button class="collapsible">
+            <h2>Click here to see how your proposal works with railway noise.</h2></button>
+        <div class="content">
+            <img id="feedback_2" onclick="myPopFunction(pop2);"> 
+                <div class="popup">
+                    <span class="popuptext" style="font-size: 25px; margin-left: 300px; width: 500px; "  id="myPopup2">
+                        Tracks generate noise and offer negative landscape appearance <br> <br>
+                        This affects residences and houses particularly bad specially during nightime / resting time <br> <br>
+                        Workplaces and restaurants tend to be busier during daytime and are less affected by noise <br>
+                    </span> 
+                </div>
+            </img>
+        </div>
+
+        <p> </p>
+
+        <button class="collapsible">
+            <h2>Click here to see how your proposal works with railway tracks.</h2></button>
+        <div class="content">
+            <img id="feedback_3" onclick="myPopFunction(pop3);"> 
+                <div class="popup">
+                    <span class="popuptext" style="font-size: 25px; margin-left: 300px; width: 500px; "  id="myPopup3">
+                        Tracks only allow crossing in few points <br> <br>
+                        This affects residents as well as casual clients of restaurants <br> <br>
+                        It impacts less on workers or commuters <br>
+                    </span> 
+                </div>
+            </img>
+        </div>
+    </div>
+
+    <p> <br> </p>
+
+    <div class="central-container">
+        <div>
+            <h1>In case you want to ammend your design:</h1>
+            <form action="">
+                <input type="text" style="width:1400px" value="Describe it here if you do not want to draw it. Then go to one of the final options">
+            </form>
+        </div>
+
+        <div class="slideshow-container">
+            <p> </p>
+            <button id="back_to_lines" class="btn" style="width:462px">
+                Go to step 2 and draw paths
+            </button>
+
+            <button id="back_to_buildings" class="btn" style="width:462px">
+                Go to step 4 draw buildings
+            </button>
+
+            <button id="back_to_uses" class="btn" style="width:462px">
+                Go to step 6 and locate key uses
+            </button>
+        </div>
+    </div>
+
+</body>
+
+
+<script>
+    $(document).ready(function() {
+        $('html').css('background', color1);
+    });
+    //--------------------------------------------------------------------------
+    //brings titles into header buttons
+    //--------------------------------------------------------------------------
+    var element = document.getElementById("btn1");
+    element.innerHTML = title1;
+
+    var element = document.getElementById("btn2");
+    element.innerHTML = title2;
+
+    var element = document.getElementById("btn3");
+    element.innerHTML = title3;
+
+    var element = document.getElementById("btn4");
+    element.innerHTML = title4;
+
+    var element = document.getElementById("btn5");
+    element.innerHTML = title5;
+
+    var element = document.getElementById("btn6");
+    element.innerHTML = title6;
+
+    var element = document.getElementById("btn7");
+    element.innerHTML = title7;
+
+    var element = document.getElementById("btn8");
+    element.innerHTML = title8;
+
+    var element = document.getElementById("btn9");
+    element.innerHTML = title9;
+
+    var element = document.getElementById("btn10");
+    element.innerHTML = title10;
+
+
+    //--------------------------------------------------------------------------
+    // Sets up colors and buttons
+    //--------------------------------------------------------------------------
+    color_buttons_neutral() //turns all the rest of buttons to neutral color
+    document.getElementById("btn7").style.background = color1; // colors 
+   
+    $(document).ready(function() {
+        $("#btn8").on("click", function() {
+            window.location.replace("{{url_for ('drawscapes_form') }}")
+        });
+    });
+
+
+    //--------------------------------------------------------------------------
+    // organises collapsable set of tools
+    //--------------------------------------------------------------------------
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    for (i = 0; i < coll.length; i++) {
+        coll[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var content = this.nextElementSibling;
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    }
+
+    //--------------------------------------------------------------------------
+    // initialises set of variables and locates files
+    //--------------------------------------------------------------------------
+    feedback_1.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", 'images/feedback_1.jpg');
+    feedback_2.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", 'images/feedback_2.jpg');
+    feedback_3.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", 'images/feedback_3.jpg');
+
+    document.getElementById("feedback_1").src = feedback_1.src;
+    document.getElementById("feedback_2").src = feedback_2.src;
+    document.getElementById("feedback_3").src = feedback_3.src;
+</script>
+
+</html>
