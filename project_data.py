@@ -31,7 +31,13 @@ link_feedback_massing_base = os.path.join(interface_images, 'feedback_massing_ba
 click_on_screen = os.path.join(interface_images, 'cick_on_screen.jpg')
 ucl_east_image = os.path.join(interface_images, 'ucl_east_marshgate.jpg')
 databse_filepath = os.path.join (overall_results_directory,'database.json')  
-
+feedback_barrier_base = os.path.join(interface_images, 'feedback_barrier_base.jpg')
+feedback_canal_base = os.path.join(interface_images, 'feedback_canal_base.jpg')
+feedback_noise_base = os.path.join(interface_images, 'feedback_noise_base.jpg')
+feedback_barrier = os.path.join(interface_images, 'feedback_barrier.jpg')
+feedback_canal = os.path.join(interface_images, 'feedback_canal.jpg')
+feedback_noise = os.path.join(interface_images, 'feedback_noise.jpg')
+draw_no_lines_drawn = os.path.join(interface_images, 'draw_no_lines_drawn.jpg')
 
 # ------------------------------------------------------------------------------------
 # Generic data on image size and typical colours
@@ -65,6 +71,11 @@ color_lines_cv2= (0,0,0)
 color_canvas_rgb = [[0,0,0],[230, 196, 138],[255, 110, 94],[255, 0, 0],[186, 163, 13], [112, 48, 160],[204, 102, 24], [44, 112, 15]]
 thickness_lines = [5,30,22,15, 10, 10, 10, 10]
 massing_height = [0,2,5,10, 0, 0, 0, 10] # last two colours do will appear in massing clal but the function will loop over all colors incl land uses
+
+# ------------------------------------------------------------------------------------
+# Definition of exercises carried out during the uinterface use and how they are saved in database
+# ------------------------------------------------------------------------------------  
+exercises =  ['lines','massing','land_uses']
 
 
 # ------------------------------------------------------------------------------------

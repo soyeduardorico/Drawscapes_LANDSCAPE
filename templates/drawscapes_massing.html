@@ -49,15 +49,14 @@
     <div class=container6>
         <!--container centering items-->
 
-        <!-- Stage 5: DRAW BUILDINGS -->
+        <!-- Stage 4: DRAW BUILDINGS -->
         <div id="b4" class="containerTab" style="display:none;background:none">
             <div class="row">
-                <div class="column_below" id="b4_1" onclick="myClear(1,1);"> <img id="erase" width="80" height="80"> </img> <br> ERASE </div>
-                <div class="column_below" id="b4_2" onclick="myUnDo(1);"> <img id="undo" width="80" height="80"> </img> <br> UNDO </div>
-                <div class="column_below" id="b4_3" onclick="newCanvasStroke(1);"> <img id="draw_low" width="80" height="80"> </img> <br> BASE </div>
-                <div class="column_below" id="b4_4" onclick="newCanvasStroke(2);">  <img id="draw_medium" width="80" height="80"> </img> <br> PLYNTH </div>
-                <div class="column_below" id="b4_5" onclick="newCanvasStroke(3);">  <img id="draw_high" width="80" height="80"> </img> <br> TOWER </div>
-                <div class="column_below" id="b4_6" onclick="myPopFunction(pop1);"> 
+                <div class="column_below" id="b4_1" onclick="myUnDo(1);"> <img id="undo" width="80" height="80"> </img> <br> UNDO </div>
+                <div class="column_below" id="b4_2" onclick="newCanvasStroke(1);"> <img id="draw_low" width="80" height="80"> </img> <br> BASE </div>
+                <div class="column_below" id="b4_3" onclick="newCanvasStroke(2);">  <img id="draw_medium" width="80" height="80"> </img> <br> PLYNTH </div>
+                <div class="column_below" id="b4_4" onclick="newCanvasStroke(3);">  <img id="draw_high" width="80" height="80"> </img> <br> TOWER </div>
+                <div class="column_below" id="b4_5" onclick="myPopFunction(pop1);"> 
                     <div class="popup">                    
                         <span class="popuptext" id="myPopup1">
                             Try to hit the target, 50,000m2 overall <br> <br>
@@ -67,6 +66,7 @@
                         <img class = "lower_menu_button" id="tips"> </img> <br> TIPS 
                     </div>
                 </div>
+                <div class="column_below"> </div>
                 <div class="column_below"> </div>
                 <div class="column_below"> </div>
                 <div class="column_below"> </div>
@@ -117,19 +117,18 @@
     //imports images for canvas background, feedback screen and sets new canvas and colors buttons
     //--------------------------------------------------------------------------
     image_canvas.src = "{{url_for ('data', filename='ADDSHARE2') }}".replace("ADDSHARE2", '{{ imagename }}');
-    image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_05_right);
+    image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", draw_massing_instructions);
     ctx = document.getElementById('canvas').getContext("2d"); //imports data from previosly defined canvas
     document.addEventListener("load", newWhiteCanvas(0)); //Initializes canvas when background image is ready 
     image_canvas.onload = function() {
         color_buttons_neutral() //turns all the rest of buttons to neutral color
         document.getElementById("btn4").style.background = color1; // colors button in stage color
-        image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", Screen_05_right);
+        image_video.src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", draw_massing_instructions);
         document.getElementById("feedback").src = image_video.src;
         $('html').css('background', color1);
         newcanvas(image_canvas, 1, 1);
         newCanvasStroke(1);
         openTab('b4');
-        document.getElementById("erase").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/erase.jpg");
         document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
         document.getElementById("draw_low").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_low.jpg");
         document.getElementById("draw_medium").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_medium.jpg");
@@ -160,12 +159,7 @@
         });
     });
 
-    $(document).ready(function() {
-        $("#b4_1").on("click", function() {
-            color_buttons_neutral()
-            document.getElementById("btn4").style.background = color1;
-        });
-    });
+
 
     $(document).ready(function() {
         $("#btn5").on("click", function() {

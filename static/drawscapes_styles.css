@@ -19,7 +19,7 @@ h1 {
 }
 
 h2 {
-  color: white;
+  color: #c5d3e8;
   font-family: Calibri;
   font-size: 25px;
   text-align: center;
@@ -96,9 +96,10 @@ button {
 .btn {
     background-color: black;
     border: none;
-    color: white;
+    color: #c5d3e8;
+    font-family: Calibri;
+    font-size: 25px;
     padding: 12px 16px;
-    font-size: 24px;
     cursor: pointer;
 }
 
@@ -106,8 +107,6 @@ button {
   width:80px;
   height:80px;
 }
-
-
 
  .btn:hover {
     background-color: grey;
@@ -233,7 +232,6 @@ justify-content: center }
 /*  --------------------------------------------------------------------  */
 /*  definition for popup  */
 /*  --------------------------------------------------------------------  */
-
 /* Popup container - can be anything you want */
 .popup {
   position: relative;

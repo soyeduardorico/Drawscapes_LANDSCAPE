@@ -41,22 +41,10 @@ Screen_02_right = "images/tips.gif"
 
 Screen_03_left = "images/base_for_canvas.jpg"
 Screen_03_right = "images/base_image_large_annotated.jpg"
-
-Screen_04_left = new String () //This is previolsy loaded canvas
-Screen_04_right = new String () //This is served based on drawings
-
-Screen_05_left = new String () //This is served based on drawings
-Screen_05_right = "images/screens/Slide4.jpg"
-
-Screen_06_left = new String () //This is previolsy loaded canvas
-Screen_06_right = new String () //This is served based on drawings
-
-Screen_07_left = new String () //This is served based on drawings
-Screen_07_right = "images/screens/Slide5.jpg"
-
+draw_massing_instructions = "images/draw_massing_instructions.jpg"
+draw_land_use_instructions = "images/draw_land_use_instructions.jpg"
 basename = "images/base_image.jpg"
-
-fail_image = "images/screens/Slide6.jpg"
+fail_image = "images/draw_no_lines_drawn.jpg"
 
 
 //--------------------------------------------------------------------------

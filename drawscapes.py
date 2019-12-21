@@ -6,8 +6,11 @@
 from flask import Flask, render_template, url_for, request, jsonify, send_from_directory, session, redirect, make_response, flash
 import time
 import os
+import project_data as pdt
 
-from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing, drawscapes_draw_base, drawscapes_draw_base_2, save_land_uses 
+from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing, drawscapes_draw_base_2
+from drawing_app_functions import drawscapes_draw_base_from_feedback, drawscapes_draw_base, save_land_uses 
+from feedback import generate_feedback_images
 from style_transfer import call_montage
 
 # ----------------------------------------------------------------------------------
@@ -96,15 +99,9 @@ def drawscapes_land_use(filename):
         title = 'massing design for session ' + session['user'], 
         imagename=filename)
 
-@app.route('/drawscapes_feedback')
-def drawscapes_feedback():
-    # return render_template ('drawscapes_feedback.html', title = session['user'])
-    return render_template ('drawscapes_feedback.html') # no title during tests
-
-@app.route('/drawscapes_curiosities')
-def drawscapes_curiosities():
-    # return render_template ('drawscapes_curiosities.html', title = session['user'])
-    return render_template ('drawscapes_curiosities.html')# no title during tests
+@app.route('/drawscapes_feedback/<filename>')
+def drawscapes_feedback(filename):
+    return render_template ('drawscapes_feedback.html', imagename=filename) 
 
 @app.route('/drawscapes_form')
 def drawscapes_form():
@@ -142,7 +139,7 @@ def drawscapes_connectivity_feedback():
 
 
 # -----------------------------------------------------------------------------------------
-# Generates a bsase for massign exercise and saves also to database
+# Generates a base for massign exercise from front end and saves also to database
 # -----------------------------------------------------------------------------------------  
 @app.route('/drawscapes_massing_base', methods=["GET", "POST"])
 def drawscapes_massing_base():
@@ -170,6 +167,37 @@ def drawscapes_massing_base():
     # sends name of file back to browswer
     image_feedback=  file_name + '_base.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
+
+
+# -----------------------------------------------------------------------------------------
+# Generates a base for massign exercise from latest entry in DATABASE. Unsed to come from Feedback stage
+# -----------------------------------------------------------------------------------------  
+@app.route('/drawscapes_massing_base_databse', methods=["GET", "POST"])
+def drawscapes_massing_base_database():
+    # defines drawing number within the session
+    millis = int(round(time.time() * 1000))
+    session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
+    file_name= session['user']+'_'+ str(millis)
+    user_id = session['user']
+    exercise = 0
+
+    # ----------------------------------------------------------------------------------
+    # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
+    # ----------------------------------------------------------------------------------
+    # job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
+    # while job.is_finished != True:
+    #     time.sleep(0.1)
+    
+    # ----------------------------------------------------------------------------------
+    # Calls for development of image for bases reading last entry in databse. Activate on Windows
+    # ----------------------------------------------------------------------------------
+    database = pdt.databse_filepath
+    drawscapes_draw_base_from_feedback (database, exercise, file_name, session_folder, user_id) # Draws paths in the small scale base
+
+    # sends name of file back to browswer
+    image_feedback=  file_name + '_base.jpg' # defines name of image for feedbak and passes it to template
+    return jsonify(image_feedback)
+
 
 # -----------------------------------------------------------------------------------------
 # Develops feedback on massing quantities and serves it to front end
@@ -200,7 +228,6 @@ def drawscapes_massing_feedback():
     return jsonify(image_feedback)  
 
 
-
 @app.route('/drawscapes_land_use_base', methods=["GET", "POST"])
 def drawscapes_land_use_base():
     # defines drawing number within the session
@@ -227,12 +254,44 @@ def drawscapes_land_use_base():
     image_feedback=  file_name + '_landscape_base.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
 
-@app.route('/drawscapes_save_land_uses', methods=["GET", "POST"]) #complete when generating landscape
-def drawscapes_save_land_uses():
+
+# -----------------------------------------------------------------------------------------
+# Generates a base for land use exercise from latest entry in DATABASE. Unsed to come from Feedback stage
+# -----------------------------------------------------------------------------------------  
+@app.route('/drawscapes_land_use_base_databse', methods=["GET", "POST"])
+def drawscapes_land_use_base_databse():
     # defines drawing number within the session
     millis = int(round(time.time() * 1000))
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
     file_name= session['user']+'_'+ str(millis)
+    user_id = session['user']
+    exercise = 1
+
+    # ----------------------------------------------------------------------------------
+    # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
+    # ----------------------------------------------------------------------------------
+    # job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
+    # while job.is_finished != True:
+    #     time.sleep(0.1)
+    
+    # ----------------------------------------------------------------------------------
+    # Calls for development of image for bases reading last entry in databse. Activate on Windows
+    # ----------------------------------------------------------------------------------
+    database = pdt.databse_filepath
+    drawscapes_draw_base_from_feedback (database, exercise, file_name, session_folder, user_id) # Draws paths in the small scale base
+
+    # sends name of file back to browswer
+    image_feedback=  file_name + '_landscape_base.jpg' # defines name of image for feedbak and passes it to template
+    return jsonify(image_feedback)
+
+
+@app.route('/drawscapes_save_land_uses', methods=["GET", "POST"]) #complete when generating landscape
+def drawscapes_save_land_uses():
+    # defines drawing number within the session
+    millis = int(round(time.time() * 1000))
+    user_id = session['user']
+    session_folder=os.path.join(root_data, user_id) # uses same folder as folder session
+    file_name= user_id +'_'+ str(millis)
     folder_name = session['user'] # Used as base for drawscapes_massing.html canvas base 
 
     # ----------------------------------------------------------------------------------
@@ -247,13 +306,11 @@ def drawscapes_save_land_uses():
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
     data = request.json
-    save_land_uses (data, session_folder, file_name, folder_name)
+    save_land_uses (data, session_folder, file_name, user_id)
+    generate_feedback_images (pdt.databse_filepath, user_id, file_name)
 
-    # sends name of file back to browswer
-    image_feedback=  folder_name + '_combined.jpg' # defines name of image for feedbak and passes it to template
-    return jsonify(folder_name)
+    return jsonify(file_name)
 
- 
 
 @app.route('/drawscapes_save_text', methods=["GET", "POST"])
 def drawscapes_save_text():

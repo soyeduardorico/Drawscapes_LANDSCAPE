@@ -31,6 +31,8 @@ from project_data import site_scale_factor, massing_height
 from project_data import ucl_east_development_area, ucl_east_student_population, ucl_east_research_area
 from project_data import ratio_accomodation_base, ratio_accomodation_plinth, ratio_accomodation_tower, m2accomodation_per_student
 from project_data import ratio_research_base, ratio_research_plinth, ratio_research_tower
+import project_data as pdt
+
 
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
@@ -97,6 +99,10 @@ def save_land_uses (data, session_folder, file_name, folder_name):
     data.pop(0) # removes style array (one element) from list
     ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
     line_type_export = np.array(line_type).astype(int)
+    points=ptexport.tolist()
+    pts_to_polylines_list  = pts_to_polylines(points, line_type)
+    polylines  = pts_to_polylines_list [0]
+    linetype = pts_to_polylines_list [1] 
     
     # saves data as csv
     file_path = os.path.join(session_folder, file_name + '.csv')         
@@ -105,7 +111,10 @@ def save_land_uses (data, session_folder, file_name, folder_name):
     # saves data as numpy
     file_path = os.path.join(session_folder, file_name + '.npy')
     np.save(file_path, ptexport)
-    
+
+    #sends data to database
+    data_to_database (databse_filepath, polylines, linetype, folder_name, exercise = pdt.exercises[2] , extract_features = 'False')
+        
     # saves line and stlyle data as numpy with base name as most up to date option both in the folder and the overall results dir
     file_path = os.path.join(session_folder, folder_name + '_land_uses.npy')
     np.save(file_path, ptexport)
@@ -187,6 +196,41 @@ def drawscapes_draw_base (data, exercise, file_name, session_folder, folder_name
         base=cv2.imread(link_base_image_warning)
         b=os.path.join(session_folder,file_name +'_base'+'.jpg')
         cv2.imwrite(b,base)        
+
+
+
+# ------------------------------------------------------------------------------------
+# Generates images for bases coming from the feedback session reading data from the database  
+# ------------------------------------------------------------------------------------
+def drawscapes_draw_base_from_feedback (database, exercise, file_name, session_folder, user_id):
+    img=cv2.imread(pdt.link_base_image)
+    
+    #begin with lines
+    current_exercise = pdt.exercises[0]
+    data_import = line_data_from_database(database, user_id, current_exercise)
+    polylines = data_import[0]
+    linetype= data_import[1]
+    if len (polylines) > 1: # checks that there is actually data
+        img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
+    else:
+        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included) 
+
+    #follows with buildings if exercise = 1
+    if exercise == 1:
+        current_exercise = pdt.exercises[1]
+        data_import = line_data_from_database(database, user_id, current_exercise)
+        polylines = data_import[0]
+        linetype= data_import[1]
+        if len (polylines) > 1: # checks that there is actually data
+            img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
+        else:
+            img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included)
+        image_name = os.path.join(session_folder, file_name + '_landscape_base.jpg')
+        cv2.imwrite(image_name,img) 
+    
+    image_name = os.path.join(session_folder, file_name + '_base.jpg')
+    cv2.imwrite(image_name,img) 
+
 
 
 # ------------------------------------------------------------------------------------
@@ -317,52 +361,28 @@ def drawscapes_feedback_massing (data, file_name, user_id):
         canvas =Image.open(link_feedback_massing_base)
                
         # instantiates class for text. Uses larger text than other since information is lower
-        sz=13
+        sz=20
         font_small = ImageFont.truetype("arial.ttf", size = sz)
+        sz2=60
+        font_large = ImageFont.truetype("arial.ttf", size = sz2)
         draw = ImageDraw.Draw(canvas)
         line_separation  = 30
         block_separation = 221
         
         # General massing feedback
-        draw.text((235, 88),str(ucl_east_development_area) + 'm2',(255,255,0),font=font_small)           
+        draw.text((217, 205),f"{ucl_east_development_area:,}" + ' m2',(157,195,230),font=font_large)           
+        draw_area = int(data_land_use[1])
+        draw.text((217, 380),f"{draw_area:,}" + ' m2',(157,195,230),font=font_large)           
         ratio_built = data_land_use[1] / ucl_east_development_area*100
-        draw.text((262, 88 + line_separation), str(int(data_land_use[1])) + 'm2     which comes at a '+ str(int(ratio_built)) + '% of above target' ,(255,255,0),font=font_small)  
         if ratio_built > 150:
-             text1 = "You added a too many buildings..... try reducing a bit to hit the target"
+             text1 = "You drew too much..... try reducing a bit to hit the target"
         else:
             if ratio_built < 75:
-                text1 = "You did not add enough buildings..... try adding a bit to hit the target"
+                text1 = "You did not draw enough..... try adding a bit to hit the target"
             else:
                 text1 = "You drew something pretty close to the target!!!"
-        draw.text((339, 88 + 2*line_separation),text1,(255,255,0),font=font_small)  
+        draw.text((100, 550),text1,(255,255,0),font=font_small)  
 
-        # General research feedback
-        draw.text((235, 88 + block_separation),str(ucl_east_research_area) + 'm2',(255,255,0),font=font_small)           
-        ratio_research = data_land_use[5] / ucl_east_research_area*100
-        draw.text((262, 88 + block_separation + line_separation), str(int(data_land_use[5])) + 'm2     which comes at a '+ str(int(ratio_research)) + '% of above target' ,(255,255,0),font=font_small)  
-        if ratio_research > 150:
-             text1 = "Too much!!!..... try removing bases or plinths"
-        else:
-            if ratio_research < 75:
-                text1 = "Not enough!!!..... try adding bases or plinths"
-            else:
-                text1 = "You drew something pretty close to the target!!!"
-        draw.text((339, 88 + block_separation + 2*line_separation),text1,(255,255,0),font=font_small)
-
-        # General research feedback
-        draw.text((235, 88 + 2*block_separation),str(ucl_east_research_area) + ' places',(255,255,0),font=font_small)           
-        ratio_students = data_land_use[4] / ucl_east_student_population*100
-        draw.text((262, 88 + 2*block_separation + line_separation), str(int(data_land_use[4])) + 'm2     which comes at a '+ str(int(ratio_students)) + '% of above target' ,(255,255,0),font=font_small)  
-        if ratio_research > 150:
-             text1 = "Too much!!!..... try removing towers"
-        else:
-            if ratio_research < 75:
-                text1 = "Not enough!!!..... try adding towers"
-            else:
-                text1 = "You drew something pretty close to the target!!!"
-        draw.text((339, 88 + 2*block_separation + 2*line_separation),text1,(255,255,0),font=font_small)     
-        
-        
         # saves file
         b=os.path.join(session_folder,file_name +'_land_use_output'+'.jpg')
         canvas.save(b)
@@ -593,8 +613,51 @@ def overall_image_report ():
 
 
 
+
 #%%
+    
+# ------------------------------------------------------------------------------------
+# Tester
+# ------------------------------------------------------------------------------------  
 
 
+
+# session_user =  '1576064564452'
+# millis = 1576064636649
+
+# root_data = root_participation_directory
+# session_folder=os.path.join(root_data, session_user)
+# folder_name = session_user
+# file_name= session_user + '_' + str(millis) + '_test'
+
+
+# filepath_np_massing = os.path.join(session_folder, session_user + '_massing.npy')
+# filepath_np_massing_type = os.path.join(session_folder, session_user + '_massing_type.npy')
+
+# ptexport=np.load(filepath_np_massing).astype(int)
+# points=ptexport.tolist()
+
+# line_type=np.load(filepath_np_massing_type).astype(int)
+
+# polylines  = pts_to_polylines(points, line_type)[0]
+# linetype = pts_to_polylines (points, line_type) [1]
+
+
+# #generates data
+
+# style_save = [4]
+# data=[]
+# data.append(style_save)
+# data.append(points[0])
+# data.append(points[1])
+# data.append(points[2])
+# data.append(line_type.tolist())
+
+# print(data)
+
+# user_id = session_user
+
+
+# drawscapes_feedback_massing (data, file_name, user_id)
 
 

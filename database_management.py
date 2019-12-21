@@ -119,14 +119,10 @@ def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, 
     field_linetype = exercise + '_linetype'
     field_features = exercise + '_features'
     millis2 = int(round(time.time() * 1000))
-    print('processing data for ' + id_name + str(millis2))
     
     # in case we do not want to extract features we can bypass this
     if extract_features == 'True':
-        print(polylines)
-        print(linetype)
         feature_values=feature_extract (polylines, linetype)
-        print('features extarcted for ' + id_name + str(millis2))
 
     else:
         feature_values = []        
@@ -137,7 +133,6 @@ def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, 
     #update / instert (upsert)
     db.upsert( {'id': id_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == id_name) # inserts or udates
     db.close()
-    print('process finished for ' + id_name + str(millis2))
 
 
 #----------------------------------------------------------------------------------------
@@ -148,12 +143,17 @@ def line_data_from_database (databse_filepath, user_id, exercise):
     sketch_item=Query()
     field_polylines = exercise + '_polylines'
     field_linetype = exercise + '_linetype'
-    data_polylines_float = db.search(sketch_item.id==user_id)[0].get(field_polylines)
-    data_polylines = []
-    for i in data_polylines_float:
-        data_polylines.append(np.array(i).astype(int).tolist()) # needs reconverting to integer from float in database
-    data_linetype = db.search(sketch_item.id==user_id)[0].get(field_linetype)
-    data_linetype =  np.array(data_linetype).astype(int).tolist() # needs reconverting to integer from float in database
+    data_polylines_dict = db.search(sketch_item.id==user_id)[0] # it brings a list of the dictinaries with that name, which in this case will be 1  long only
+    if field_polylines in data_polylines_dict: # checks whether the field exists or the user skipped use
+        data_polylines_float = data_polylines_dict.get(field_polylines)
+        data_polylines = []
+        for i in data_polylines_float:
+            data_polylines.append(np.array(i).astype(int).tolist()) # needs reconverting to integer from float in database
+        data_linetype = db.search(sketch_item.id==user_id)[0].get(field_linetype)
+        data_linetype =  np.array(data_linetype).astype(int).tolist() # needs reconverting to integer from float in database
+    else:
+        data_polylines = [[[]]]
+        data_linetype  =[]
     return data_polylines, data_linetype
 
 
@@ -297,6 +297,6 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
     
     
 #%%
-db = TinyDB(databse_filepath)
-id_name = '1575681037493'
-tsne_embedding (db, 0, id_name)
+# db = TinyDB(databse_filepath)
+# id_name = '1575681037493'
+# tsne_embedding (db, 0, id_name)

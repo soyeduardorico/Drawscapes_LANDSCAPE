@@ -104,12 +104,9 @@ def montage_image (data,session_folder, file_name, basic_file_name, model_name, 
     #Draws road over tranfered style
     #reads data on polylines
     
-#    # saves linetype as np
+    # saves linetype as np
     file_path = os.path.join(session_folder, file_name + '_linetype.npy')         
-    line_type=np.load(file_path).tolist()
-#
-#    data.pop(4) # removes thickness array
-#    
+    line_type=np.load(file_path).tolist()  
 
     points=data
     polylines  = pts_to_polylines(points, line_type)[0]

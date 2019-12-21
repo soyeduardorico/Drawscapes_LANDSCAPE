@@ -128,7 +128,6 @@
         $('html').css('background', color1);
         newcanvas(image_canvas, 1, 0);
         document.getElementById("feedback").src = image_video.src;
-        document.getElementById("erase").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/erase.jpg");
         document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
         document.getElementById("tips").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/tips.jpg");
         document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
@@ -169,7 +168,6 @@
     $(document).ready(function() {
         $("#btn4").on("click", function() {
             myPassBuildings(4)
-
         });
     });
 
@@ -180,8 +178,6 @@
     function myPassDataConnectivity(declared_style) {
         var list_pass = mySave(declared_style)        
         if (list_pass[1].length > 1){ //checks that w are not passing a null array for evaluation
-            console.log(list_pass.length);
-            console.log(list_pass);
             var js_data = JSON.stringify(list_pass);
             document.getElementById("overlay").style.visibility = "visible";
             document.getElementById("ldr").style.visibility = "visible";
@@ -237,8 +233,6 @@
             image_back.src = "{{url_for ('static', filename='ADDSHARE') }}".replace("ADDSHARE", fail_image);
             document.getElementById("feedback").src = image_back.src;
         }
-
-
     }
 
 </script>
