@@ -3,6 +3,8 @@ import numpy as np
 import cv2
 import os
 import tinydb
+import skimage
+from skimage import morphology
 
 from PIL import Image
 from PIL import ImageFont
@@ -12,61 +14,103 @@ from matplotlib import pyplot as plt #used for debuggin purposes
 
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
-# ------------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------------
 from database_management import line_data_from_database
 from basic_drawing_functions import site_area, pts_to_polylines, draw_paths, draw_paths_base, draw_base_large
+from drawing_app_functions import massing_analysis
+from graph_form_image import path_graph
 import project_data as pdt
 
 # ------------------------------------------------------------------------------------
 # File location
-# ------------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------------
 absFilePath = os.path.dirname(__file__)
 root_data = os.path.join(absFilePath,  'data')
 
-def generate_image_feeback (img, base_file_name, file_name, user_id, title ):
-        dim = (530,530)
-        img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA) # resizes images
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img_pil = Image.fromarray(img)
-        base_image_pil = Image.open(base_file_name) # brings larger canvas
-        base_image_pil.paste(img_pil,(85,85))
-        save_folder = os.path.join(root_data, user_id) # saves file
-        feedback_filename = os.path.join(save_folder,file_name + title )
-        base_image_pil.save(feedback_filename)        
-        
+def generate_image_feeback (img, text, text_colour, base_file_name, file_name, user_id, title ):
+    dim = (530,530)
+    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA) # resizes images
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    sz=80
+    font_large = ImageFont.truetype("arial.ttf", size = sz)
+    img_pil = Image.fromarray(img)
+    base_image_pil = Image.open(base_file_name) # brings larger canvas
+    draw = ImageDraw.Draw(base_image_pil)
+    draw.text((958, 411),text,text_colour,font=font_large)
+    base_image_pil.paste(img_pil,(85,85))
+    save_folder = os.path.join(root_data, user_id) # saves file
+    feedback_filename = os.path.join(save_folder,file_name + title )
+    base_image_pil.save(feedback_filename)
+
+def obtain_connections (img):
+    grey=skimage.img_as_ubyte(skimage.color.rgb2grey(img))
+    binary=grey<250
+    skel= morphology.skeletonize(binary)
+    skel=skel*1
+    skel_draw=1-skel
+
+    #calls for development of dual graph and simplified lines bsaed on  skeleton
+    file_name = 'any'
+    session_folder = 'any'
+    folder_name = 'any'
+    sketch_grap=path_graph(skel,pdt.node_coords,pdt.threshold_distance, file_name, session_folder, folder_name, pdt.link_base_image, pdt.shape_x,pdt.shape_y)
+    number_connections_under_bridge = sketch_grap.connections_under_bridge()
+    return number_connections_under_bridge
+
 def generate_feedback_images (databse_filepath, user_id, file_name):
-    # feedback on canal proximity
+    # load line data from different exercises
+    exercise = pdt.exercises[0]  #import massing data for this feedback operation
+    data_import = line_data_from_database(databse_filepath, user_id,exercise)
+    polylines_lines = data_import[0]
+    linetype_lines = data_import[1]
+
     exercise = pdt.exercises[1]  #import massing data for this feedback operation
     data_import = line_data_from_database(databse_filepath, user_id,exercise)
-    polylines = data_import[0]
-    linetype= data_import[1]
-    if len (polylines) > 1: # checks that there is actually data
+    polylines_massing = data_import[0]
+    linetype_massing = data_import[1]
+
+    exercise = pdt.exercises[2]  #import massing data for this feedback operation
+    data_import = line_data_from_database(databse_filepath, user_id,exercise)
+    polylines_land_uses = data_import[0]
+    linetype_land_uses = data_import[1]
+
+    massing_feedback_analysis = massing_analysis(polylines_massing, linetype_massing)
+
+    # feedback on canal proximity
+    if len (polylines_massing) > 1: # checks that there is actually data
         img=cv2.imread(pdt.feedback_canal_base)
-        img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
+        img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
+        text = massing_feedback_analysis[6]
+        text = str(int(text*100))+'%'
+        text_colour= (1,168,80)
+        generate_image_feeback (img, text, text_colour, pdt.feedback_canal, file_name,user_id, '_feedback_canal.jpg' )
     else:
         img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
-    generate_image_feeback (img, pdt.feedback_canal, file_name, user_id, '_feedback_canal.jpg' )
-    
-    # feedback on noise impact proximity
-    # uses same data as previous so no need to reimport
-    if len (polylines) > 1:
-        img=cv2.imread(pdt.feedback_noise_base)
-        img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
-    else:
-        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included        
-    generate_image_feeback (img, pdt.feedback_noise, file_name,user_id,'_feedback_noise.jpg' )
+        generate_image_feeback (img, text, text_colour, pdt.feedback_canal, file_name, user_id, '_feedback_canal.jpg' )
 
     # feedback on noise impact proximity
-    exercise = pdt.exercises[0]  #import line data for this feedback operation
-    data_import = line_data_from_database(databse_filepath, user_id,exercise)
-    polylines = data_import[0]
-    linetype = data_import[1]
-    if len (polylines) > 1: # checks that there is actually data
-        img=cv2.imread(pdt.feedback_barrier_base)
-        img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
+    if len (polylines_massing) > 1:  # checks that there is actually data
+        img=cv2.imread(pdt.feedback_noise_base)
+        img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
+        text = massing_feedback_analysis[7]
+        text = str(int(text*100))+'%'
+        text_colour= (230,0,170)
+        generate_image_feeback (img, text, text_colour, pdt.feedback_noise, file_name,user_id, '_feedback_noise.jpg' )
     else:
-        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included  
-    generate_image_feeback (img, pdt.feedback_barrier, file_name,user_id, '_feedback_barrier.jpg' )
+        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
+        generate_image_feeback (img, text, text_colour, pdt.feedback_noise, file_name,user_id,'_feedback_noise.jpg' )
+
+    # feedback on barrier impact proximity
+    if len (polylines_lines) > 1: # checks that there is actually data
+        img=cv2.imread(pdt.feedback_barrier_base)
+        img=draw_paths_base (polylines_lines, linetype_lines, 'any', 'any', img, save='False')
+        text = obtain_connections(img)
+        text = '  ' +  str(text)
+        text_colour= (230,0,170)
+        generate_image_feeback (img, text, text_colour, pdt.feedback_barrier, file_name,user_id, '_feedback_barrier.jpg' )
+    else:
+        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
+        generate_image_feeback (img, text, text_colour, pdt.feedback_barrier, file_name,user_id, '_feedback_barrier.jpg' )
 
 
 #%%
@@ -95,7 +139,7 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
 #print(img)
 #grey=skimage.img_as_ubyte(skimage.color.rgb2grey(img))
 #binary=grey<220
-#skel= morphology.skeletonize(binary)        
+#skel= morphology.skeletonize(binary)
 #skel_plot=skel*255
 #
 #
@@ -104,7 +148,7 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
 #print(skel_plot)
 #image_file_save_temporal = os.path.join(session_folder, 'temporal.jpg')
 ##skel = cv2.cvtColor(skel, cv2.COLOR_GREY2RGB)
-#cv2.imwrite(image_file_save_temporal,skel_plot)   
+#cv2.imwrite(image_file_save_temporal,skel_plot)
 
 #%%
 

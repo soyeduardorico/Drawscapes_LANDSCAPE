@@ -30,7 +30,7 @@ link_outcome_failure = os.path.join(interface_images, 'outcome_failure.jpg')
 link_feedback_massing_base = os.path.join(interface_images, 'feedback_massing_base.jpg')
 click_on_screen = os.path.join(interface_images, 'cick_on_screen.jpg')
 ucl_east_image = os.path.join(interface_images, 'ucl_east_marshgate.jpg')
-databse_filepath = os.path.join (overall_results_directory,'database.json')  
+databse_filepath = os.path.join (overall_results_directory,'database.json')
 feedback_barrier_base = os.path.join(interface_images, 'feedback_barrier_base.jpg')
 feedback_canal_base = os.path.join(interface_images, 'feedback_canal_base.jpg')
 feedback_noise_base = os.path.join(interface_images, 'feedback_noise_base.jpg')
@@ -38,10 +38,12 @@ feedback_barrier = os.path.join(interface_images, 'feedback_barrier.jpg')
 feedback_canal = os.path.join(interface_images, 'feedback_canal.jpg')
 feedback_noise = os.path.join(interface_images, 'feedback_noise.jpg')
 draw_no_lines_drawn = os.path.join(interface_images, 'draw_no_lines_drawn.jpg')
+base_canal_calculation = os.path.join(interface_images, 'base_canal_calculation.jpg')
+base_noise_calculation = os.path.join(interface_images, 'base_noise_calculation.jpg')
 
 # ------------------------------------------------------------------------------------
 # Generic data on image size and typical colours
-# ------------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------------
 website_colour = (29, 41, 82)
 threshold_distance=20 # threshold for snapping lines into origin points
 n_neighbours=2 # neighborxs for style recommendation
@@ -50,7 +52,7 @@ n_neighbours=2 # neighborxs for style recommendation
 shape_x=700
 shape_y=700
 
-# description of styles 
+# description of styles
 historic_styles = ['SQUARE, RECTANGULAR',
                    'STRONG, STRAIGHT',
                    'NATURAL, COMPLEX, CURVY',
@@ -104,6 +106,8 @@ node_coords=[[146,227],
 [584,371],
 [410,547],
 [344,567]]
+
+node_coords_bridge=[[584,371], [469,186], [344,567]]
 
 node_coords_large =[[266,358],
 [286,353],

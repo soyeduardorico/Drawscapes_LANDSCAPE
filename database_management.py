@@ -42,10 +42,10 @@ def list_files_dir():
     list_files = [] # file names
     sketches = os.listdir(overall_results_directory)
     #generates list of files
-    for i in sketches:          
+    for i in sketches:
         if not i == 'Thumbs.db':
             if re.findall('_lines.npy',i) :
-                list_files.append(i.replace('_lines.npy', ''))    
+                list_files.append(i.replace('_lines.npy', ''))
     return list_files
 
 #----------------------------------------------------------------------------------------
@@ -66,22 +66,22 @@ def feature_extract (polylines, linetype):
     img = preprocess_input(img)
     print('image preprocessed')
     features = model.predict(img).flatten()  # features
-    print('features extracted')   
+    print('features extracted')
     return features.tolist()
 
 
 # ------------------------------------------------------------------------------------
-# Sends sketch to feature_extract and uses the features to classify it 
+# Sends sketch to feature_extract and uses the features to classify it
 # ------------------------------------------------------------------------------------
 def style_classify (sketch_to_analyze):
-    model_name=os.path.join(reference_directory, 'finalized_model.sav') 
+    model_name=os.path.join(reference_directory, 'finalized_model.sav')
     loaded_model = joblib.load(model_name)
     test_feature = feature_extract(sketch_to_analyze).reshape(1, -1)
     predicted_style=loaded_model.predict(test_feature)[0]
     return predicted_style
 
 #----------------------------------------------------------------------------------------
-# Reads image and type of exervice (massing or line), generates all fields and updates database (upsert method)
+# Reads image from np saved and type of exervice (massing or line), generates all fields and updates database (upsert method)
 #----------------------------------------------------------------------------------------
 def test_and_file (db, sketch, exercise, extract_features = 'True'):
     file_name = sketch
@@ -99,16 +99,16 @@ def test_and_file (db, sketch, exercise, extract_features = 'True'):
             field_linetype = exercise + '_linetype'
             field_features = exercise + '_features'
             print('processing data for ' + file_name)
-            
+
             # in case we do not want to extract features we can bypass this
             if extract_features == 'True':
                 feature_values=feature_extract (polylines, linetype)
             else:
                 feature_values = []
-                
+
             #brings data into database
             #turns data from 'int' to 'float' otherwise json will not like it
-            linetype = [float(i) for i in linetype]            
+            linetype = [float(i) for i in linetype]
             polylines[0]= np.array(polylines[0]).astype(float).tolist()
             sketch_query=Query()
             #update / instert (upsert)
@@ -119,14 +119,14 @@ def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, 
     field_linetype = exercise + '_linetype'
     field_features = exercise + '_features'
     millis2 = int(round(time.time() * 1000))
-    
+
     # in case we do not want to extract features we can bypass this
     if extract_features == 'True':
         feature_values=feature_extract (polylines, linetype)
 
     else:
-        feature_values = []        
-    linetype = [float(i) for i in linetype]            
+        feature_values = []
+    linetype = [float(i) for i in linetype]
     polylines[0]= np.array(polylines[0]).astype(float).tolist()
     db = TinyDB(databse_filepath)
     sketch_query=Query()
@@ -136,7 +136,7 @@ def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, 
 
 
 #----------------------------------------------------------------------------------------
-# Reads line data from database 
+# Reads line data from database
 #----------------------------------------------------------------------------------------
 def line_data_from_database (databse_filepath, user_id, exercise):
     db = TinyDB(databse_filepath)
@@ -164,52 +164,52 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
     exercise_list=['lines','massing']
     perplexity_list = [5,10]
     early_exaggeration_list = [1,100]
-    
+
     perplexity = perplexity_list[exercise]
-    early_exaggeration = early_exaggeration_list[exercise] 
-    
+    early_exaggeration = early_exaggeration_list[exercise]
+
     extract_polylines = exercise_list[exercise] + '_polylines'
     extract_linetype  = exercise_list[exercise] + '_linetype'
     extract_features = exercise_list[exercise] + '_features'
-    
+
     sketch_item=Query()
     if exercise == 0:
         db2 = db.search(sketch_item.lines_features != [])
     else:
         db2 = db.search(sketch_item.massing_features != [])
-    
+
     number_items = len(db2)
-    
+
     #reads VGG19 abstract featrues from db
     X=[]
     for item in db2:
         X.append(np.array(item.get(extract_features)))
-    X = np.array(X) 
+    X = np.array(X)
 
     #develops tsne
     tsne = manifold.TSNE(n_components=2, init='pca', random_state=0, perplexity=perplexity, early_exaggeration=early_exaggeration)
     X_tsne = tsne.fit_transform(X)
-    
+
     #remaps X-tsne to 0-1 in x,y
     x_min, x_max = np.min(X_tsne, 0), np.max(X_tsne, 0)
     X_tsne = (X_tsne - x_min) / (x_max - x_min)
-    
+
     #develops scatergraph with images image
     overall_canvas_size = 1400
     margin = 150
     drawing_size = overall_canvas_size-2*margin #  area where drawings will be circumscribed
-    
+
     if number_items < 40: # defining sketch size acccording to number
         sketch_size = 150
     else:
         if number_items < 100:
             sketch_size = 60
         else: 
-            sketch_size = 40  
-    
+            sketch_size = 40
+
     circle_radius = int(sketch_size/2)
-    draw_circle = 'False'    
-    
+    draw_circle = 'False'
+
     canvas =Image.new('RGB',(overall_canvas_size,overall_canvas_size), color = 'white') # generates base canvas  
     i=0
     for item in db2:
@@ -235,20 +235,20 @@ def tsne_embedding (db, exercise, id_name = 'anyname'):
     if draw_circle == 'True': #draws circle aftera all images are pasted to avoid covering
         draw = ImageDraw.Draw(canvas)
         draw.ellipse((xc-circle_radius+sketch_size/2, yc-circle_radius+sketch_size/2, xc+circle_radius+sketch_size/2, yc+circle_radius+sketch_size/2), outline ='red')        
-    
+
     tsne_filename_2 = os.path.join(overall_results_directory, 'tsne_images_' +  exercise_list[exercise] + '.jpg')
     canvas.save(tsne_filename_2)
-   
-    
+
+
 
 
 
 #%%
-    
-#exercise = 1 # 0: lines, 1: massing    
-#    
 
-#db.purge()   
+#exercise = 1 # 0: lines, 1: massing
+#
+
+#db.purge()
 #for sketch in list_files_dir():
 #    file_name = sketch
 #    test_and_file (db, sketch, 'lines')

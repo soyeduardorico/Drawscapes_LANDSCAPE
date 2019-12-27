@@ -20,7 +20,7 @@ from matplotlib import pyplot as plt #used for debuggin purposes
 
 # ------------------------------------------------------------------------------------
 # Imports project variables
-# ------------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------------
 from project_data import link_base_image, link_base_image_large_annotated, link_base_image_warning
 from project_data import ucl_east_image, databse_filepath, link_feedback_massing_base
 from project_data import shape_y, shape_x, thickness_lines, root_participation_directory
@@ -36,7 +36,7 @@ import project_data as pdt
 
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
-# ------------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------------
 from imagenet_utils import preprocess_input
 from graph_form_image import path_graph
 from overall_analysis import basic_line_drawing, bundle_drawing
@@ -65,7 +65,7 @@ for i in node_coords_large:
     if i [0]< min2:
         min2=i[0]
     if i[0]>max2:
-        max2=i[0]   
+        max2=i[0]
 
 scale_factor=(max2-min2)/(max1-min1)
 
@@ -95,38 +95,38 @@ root_data = os.path.join(absFilePath,  'data')
 def save_land_uses (data, session_folder, file_name, folder_name):
     declared_style=int(data[0][0]) # reads first item on the list and turns into integer
     line_type = data[4]
-    data.pop(4) # removes linetype array  
+    data.pop(4) # removes linetype array
     data.pop(0) # removes style array (one element) from list
     ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
     line_type_export = np.array(line_type).astype(int)
     points=ptexport.tolist()
     pts_to_polylines_list  = pts_to_polylines(points, line_type)
     polylines  = pts_to_polylines_list [0]
-    linetype = pts_to_polylines_list [1] 
-    
+    linetype = pts_to_polylines_list [1]
+
     # saves data as csv
-    file_path = os.path.join(session_folder, file_name + '.csv')         
+    file_path = os.path.join(session_folder, file_name + '.csv')
     np.savetxt(file_path, ptexport, delimiter=",")
-    
+
     # saves data as numpy
     file_path = os.path.join(session_folder, file_name + '.npy')
     np.save(file_path, ptexport)
 
     #sends data to database
     data_to_database (databse_filepath, polylines, linetype, folder_name, exercise = pdt.exercises[2] , extract_features = 'False')
-        
+
     # saves line and stlyle data as numpy with base name as most up to date option both in the folder and the overall results dir
     file_path = os.path.join(session_folder, folder_name + '_land_uses.npy')
     np.save(file_path, ptexport)
     file_path = os.path.join(overall_results_directory, folder_name + '_land_uses.npy')
-    np.save(file_path, ptexport)        
+    np.save(file_path, ptexport)
     file_path = os.path.join(session_folder, folder_name + '_land_uses_type.npy')
-    np.save(file_path, line_type_export)       
+    np.save(file_path, line_type_export)
     file_path = os.path.join(overall_results_directory, folder_name + '_land_uses_type.npy')
     np.save(file_path, line_type_export)
 
     # calls for the generation of the  series of draswings last drawn
-    #generate_all_drawings (folder_name)       
+    #generate_all_drawings (folder_name)
 
 # ------------------------------------------------------------------------------------
 # Generates main feedback for connectivity and style analysis
@@ -134,57 +134,57 @@ def save_land_uses (data, session_folder, file_name, folder_name):
 def drawscapes_feedback_lines (data, file_name, session_folder, folder_name):
     declared_style=int(data[0][0]) # reads first item on the list and turns into integer
     line_type = data[4]
-    data.pop(4) # removes linetype array  
+    data.pop(4) # removes linetype array
     data.pop(0) # removes style array (one element) from list
     ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
     line_type_export = np.array(line_type).astype(int)
-    
+
     # saves data as csv
-    file_path = os.path.join(session_folder, file_name + '.csv')         
+    file_path = os.path.join(session_folder, file_name + '.csv')
     np.savetxt(file_path, ptexport, delimiter=",")
-    
+
     # saves data as numpy
     file_path = os.path.join(session_folder, file_name + '.npy')
     np.save(file_path, ptexport)
-    
+
     # saves line and stlyle data as numpy with base name as most up to date option both in the folder and the overall results dir
     file_path = os.path.join(session_folder, folder_name + '_lines.npy')
     np.save(file_path, ptexport)
     file_path = os.path.join(overall_results_directory, folder_name + '_lines.npy')
-    np.save(file_path, ptexport)        
+    np.save(file_path, ptexport)
     file_path = os.path.join(session_folder, folder_name + '_lines_type.npy')
-    np.save(file_path, line_type_export)       
+    np.save(file_path, line_type_export)
     file_path = os.path.join(overall_results_directory, folder_name + '_lines_type.npy')
-    np.save(file_path, line_type_export)    
+    np.save(file_path, line_type_export)
     # generates jpg image
     # 1 for style, 2 for connectivity. This will tell feedack function to not carry all tasks
     generate_image (ptexport, line_type, session_folder, file_name, folder_name, declared_style)
 
 
 # ------------------------------------------------------------------------------------
-# Closes line drawing exercise, saves data and generates image base for massing exercise  
+# Closes line drawing exercise, saves data and generates image base for massing exercise
 # ------------------------------------------------------------------------------------
 def drawscapes_draw_base (data, exercise, file_name, session_folder, folder_name):
     if len(data[4]) > 1 :
         line_type = data[4]
-        data.pop(4) # removes linetype array  
+        data.pop(4) # removes linetype array
         data.pop(0) # removes style array (one element) from list
         ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
         points=ptexport.tolist()
         pts_to_polylines_list  = pts_to_polylines(points, line_type)
         polylines  = pts_to_polylines_list [0]
-        linetype = pts_to_polylines_list [1]        
-        
+        linetype = pts_to_polylines_list [1]
+
         # saves line and stlyle data as numpy with base name as most up to date option both in the folder and the overall results dir
         line_type_export = np.array(line_type).astype(int)
         file_path = os.path.join(session_folder, folder_name + '_' + exercise + '.npy')
-        np.save(file_path, ptexport)    
+        np.save(file_path, ptexport)
         file_path = os.path.join(overall_results_directory, folder_name + '_' + exercise + '.npy')
-        np.save(file_path, ptexport)  
+        np.save(file_path, ptexport)
         file_path = os.path.join(session_folder, folder_name + '_' + exercise + '.npy')
-        np.save(file_path, line_type_export)           
+        np.save(file_path, line_type_export)
         file_path = os.path.join(overall_results_directory, folder_name + '_' + exercise + '.npy')
-        np.save(file_path, line_type_export)         
+        np.save(file_path, line_type_export)
 
         # if len(polylines[0])>1:
         data_to_database (databse_filepath, polylines, linetype, folder_name, exercise = exercise, extract_features = 'False')
@@ -195,16 +195,16 @@ def drawscapes_draw_base (data, exercise, file_name, session_folder, folder_name
     else:
         base=cv2.imread(link_base_image_warning)
         b=os.path.join(session_folder,file_name +'_base'+'.jpg')
-        cv2.imwrite(b,base)        
+        cv2.imwrite(b,base)
 
 
 
 # ------------------------------------------------------------------------------------
-# Generates images for bases coming from the feedback session reading data from the database  
+# Generates images for bases coming from the feedback session reading data from the database
 # ------------------------------------------------------------------------------------
 def drawscapes_draw_base_from_feedback (database, exercise, file_name, session_folder, user_id):
     img=cv2.imread(pdt.link_base_image)
-    
+
     #begin with lines
     current_exercise = pdt.exercises[0]
     data_import = line_data_from_database(database, user_id, current_exercise)
@@ -213,7 +213,7 @@ def drawscapes_draw_base_from_feedback (database, exercise, file_name, session_f
     if len (polylines) > 1: # checks that there is actually data
         img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
     else:
-        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included) 
+        img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included)
 
     #follows with buildings if exercise = 1
     if exercise == 1:
@@ -226,10 +226,10 @@ def drawscapes_draw_base_from_feedback (database, exercise, file_name, session_f
         else:
             img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included)
         image_name = os.path.join(session_folder, file_name + '_landscape_base.jpg')
-        cv2.imwrite(image_name,img) 
-    
+        cv2.imwrite(image_name,img)
+
     image_name = os.path.join(session_folder, file_name + '_base.jpg')
-    cv2.imwrite(image_name,img) 
+    cv2.imwrite(image_name,img)
 
 
 
@@ -241,17 +241,17 @@ def drawscapes_draw_base_2 (data, file_name, session_folder, folder_name):
     file_name = file_name + '_landscape'
     if len(data[4]) > 1 :
         line_type = data[4]
-        data.pop(4) # removes linetype array  
+        data.pop(4) # removes linetype array
         data.pop(0) # removes style array (one element) from list
         ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
         points=ptexport.tolist()
         pts_to_polylines_list  = pts_to_polylines(points, line_type)
         polylines  = pts_to_polylines_list [0]
         linetype = pts_to_polylines_list [1]
-        
+
         #sends data to database
         data_to_database (databse_filepath, polylines, linetype, folder_name, exercise = 'massing', extract_features = 'False')
-        
+
         #imports lines from database and develops a base
         data_import = line_data_from_database(databse_filepath, folder_name,'lines')
         polylines_0 = data_import[0]
@@ -264,49 +264,43 @@ def drawscapes_draw_base_2 (data, file_name, session_folder, folder_name):
     else:
         base=cv2.imread(link_base_image_warning)
         b=os.path.join(session_folder,file_name +'_base.jpg')
-        cv2.imwrite(b,base)  
+        cv2.imwrite(b,base)
 
 
 # ------------------------------------------------------------------------------------
 # Generates conclussion drawings for all categories (_lines, _massing and _land_uses)
-# ------------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------------
 def generate_all_drawings (session_user):
     root_data = root_participation_directory
     session_folder=os.path.join(root_data, session_user)
     extension_names =  ['_lines', '_massing', '_land_uses']
-    imgtotal=cv2.imread(link_base_image) # this will be 
+    imgtotal=cv2.imread(link_base_image) # this will be
     for i in extension_names: # iterates thorugh categories
-        file_name = session_user + i 
-    
+        file_name = session_user + i
+
         filepath_np_lines = os.path.join(session_folder, str(file_name) + '.npy') # loads lines
         filepath_np_lines_type = os.path.join(session_folder, str(file_name) + '_type.npy') #loads line types
-            
+
         ptexport=np.load(filepath_np_lines).astype(int)
         points=ptexport.tolist()
         line_type=np.load(filepath_np_lines_type).astype(int)
         pols  = pts_to_polylines(points, line_type)[0]
         linetype = pts_to_polylines (points, line_type) [1]
-    
+
         img=cv2.imread(link_base_image)
-        
+
         imgtotal = draw_paths_base (pols, linetype, session_folder, file_name, imgtotal)
-        
+
         draw_paths_base (pols, linetype, session_folder, file_name, img) # calls drawing function
-    
+
     file_name = os.path.join(session_folder, session_user + '_combined.jpg')
     cv2.imwrite(file_name,imgtotal)
 
 
 # ------------------------------------------------------------------------------------
-# Develops massing calculations from drawn polylines
+# develops pixel count on drawing going through the list of land thickness used in massing_analysis
 # ------------------------------------------------------------------------------------
-def massing_analysis (polylines, linetype):
-    # generates and saves land use drawing
-    img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
-    img.fill(255)
-    img =draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # develops pixel count on drawing going through the list of land thickness
+def count_pixels (img):
     land_use = []
     built_area = 0
     for i in range (0, len(color_canvas_rgb)):
@@ -314,18 +308,52 @@ def massing_analysis (polylines, linetype):
         result = np.count_nonzero(np.all(img==sought,axis=2)) * site_scale_factor * site_scale_factor * massing_height[i]
         land_use.append(result)
         built_area = built_area + result
+    return built_area, land_use
+
+# ------------------------------------------------------------------------------------
+# Develops massing calculations from drawn polylines
+# ------------------------------------------------------------------------------------
+def massing_analysis (polylines, linetype):
+    # generates base drawing to count
+    img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
+    img.fill(255)
+    img =draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    # develops masked drawings for proximity indicators
+    img_base_canal_calculation= cv2.imread(pdt.base_canal_calculation)
+    mask=img_base_canal_calculation <255
+    img_canal_calculation = img*mask
+
+    # develops masked drawings for proximity indicators
+    img_base_noise_calculation= cv2.imread(pdt.base_noise_calculation)
+    mask=img_base_noise_calculation <255
+    img_noise_calculation = img*mask
+
+    # develops pixel count on drawing going through the list of land thickness
+    built_area= count_pixels(img)[0]
+    land_use = count_pixels(img)[1]
     FAR = built_area/site_area()
     area_base = land_use[1]
     area_plinth = land_use[2]
-    area_tower = land_use[3] 
-    area_cafe = land_use[4]
-    area_gathering = land_use[5]
+    area_tower = land_use[3]
 
+    area_tower_canal = count_pixels(img_canal_calculation)[1][3]
+    area_tower_noise = count_pixels(img_noise_calculation)[1][3]
+
+    # develops ratios
     area_accomodation = area_base*ratio_accomodation_base + area_plinth*ratio_accomodation_plinth + area_tower*ratio_accomodation_tower
     students = area_accomodation/m2accomodation_per_student
     area_research = area_base*ratio_research_base + area_plinth*ratio_research_plinth + area_tower*ratio_research_tower
 
-    return land_use, built_area, FAR, area_accomodation, students, area_research
+    if area_tower>0:
+        ratio_tower_canal = area_tower_canal /area_tower
+        ratio_tower_noise = area_tower_noise /area_tower
+    else:
+        ratio_tower_canal = 0
+        ratio_tower_noise = 0
+
+    return land_use, built_area, FAR, area_accomodation, students, area_research, ratio_tower_canal, ratio_tower_noise
 
 
 # ------------------------------------------------------------------------------------
@@ -335,7 +363,7 @@ def drawscapes_feedback_massing (data, file_name, user_id):
     if len(data[4]) > 1 :
         #brings data and generates drawing with land use analysis
         line_type = data[4]
-        data.pop(4) # removes linetype array  
+        data.pop(4) # removes linetype array
         data.pop(0) # removes style array (one element) from list
         ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float    
         line_type_export = np.array(line_type).astype(int)
@@ -345,21 +373,21 @@ def drawscapes_feedback_massing (data, file_name, user_id):
         file_path = os.path.join(session_folder, user_id + '_massing.npy')
         np.save(file_path, ptexport)
         file_path = os.path.join(overall_results_directory, user_id + '_massing.npy')
-        np.save(file_path, ptexport)     
+        np.save(file_path, ptexport)
         file_path = os.path.join(session_folder, user_id + '_massing_type.npy')
         np.save(file_path, line_type_export)
         file_path = os.path.join(overall_results_directory, user_id + '_massing_type.npy')
-        np.save(file_path, line_type_export)  
+        np.save(file_path, line_type_export)
 
         #builds up point data and calls massing analysis
-        points=ptexport.tolist() 
+        points=ptexport.tolist()
         polylines = pts_to_polylines (points, line_type) [0]
         linetype = pts_to_polylines (points, line_type) [1]
         data_land_use = massing_analysis (polylines, linetype)
-    
+
         # generate new canvas
         canvas =Image.open(link_feedback_massing_base)
-               
+
         # instantiates class for text. Uses larger text than other since information is lower
         sz=20
         font_small = ImageFont.truetype("arial.ttf", size = sz)
@@ -368,11 +396,11 @@ def drawscapes_feedback_massing (data, file_name, user_id):
         draw = ImageDraw.Draw(canvas)
         line_separation  = 30
         block_separation = 221
-        
+
         # General massing feedback
-        draw.text((217, 205),f"{ucl_east_development_area:,}" + ' m2',(157,195,230),font=font_large)           
+        draw.text((217, 205),f"{ucl_east_development_area:,}" + ' m2',(157,195,230),font=font_large)
         draw_area = int(data_land_use[1])
-        draw.text((217, 380),f"{draw_area:,}" + ' m2',(157,195,230),font=font_large)           
+        draw.text((217, 380),f"{draw_area:,}" + ' m2',(157,195,230),font=font_large)
         ratio_built = data_land_use[1] / ucl_east_development_area*100
         if ratio_built > 150:
              text1 = "You drew too much..... try reducing a bit to hit the target"
@@ -381,7 +409,7 @@ def drawscapes_feedback_massing (data, file_name, user_id):
                 text1 = "You did not draw enough..... try adding a bit to hit the target"
             else:
                 text1 = "You drew something pretty close to the target!!!"
-        draw.text((100, 550),text1,(255,255,0),font=font_small)  
+        draw.text((100, 550),text1,(255,255,0),font=font_small)
 
         # saves file
         b=os.path.join(session_folder,file_name +'_land_use_output'+'.jpg')
@@ -398,14 +426,15 @@ def drawscapes_feedback_massing (data, file_name, user_id):
 def draw_skeleton_graphs (img, session_folder, file_name, folder_name):
     grey=skimage.img_as_ubyte(skimage.color.rgb2grey(img))
     binary=grey<250
-    skel= morphology.skeletonize(binary)        
+    skel= morphology.skeletonize(binary)
     skel=skel*1
     b4=os.path.join(session_folder, file_name + "_sk" + '.jpg')
     skel_draw=1-skel
-    cv2.imwrite(b4,skel_draw) 
+    cv2.imwrite(b4,skel_draw)
+
     #calls for development of dual graph and simplified lines bsaed on  skeleton
     sketch_grap=path_graph(skel,node_coords,threshold_distance,file_name,session_folder,folder_name, link_base_image,shape_x,shape_y)
-    sketch_grap.draw_basic_connections()
+    # sketch_grap.draw_basic_connections() # not requiredforthe time being
     sketch_grap.draw_graph()
 
 
@@ -428,7 +457,6 @@ def generate_image (ptexport, line_type, session_folder, file_name, folder_name,
     data_to_database (databse_filepath, polylines, linetype, folder_name, exercise = 'lines', extract_features = 'False')
 
     # will develop connectivity even for style to ensure final drawing considered at the end
-    
     draw_skeleton_graphs(img, session_folder,file_name, folder_name)
 
 
@@ -471,12 +499,12 @@ def fig2data ( fig ):
     # http://www.icare.univ-lille1.fr/tutorials/convert_a_matplotlib_figure
     # draw the renderer
     fig.canvas.draw ( )
- 
+
     # Get the RGBA buffer from the figure
     w,h = fig.canvas.get_width_height()
     buf = np.fromstring ( fig.canvas.tostring_argb(), dtype=np.uint8 )
     buf.shape = ( 700, 700, 4 )
- 
+
     # canvas.tostring_argb give pixmap in ARGB mode. Roll the ALPHA channel to have it in RGBA mode
     buf = np.roll ( buf, 3, axis = 2 )
     return buf
@@ -490,7 +518,7 @@ def contour_based (list_drawings, list_drawings_types, colourmap):
     img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = img.astype(int) # need to turn it into int otherwisde will not add more than 255
-    
+
     # iterates through image list and adds all images to one single data to further remap
     for i in range (0, len(list_drawings)):
         filepath_np_massing = os.path.join(overall_results_directory, list_drawings[i])
@@ -498,7 +526,7 @@ def contour_based (list_drawings, list_drawings_types, colourmap):
         img2 = blurred_massing (filepath_np_massing, filepath_linetype_np_massing)
         img2 = img2.astype(int)
         img = img + img2
-    
+
     #remaps to 0 - 255 and turns itno integer
     img = img/(img.max()/255)
     img = img.astype(int)
@@ -508,9 +536,7 @@ def contour_based (list_drawings, list_drawings_types, colourmap):
     img3 = color.gray2rgb(img2)
     # the remap operation messes up the types of integers in the array and this stuff is needed
     # https://stackoverflow.com/questions/40162890/opencv-cvtcolor-dtype-issueerror-215
-    img=img.astype(np.float32) 
-     
-    
+    img=img.astype(np.float32)
     img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     red_multiplier = [1,1, 0]
     img3 = red_multiplier * img3
@@ -533,16 +559,15 @@ def contour_based (list_drawings, list_drawings_types, colourmap):
     plt.savefig(b, bbox_inches="tight", pad_inches=0)
 
     # turns plt figure to np and make proper colors
-    contour_data=fig2data(fig)   
+    contour_data=fig2data(fig)
     contour_data = np.flipud(contour_data) # we need to flip since matplotlib reads arrays downside up as opposed to np
     contour_data = cv2.cvtColor(contour_data, cv2.COLOR_BGR2RGB) # invers colours to make 3 channel and then warm colors
-#    contour_data = cv2.cvtColor(contour_data, cv2.COLOR_RGB2BGR)
 
     # for some reason when saving data from fig the computer leaves an annoying white frame around.
-    # This can be seein if using contourf (solid color)    
+    # This can be seein if using contourf (solid color)
     # This is even after all possible efforts above telling the computer to remove frames and making things tight
     # needs cropping and resizing
-    # If someone has a better idea, please go ahead 
+    # If someone has a better idea, please go ahead
 
     x1=88
     y1=87
@@ -557,9 +582,8 @@ def contour_based (list_drawings, list_drawings_types, colourmap):
     base_image=base_image.astype(np.float32)
     contour_cropped=contour_cropped.astype(np.float32)
     transparency = 0.5
-    contour_base = cv2.addWeighted(contour_cropped,transparency,base_image,(1-transparency),0) 
-#    
-#    # returns image combined
+    contour_base = cv2.addWeighted(contour_cropped,transparency,base_image,(1-transparency),0)
+
     return contour_base
 
 # ----------------------------------------------------------------------------------
@@ -571,7 +595,7 @@ def overall_image_report ():
     list_basic_connections=[]
     list_massing_drawings=[]
     list_massing_drawings_types=[]
-    for i in sketches:          
+    for i in sketches:
         if not i == 'Thumbs.db':
             if re.findall('ln',i) :
                 list_basic_connections.append(i)
@@ -589,11 +613,11 @@ def overall_image_report ():
         filepath_np = os.path.join(overall_results_directory, i)
         connections = np.load(filepath_np).tolist()
         basic_connections.append(connections)
-    
+
     #calls for the developmetnof combined simplified line drawing
     basic_line_drawing (node_coords, basic_connections, overall_results_directory, shape_x, shape_y,link_base_image)
     bundle_drawing (node_coords, basic_connections, overall_results_directory, shape_x, shape_y,link_base_image)
-    
+
     # ----------------------------------------------------------------------------------
     # generates massing averages
     # ----------------------------------------------------------------------------------

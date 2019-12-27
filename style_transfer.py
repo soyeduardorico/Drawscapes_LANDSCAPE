@@ -21,7 +21,7 @@ def bounding_box(points):
     bot_left_y = min(point[1] for point in points)
     top_right_x = max(point[0] for point in points)
     top_right_y = max(point[1] for point in points)
-    
+
     # fits smallest square centred int he same position of the rectangle
     rectangle_lengths = [top_right_x  - bot_left_x , top_right_y - bot_left_y]
     square_size = max(rectangle_lengths)
@@ -161,7 +161,7 @@ def montage_image (session_folder, file_name, folder_name, model_name, content_t
         img3 = np.zeros((700,700,3), np.uint8)
         img3.fill(255)
         transparency = 0.5
-        image = cv2.addWeighted(img3,transparency,image,(1-transparency),0)    
+        image = cv2.addWeighted(img3,transparency,image,(1-transparency),0)
 
         #draws lines over the stylized base
         for i in range(0, len(polylines)):
@@ -169,7 +169,7 @@ def montage_image (session_folder, file_name, folder_name, model_name, content_t
             color = color_canvas_rgb[line_type[i]]
             for j in range(0, int(len(polylines[i])-1)):
                 cv2.line(image,(int(polylines[i][j][0]),int(shape_y-polylines[i][j][1])),(int(polylines[i][j+1][0]),int(shape_y-polylines[i][j+1][1])),color,thickness)
-      
+
         #carries out the montage cropping the stylized image with the site and pasting it into the plan
         #plt.imshow(image, cmap="hot") plt can be used to show partial result for debuggin purposes
         img2=image*mask
@@ -179,8 +179,8 @@ def montage_image (session_folder, file_name, folder_name, model_name, content_t
         result=cv2.cvtColor(result, cv2.COLOR_BGR2RGB)
         #exports drawing for filing
         output_img_path = os.path.join(session_folder, file_name + '_stylized_montage.jpg')
-        cv2.imwrite(output_img_path,result)    
-    
+        cv2.imwrite(output_img_path,result)
+
     # If any of the arrays are empty trows error into the feedback image
     else:
         base=cv2.imread(link_base_image_warning)
