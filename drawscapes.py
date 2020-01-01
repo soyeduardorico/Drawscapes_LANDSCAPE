@@ -6,11 +6,16 @@
 from flask import Flask, render_template, url_for, request, jsonify, send_from_directory, session, redirect, make_response, flash
 import time
 import os
-import project_data as pdt
 
-from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing, drawscapes_draw_base_2
+from tinydb import TinyDB
+
+from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing
 from drawing_app_functions import drawscapes_draw_base_from_feedback, drawscapes_draw_base, save_land_uses 
 from feedback import generate_feedback_images
+import project_data as pdt
+import drawing_app_functions as daf
+import database_management as dbm
+import feedback as fdb
 from style_transfer import call_montage
 
 # ----------------------------------------------------------------------------------
@@ -40,7 +45,15 @@ def index():
     variable = str(millis)
     session['user'] = variable
     session_folder=os.path.join(root_data, variable)
+    
+    # generates local folder  
     os.mkdir(session_folder)
+    
+    # generates local database
+    user_db =os.path.join(session_folder,variable + '_database.json')
+    db = TinyDB(user_db)
+    db.close()
+    
     return render_template ('index.html')
 
 
@@ -57,15 +70,11 @@ def dropsession():
 # -----------------------------------------------------------------------------------------
 @app.route('/data/<filename>')
 def data(filename):
-    # use the line below to work with cookies in the browser as opposed to sessions
-    # session = request.cookies.get("session_number")
     target_directory = 'data/' + session['user'] 
     return send_from_directory(target_directory, filename)
 
 @app.route('/overall_results/<filename>')
 def overall_results(filename):
-    # use the line below to work with cookies in the browser as opposed to sessions
-    # session = request.cookies.get("session_number")
     target_directory = 'overall_results/'
     return send_from_directory(target_directory, filename)
 
@@ -81,9 +90,6 @@ def drawscapes_intro():
 @app.route('/drawscapes')
 def drawscapes():
     # defines session number and generates folder for further saving files
-    # passes session number to browser as cookie 'session_number'
-    # res = make_response("Setting a cookie")
-    # res.set_cookie('session_number', variable, max_age=60*60*24*365*2)
     return render_template ('drawscapes.html',
         title = 'network design for session ' + session['user'])
 
@@ -105,9 +111,11 @@ def drawscapes_feedback(filename):
 
 @app.route('/drawscapes_form')
 def drawscapes_form():
-    # return render_template ('drawscapes_curiosities.html', title = session['user'])
-    return render_template ('drawscapes_form.html')# no title during tests
+    return render_template ('drawscapes_form.html')
 
+@app.route('/drawscapes_thanks')
+def drawscapes_thanks():
+    return render_template ('drawscapes_thanks.html')
 
 # -----------------------------------------------------------------------------------------
 # Develops feedback on connectivity of lines and serves it to front end
@@ -148,7 +156,7 @@ def drawscapes_massing_base():
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
     file_name= session['user']+'_'+ str(millis)
     folder_name=session['user']
-    exercise = 'lines'
+    exercise = pdt.exercises[0]
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
@@ -224,7 +232,7 @@ def drawscapes_massing_feedback():
     drawscapes_feedback_massing (data, file_name, user_id)
 
     # sends name of file back to browswer
-    image_feedback=  file_name + '_land_use_output.jpg' # defines name of image for feedbak and passes it to template
+    image_feedback=  file_name + '_massing.jpg' # defines name of image for feedbak and passes it to template
     return jsonify(image_feedback)
 
 
@@ -237,7 +245,7 @@ def drawscapes_land_use_base():
     folder_name=session['user']
 
     # ----------------------------------------------------------------------------------
-    # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
+    # brings json data and calls for development of land use base drawing usign lines and massing. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
     # data = request.json
     # job = q.enqueue(drawscapes_draw_base_2, data, file_name, session_folder, folder_name)
@@ -245,10 +253,10 @@ def drawscapes_land_use_base():
     #     time.sleep(0.1)
 
     # ----------------------------------------------------------------------------------
-    # brings json data and calls for development of image style input to the canvas. Activate on Windows
+    # brings json data and calls for development of land use base drawing usign lines and massing. Activate on Windows
     # ----------------------------------------------------------------------------------
     data = request.json
-    drawscapes_draw_base_2 (data, file_name, session_folder, folder_name)
+    daf.drawscapes_draw_base_for_land_use (data, file_name, session_folder, folder_name)
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_landscape_base.jpg' # defines name of image for feedbak and passes it to template
@@ -315,7 +323,8 @@ def drawscapes_save_land_uses():
 @app.route('/drawscapes_save_text', methods=["GET", "POST"])
 def drawscapes_save_text():
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
-    file_name= session['user']
+    user_id= session['user']
+    file_name= user_id +'_'+ str(millis)
     file_path = os.path.join(session_folder, file_name + '.txt')
 
     # ----------------------------------------------------------------------------------
@@ -323,9 +332,8 @@ def drawscapes_save_text():
     # ----------------------------------------------------------------------------------
     data = request.json
     data=str(data) # just in case
-    textfile = open(file_path, 'w')
-    textfile.write(data)
-    textfile.close()
+    daf.save_survey_results (data, session_folder, file_name, user_id)
+
     dropsession()
 
 if __name__ == "__main__":

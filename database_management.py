@@ -21,6 +21,7 @@ from project_data import link_outcome_failure, link_outcome_success, node_coords
 from project_data import node_coords_large, color_canvas_rgb, node_coords_detailed
 from project_data import site_scale_factor, massing_height, databse_filepath
 from project_data import ucl_east_development_area, ucl_east_student_population, ucl_east_research_area
+import project_data as pdt
 
 # ------------------------------------------------------------------------------------
 # Imports locally defined functions
@@ -114,7 +115,41 @@ def test_and_file (db, sketch, exercise, extract_features = 'True'):
             #update / instert (upsert)
             db.upsert( {'id': file_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == file_name) # inserts or udates
 
-def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, extract_features = 'True'):
+
+
+
+#----------------------------------------------------------------------------------------
+# Sends polylines and line types to various databases
+#----------------------------------------------------------------------------------------
+
+def export_data (data, folder_name, file_name, session_folder, exercise):
+    # prepares data
+    line_type = data[4]
+    data.pop(4) # removes linetype array
+    data.pop(0) # removes style array (one element) from list
+    ptexport=np.array(data).astype(int)  # turn into integer since mobile devices will produce fractions and pythonanywhere saves as float
+    points=ptexport.tolist()
+    pts_to_polylines_list  = pts_to_polylines(points, line_type)
+    polylines  = pts_to_polylines_list [0]
+    linetype = pts_to_polylines_list [1]
+
+    # saves data in general database 
+    id_name=folder_name
+    database = pdt.databse_filepath
+    data_to_database (database, polylines, linetype, id_name, exercise, extract_features = 'False')
+
+    # saves data in user database 
+    id_name=file_name # saves each of the steps
+    database = os.path.join(session_folder, folder_name + '_database.json')
+    data_to_database (database, polylines, linetype, id_name, exercise, extract_features = 'False')
+    id_name=folder_name  # saves final step with root name 
+    data_to_database (database, polylines, linetype, id_name, exercise, extract_features = 'False')    
+
+
+#----------------------------------------------------------------------------------------
+# Sends polylines and line types to one databsae
+#----------------------------------------------------------------------------------------
+def data_to_database (databse, polylines, linetype, id_name, exercise, extract_features = 'True'):
     field_polylines = exercise + '_polylines'
     field_linetype = exercise + '_linetype'
     field_features = exercise + '_features'
@@ -128,7 +163,7 @@ def data_to_database (databse_filepath, polylines, linetype, id_name, exercise, 
         feature_values = []
     linetype = [float(i) for i in linetype]
     polylines[0]= np.array(polylines[0]).astype(float).tolist()
-    db = TinyDB(databse_filepath)
+    db = TinyDB(databse)
     sketch_query=Query()
     #update / instert (upsert)
     db.upsert( {'id': id_name, field_polylines : polylines, field_linetype : linetype, field_features : feature_values}, sketch_query.id == id_name) # inserts or udates

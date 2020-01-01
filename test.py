@@ -89,23 +89,13 @@ root_data = os.path.join(absFilePath,  'data')
 #%%
 
 from tinydb import TinyDB, Query
-user_id='1576064564452'
+user_id='1577723064194'
 
-secondary_db =os.path.join (pdt.overall_results_directory,'database_2.json')
+session_folder = os.path.join(pdt.root_participation_directory, user_id)
+user_db =os.path.join(session_folder,user_id + '_database.json')
 
-db = TinyDB(databse_filepath)
-sketch_item=Query()
-data_polylines_dict = db.search(sketch_item.id==user_id)[0]
-print(data_polylines_dict)
-db = TinyDB(secondary_db)
-sketch_item=Query()
-db.insert(data_polylines_dict)
+db = TinyDB(user_db)
 db.all()
-
 #%%
 
 
-from feedback import generate_feedback_images
-millis = 1576686034588
-file_name= user_id + '_3_'+ str(millis)
-generate_feedback_images (secondary_db, user_id, file_name)

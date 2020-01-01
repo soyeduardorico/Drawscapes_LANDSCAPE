@@ -68,7 +68,7 @@ title5 = '5 <br> check numbers'
 title6 = '6 <br> locate key uses'
 title7 = '7 <br> feedback'
 title8 = '8 <br> survey'
-title9 = '9 <br> -'
+title9 = '9 <br> thanks'
 title10 = '10 <br> -'
 
 

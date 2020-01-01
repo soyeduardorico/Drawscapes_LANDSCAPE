@@ -175,7 +175,6 @@ class path_graph ():
             if i[1]==n: node=i
         return (node)
 
-
     # ------------------------------------------------------------------------------------
     # returns closest node to a point if within threshold distance, otherwise leaves the points as it is
     # ------------------------------------------------------------------------------------
@@ -187,7 +186,6 @@ class path_graph ():
         else:
             snap_point = a
         return snap_point
-
 
     # ------------------------------------------------------------------------------------
     # finds end points (end_point_list, degree 1) as well as jucntions  (junction_list, degree 3)
@@ -333,8 +331,6 @@ class path_graph ():
                 number_connections = number_connections+1
                 cv2.circle(img,self.coords(pt),8,(0,0,255),-1)
 
-
-
         # write text on connection number
         font_large = ImageFont.truetype("arial.ttf", size = 56)
         font_small = ImageFont.truetype("arial.ttf", size = 35)
@@ -346,11 +342,7 @@ class path_graph ():
         draw.text((15, 560 + 32 + 32 + 10),"You connected a total of " + str(number_connections) + " nodes",(29, 41, 82),font=font_small)
         b1=os.path.join(self.dir_write, self.sketch_name + '_graph.jpg') # saves image corresponding to drawing stage
         canvas.save(b1)
-
-        b=os.path.join(self.dir_write, self.sketch_name + "_graph2"+"." + 'jpg')
-        cv2.imwrite(b,img)
-
-        return number_connections_under_bridge
+    
 
     def connections_under_bridge (self):
         number_connections_under_bridge = 0

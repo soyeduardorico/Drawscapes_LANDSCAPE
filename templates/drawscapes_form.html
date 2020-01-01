@@ -33,37 +33,51 @@
     <div class="central-container">
         <div>
             <h2 style = "text-align: left;"> 
-                Write below what you would change in your design </h2>
+                Please let us know if there is a aspect you would like to add to your design... <br>
+                ... or anything you would like amend  </h2>
             <form action="">
                 <input 
+                    id = "myText1"
                     type="text" 
                     style="width:1400px; font-size:25px; font-family: Calibri;color: #1d2952;">
             </form>
             <p>  <br> <br> </p>
         </div>
 
-
         <div>
             <h2 style = "text-align: left;"> 
-                Write below what you would change in your design </h2>
+                Please let us know which part of UCL do you work / research / study  </h2>
             <form action="">
                 <input 
+                    id = "myText2"
                     type="text" 
                     style="width:1400px; font-size:25px; font-family: Calibri;color: #1d2952;">
             </form>
             <p>  <br> <br> </p>
         </div>
 
-
         <div>
             <h2 style = "text-align: left;"> 
-                Write below what you would change in your design </h2>
+                If you want to know about the end result of the experiment  <br>
+                you can leave us your email in the box below <br>
+
+                 </h2>
             <form action="">
                 <input 
+                    id = "myText3"
                     type="text" 
                     style="width:1400px; font-size:25px; font-family: Calibri;color: #1d2952;">
             </form>
-            <p>  <br> <br> </p>
+            
+            <h2 style = "text-align: left;">
+                We will send you information about overall results carried out throughout UCL <br>
+                This information will be anonymous and will not include any personal information <br>
+                <br>
+                Please note that your email address will NOT BE USED IN ANY DATA ANALYSIS AND WILL REMAIN STRICTLY CONFIDENTIAL <br>
+                and will only serve the purpose of allowing you to understand more about the collective decisions <br>
+                of UCL staff and students over the future of their campus <br>
+                <br> 
+            </h2>
         </div>
 
         <div class="item5">
@@ -128,17 +142,25 @@
         $('html').css('background', color1);
     });
 
+
     function mySaveText() {
+        var myText = new Array();
+        var myText1 = document.getElementById("myText1").value
+        var myText2 = document.getElementById("myText2").value
+        var myText3 = document.getElementById("myText3").value
         //gets text information
-        var x1 = document.getElementById("myText").value;
-        var js_data = JSON.stringify(x1);
+        myText.push(myText1)
+        myText.push(myText2)
+        myText.push(myText3)
+        var js_data = JSON.stringify(myText);
+        console.log(myText)
         $.ajax({
             url: '/drawscapes_save_text',
             type: 'post',
             contentType: 'application/json',
             dataType: 'json',
             data: js_data
-        })
+        }).done(window.location.replace("{{url_for ('drawscapes_thanks') }}"));
     }
 
 </script>
