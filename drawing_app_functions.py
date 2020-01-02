@@ -323,6 +323,8 @@ def drawscapes_feedback_massing (data, file_name, user_id):
         # sends data to user and general databases
         exercise = pdt.exercises[1]
         data_1 = data.copy() # needs to make a copy otherwise with first pass of function it gets truncated
+        folder_name = user_id
+        session_folder = os.path.join(root_data, user_id)
         export_data (data_1, folder_name, file_name, session_folder, exercise)
 
         #brings data and generates drawing with land use analysis

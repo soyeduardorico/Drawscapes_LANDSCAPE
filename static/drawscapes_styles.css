@@ -193,13 +193,12 @@ justify-content: center }
   background-color: black;
   color: white;
   cursor: pointer;
-  padding: 18px;
+  padding: 15px;
   width: 1400px;
   border: white;
   text-align: center;
   outline: none;
   font-size: 20px;
-
   position: relative;
   margin: auto;
 }
@@ -247,7 +246,7 @@ justify-content: center }
 .popup .popuptext {
   visibility: hidden;
   width: 330px;
-  background-color: black;
+  background-color: #090e1f;
   color: #fff;
   text-align: center;
   font-size: 18px;
