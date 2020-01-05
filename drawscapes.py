@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------------
-# For running flask on pythonanywhere  see: https://www.youtube.com/watch?v=M-QRwEEZ9-8 
+# For running flask on pythonanywhere  see: https://www.youtube.com/watch?v=M-QRwEEZ9-8
 # For session generation see https://www.youtube.com/watch?v=T1ZVyY1LWOg
 # For general tutorials on flask: https://www.youtube.com/watch?v=MwZwr5Tvyxo
 # ----------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ import os
 from tinydb import TinyDB
 
 from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing
-from drawing_app_functions import drawscapes_draw_base_from_feedback, drawscapes_draw_base, save_land_uses 
+from drawing_app_functions import drawscapes_draw_base_from_feedback, drawscapes_draw_base, save_land_uses
 from feedback import generate_feedback_images
 import project_data as pdt
 import drawing_app_functions as daf

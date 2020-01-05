@@ -40,25 +40,43 @@ root_data = os.path.join(absFilePath,  'data')
 # Testdevelopment for feedback on core detection
 # ------------------------------------------------------------------------------------
 #
-#import numpy as np
-#from scipy import ndimage as ndi
-#from feedback import generate_feedback_images
-#import skimage
-#from skimage import morphology
-#from skimage.morphology import watershed
-#from skimage.segmentation import random_walker
-#from skimage.feature import peak_local_max
+import numpy as np
+from scipy import ndimage as ndi
+from feedback import generate_feedback_images
+import skimage
+from skimage import morphology
+from skimage.morphology import watershed
+from skimage.segmentation import random_walker
+from skimage.feature import peak_local_max
+from feedback import obtain_connections
+
+#%%
 #
-##user_id = '1576064564452'
-#user_id='1576064564452'
-#millis = 1576064636649
-#file_name= user_id + '_2_'+ str(millis)
-#
-#exercise = pdt.exercises[1]  #import massing data for this feedback operation
-#data_import = line_data_from_database(databse_filepath, user_id,exercise)
-#polylines_massing = data_import[0]
-#linetype_massing = data_import[1]
-#
+user_id = '1577920980365'
+#user_id='1578007367090'
+#user_id='1578004791560'
+millis = 1576064636649
+file_name= user_id + '_2_'+ str(millis)
+
+exercise = pdt.exercises[0]  #import massing data for this feedback operation
+data_import = line_data_from_database(databse_filepath, user_id,exercise)
+polylines = data_import[0]
+linetype = data_import[1]
+
+
+
+img= np.zeros((700,700,3), np.uint8)
+img.fill(255)
+#img = cv2.imread(pdt.link_base_image)
+
+img=draw_paths_base (polylines, linetype, 'any', 'any', img, save='False')
+img1 = cv2.imread(pdt.link_base_image)
+img1=draw_paths_base (polylines, linetype, 'any', 'any', img1, save='False')
+plt.imshow(img1)
+
+text = obtain_connections(img)
+print(text)
+
 #
 ## draw massing and turn black and white
 #img = np.zeros((int(shape_x),int(shape_y),3), np.uint8)
@@ -97,11 +115,11 @@ root_data = os.path.join(absFilePath,  'data')
 #db = TinyDB(user_db)
 #db.all()
 #%%
-import time
-import datetime
-user_id='1576064564452'
-
-s = int(user_id) / 1000
-
-date_to_print = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%d %H:%M:%S')
-print(date_to_print )
+#import time
+#import datetime
+#user_id='1576064564452'
+#
+#s = int(user_id) / 1000
+#
+#date_to_print = datetime.datetime.fromtimestamp(s).strftime('%Y-%m-%d %H:%M:%S')
+#print(date_to_print )

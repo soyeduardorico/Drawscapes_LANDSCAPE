@@ -342,7 +342,7 @@ class path_graph ():
         draw.text((15, 560 + 32 + 32 + 10),"You connected a total of " + str(number_connections) + " nodes",(29, 41, 82),font=font_small)
         b1=os.path.join(self.dir_write, self.sketch_name + '_graph.jpg') # saves image corresponding to drawing stage
         canvas.save(b1)
-    
+
 
     def connections_under_bridge (self):
         number_connections_under_bridge = 0

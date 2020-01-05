@@ -107,7 +107,7 @@ node_coords=[[146,227],
 [410,547],
 [344,567]]
 
-node_coords_bridge=[[584,371], [469,186], [344,567]]
+node_coords_bridge=[[469,186], [535,307], [344,567]] # these are nodes that lead to connections under the DLR bridge
 
 node_coords_large =[[266,358],
 [286,353],

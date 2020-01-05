@@ -27,6 +27,10 @@ import project_data as pdt
 absFilePath = os.path.dirname(__file__)
 root_data = os.path.join(absFilePath,  'data')
 
+
+# ------------------------------------------------------------------------------------
+# Pastes an image in feedback form (wider temlpate)
+# ------------------------------------------------------------------------------------
 def generate_image_feeback (img, text, text_colour, base_file_name, file_name, user_id, title ):
     dim = (530,530)
     img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA) # resizes images
@@ -42,12 +46,14 @@ def generate_image_feeback (img, text, text_colour, base_file_name, file_name, u
     feedback_filename = os.path.join(save_folder,file_name + title )
     base_image_pil.save(feedback_filename)
 
+# ------------------------------------------------------------------------------------
+# Checks for ninber of connectionsudner the DLR bridge
+# ------------------------------------------------------------------------------------
 def obtain_connections (img):
     grey=skimage.img_as_ubyte(skimage.color.rgb2grey(img))
     binary=grey<250
     skel= morphology.skeletonize(binary)
     skel=skel*1
-    skel_draw=1-skel
 
     #calls for development of dual graph and simplified lines bsaed on  skeleton
     file_name = 'any'
@@ -57,6 +63,9 @@ def obtain_connections (img):
     number_connections_under_bridge = sketch_grap.connections_under_bridge()
     return number_connections_under_bridge
 
+# ------------------------------------------------------------------------------------
+# Opens file in database and calls for as many feedbackimages as required
+# ------------------------------------------------------------------------------------
 def generate_feedback_images (databse_filepath, user_id, file_name):
     # load line data from different exercises
     exercise = pdt.exercises[0]  #import massing data for this feedback operation
@@ -75,8 +84,10 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     linetype_land_uses = data_import[1]
 
     massing_feedback_analysis = massing_analysis(polylines_massing, linetype_massing)
-
+    
+    # ------------------------------------------------------------------------------------
     # feedback on canal proximity
+    # ------------------------------------------------------------------------------------
     if len (polylines_massing) > 1: # checks that there is actually data
         img=cv2.imread(pdt.feedback_canal_base)
         img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
@@ -87,8 +98,10 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     else:
         img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
         generate_image_feeback (img, text, text_colour, pdt.feedback_canal, file_name, user_id, '_feedback_canal.jpg' )
-
+    
+    # ------------------------------------------------------------------------------------
     # feedback on noise impact proximity
+    # ------------------------------------------------------------------------------------
     if len (polylines_massing) > 1:  # checks that there is actually data
         img=cv2.imread(pdt.feedback_noise_base)
         img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
@@ -99,12 +112,21 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     else:
         img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
         generate_image_feeback (img, text, text_colour, pdt.feedback_noise, file_name,user_id,'_feedback_noise.jpg' )
-
-    # feedback on barrier impact proximity
+    
+    # ------------------------------------------------------------------------------------
+    # feedback on barrier effect counting connections to nodes that lead udner the bridge
+    # ------------------------------------------------------------------------------------
     if len (polylines_lines) > 1: # checks that there is actually data
+        # generates image over base to develop feedback drawing
         img=cv2.imread(pdt.feedback_barrier_base)
         img=draw_paths_base (polylines_lines, linetype_lines, 'any', 'any', img, save='False')
-        text = obtain_connections(img)
+        
+        #generates drawing over white base for calculation
+        img1= np.zeros((700,700,3), np.uint8)
+        img1.fill(255)
+        img1=draw_paths_base (polylines_lines, linetype_lines, 'any', 'any', img1, save='False')
+        text = obtain_connections(img1) # sends drawing for calculation of number of conenctions
+        
         text = '  ' +  str(text)
         text_colour= (230,0,170)
         generate_image_feeback (img, text, text_colour, pdt.feedback_barrier, file_name,user_id, '_feedback_barrier.jpg' )
