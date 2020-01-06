@@ -91,8 +91,11 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     if len (polylines_massing) > 1: # checks that there is actually data
         img=cv2.imread(pdt.feedback_canal_base)
         img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
-        text = massing_feedback_analysis[6]
-        text = str(int(text*100))+'%'
+        if massing_feedback_analysis[6] > 0: # checks there are actually towers
+            text = massing_feedback_analysis[6]
+            text = str(int(text*100))+'%'
+        else:
+            text = '0% (no towers)'
         text_colour= (1,168,80)
         generate_image_feeback (img, text, text_colour, pdt.feedback_canal, file_name,user_id, '_feedback_canal.jpg' )
     else:
@@ -105,8 +108,11 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     if len (polylines_massing) > 1:  # checks that there is actually data
         img=cv2.imread(pdt.feedback_noise_base)
         img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
-        text = massing_feedback_analysis[7]
-        text = str(int(text*100))+'%'
+        if massing_feedback_analysis[6] > 0: # checks there are actually towers
+            text = massing_feedback_analysis[7]
+            text = str(int(text*100))+'%'
+        else:
+            text = '0% (no towers)'
         text_colour= (230,0,170)
         generate_image_feeback (img, text, text_colour, pdt.feedback_noise, file_name,user_id, '_feedback_noise.jpg' )
     else:

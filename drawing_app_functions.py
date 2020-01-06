@@ -312,7 +312,7 @@ def massing_analysis (polylines, linetype):
         ratio_tower_canal = 0
         ratio_tower_noise = 0
 
-    return land_use, built_area, FAR, area_accomodation, students, area_research, ratio_tower_canal, ratio_tower_noise
+    return land_use, built_area, FAR, area_accomodation, students, area_research, ratio_tower_canal, ratio_tower_noise, area_tower
 
 
 # ------------------------------------------------------------------------------------
