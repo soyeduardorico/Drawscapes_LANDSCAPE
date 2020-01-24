@@ -10,7 +10,7 @@ import os
 from tinydb import TinyDB
 
 from drawing_app_functions import drawscapes_feedback_lines, drawscapes_feedback_massing
-from drawing_app_functions import drawscapes_draw_base_from_feedback, drawscapes_draw_base, save_land_uses
+from drawing_app_functions import drawscapes_draw_base_from_feedback, drawscapes_draw_base, save_land_uses, drawscapes_draw_base_for_land_use
 from feedback import generate_feedback_images
 import project_data as pdt
 import drawing_app_functions as daf
@@ -39,7 +39,7 @@ root_data = os.path.join(absFilePath,  'data')
 # -----------------------------------------------------------------------------------------
 # renders index page
 # -----------------------------------------------------------------------------------------
-@app.route ('/index')
+@app.route ('/')
 def index():
     millis = int(round(time.time() * 1000))
     variable = str(millis)
@@ -126,11 +126,11 @@ def drawscapes_connectivity_feedback():
     session_folder=os.path.join(root_data,  str(session['user'])) # uses same folder as folder session
     file_name = str(session['user']) + '_' +str(millis)
     folder_name=session['user']
+    data = request.json
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # data = request.json
     # job = q.enqueue(drawscapes_feedback_lines, data, file_name, session_folder, folder_name)
     # while job.is_finished != True:
     #      time.sleep(0.1)
@@ -138,7 +138,6 @@ def drawscapes_connectivity_feedback():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback. Activate on Windows
     # ----------------------------------------------------------------------------------
-    data = request.json
     drawscapes_feedback_lines (data, file_name, session_folder, folder_name)
 
     # sends name of file back to browswer
@@ -157,19 +156,18 @@ def drawscapes_massing_base():
     file_name= session['user']+'_'+ str(millis)
     folder_name=session['user']
     exercise = pdt.exercises[0]
-
+    data = request.json
+    
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
+    # job = q.enqueue(drawscapes_draw_base, data, exercise, file_name, session_folder, folder_name)
     # while job.is_finished != True:
     #     time.sleep(0.1)
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
-    data = request.json
     drawscapes_draw_base (data, exercise, file_name, session_folder, folder_name) # Draws paths in the small scale base
 
     # sends name of file back to browswer
@@ -188,18 +186,18 @@ def drawscapes_massing_base_database():
     file_name= session['user']+'_'+ str(millis)
     user_id = session['user']
     exercise = 0
-
+    database = pdt.databse_filepath
+    
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
+    # job = q.enqueue(drawscapes_draw_base_from_feedback, database, exercise, file_name, session_folder, user_id)
     # while job.is_finished != True:
     #     time.sleep(0.1)
 
     # ----------------------------------------------------------------------------------
     # Calls for development of image for bases reading last entry in databse. Activate on Windows
     # ----------------------------------------------------------------------------------
-    database = pdt.databse_filepath
     drawscapes_draw_base_from_feedback (database, exercise, file_name, session_folder, user_id) # Draws paths in the small scale base
 
     # sends name of file back to browswer
@@ -216,11 +214,11 @@ def drawscapes_massing_feedback():
     millis = int(round(time.time() * 1000))
     file_name= session['user']+'_'+ str(millis)
     user_id = session['user']
+    data = request.json
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # data = request.json
     # job = q.enqueue(drawscapes_feedback_massing, data, file_name, user_id)
     # while job.is_finished != True:
     #     time.sleep(0.1)
@@ -228,7 +226,6 @@ def drawscapes_massing_feedback():
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback. Activate on Windows
     # ----------------------------------------------------------------------------------
-    data = request.json
     drawscapes_feedback_massing (data, file_name, user_id)
 
     # sends name of file back to browswer
@@ -243,20 +240,19 @@ def drawscapes_land_use_base():
     session_folder=os.path.join(root_data, session['user']) # uses same folder as folder session
     file_name= session['user']+'_'+ str(millis)
     folder_name=session['user']
+    data = request.json
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of land use base drawing usign lines and massing. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # job = q.enqueue(drawscapes_draw_base_2, data, file_name, session_folder, folder_name)
+    # job = q.enqueue(drawscapes_draw_base_for_land_use, data, file_name, session_folder, folder_name)
     # while job.is_finished != True:
     #     time.sleep(0.1)
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of land use base drawing usign lines and massing. Activate on Windows
     # ----------------------------------------------------------------------------------
-    data = request.json
-    daf.drawscapes_draw_base_for_land_use (data, file_name, session_folder, folder_name)
+    drawscapes_draw_base_for_land_use (data, file_name, session_folder, folder_name)
 
     # sends name of file back to browswer
     image_feedback=  file_name + '_landscape_base.jpg' # defines name of image for feedbak and passes it to template
@@ -274,18 +270,18 @@ def drawscapes_land_use_base_databse():
     file_name= session['user']+'_'+ str(millis)
     user_id = session['user']
     exercise = 1
+    database = pdt.databse_filepath
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # job = q.enqueue(drawscapes_draw_base, data, file_name, session_folder, folder_name)
+    # job = q.enqueue(drawscapes_draw_base_from_feedback, database, exercise, file_name, session_folder, user_id)
     # while job.is_finished != True:
     #     time.sleep(0.1)
 
     # ----------------------------------------------------------------------------------
     # Calls for development of image for bases reading last entry in databse. Activate on Windows
     # ----------------------------------------------------------------------------------
-    database = pdt.databse_filepath
     drawscapes_draw_base_from_feedback (database, exercise, file_name, session_folder, user_id) # Draws paths in the small scale base
 
     # sends name of file back to browswer
@@ -298,25 +294,22 @@ def drawscapes_save_land_uses():
     # defines drawing number within the session
     millis = int(round(time.time() * 1000))
     user_id = session['user']
-    session_folder=os.path.join(root_data, user_id) # uses same folder as folder session
     file_name= user_id +'_'+ str(millis)
     folder_name = session['user'] # Used as base for drawscapes_massing.html canvas base
+    data = request.json
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls drawing feedback into the queue. Activate on Ubuntu
     # ----------------------------------------------------------------------------------
-    # data = request.json
-    # job = q.enqueue(save_land_uses, data, session_folder, file_name, folder_name)
+    # job = q.enqueue(generate_feedback_images, data, pdt.databse_filepath, user_id, file_name)
     # while job.is_finished != True:
     #     time.sleep(0.1)
 
     # ----------------------------------------------------------------------------------
     # brings json data and calls for development of image style input to the canvas. Activate on Windows
     # ----------------------------------------------------------------------------------
-    data = request.json
-    save_land_uses (data, session_folder, file_name, user_id)
-    generate_feedback_images (pdt.databse_filepath, user_id, file_name)
-
+    generate_feedback_images (data, databse_filepath, user_id, file_name)
+    
     return jsonify(file_name)
 
 

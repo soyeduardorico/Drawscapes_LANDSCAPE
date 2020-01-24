@@ -203,23 +203,23 @@ def drawscapes_draw_base_for_land_use (data, file_name, session_folder, folder_n
 # ------------------------------------------------------------------------------------
 # Saves land uses data before moving to feedback stage. Saves image for further visual inspection
 # ------------------------------------------------------------------------------------
-def save_land_uses (data, session_folder, file_name, folder_name):
+def save_land_uses (data, session_folder, file_name, user_id):
     if len(data[4]) > 1 :
         # sends data to user and general databases
         exercise = pdt.exercises[2]
         data_1 = data.copy() # needs to make a copy otherwise with first pass of function it gets truncated
-        export_data (data_1, folder_name, file_name, session_folder, exercise)
+        export_data (data_1, user_id, file_name, session_folder, exercise)
 
         # generates image for record
         # imports lines from database and develops a base
-        data_import = line_data_from_database(databse_filepath, folder_name,pdt.exercises[0])
+        data_import = line_data_from_database(databse_filepath, user_id,pdt.exercises[0])
         polylines_0 = data_import[0]
         linetype_0= data_import[1] # needs reconverting to integer from float in database
         img=cv2.imread(link_base_image)
         img=draw_paths_base (polylines_0, linetype_0, 'any', 'any', img, save='False')
 
         # imports massing from database and develops a base on top of existing drawing
-        data_import = line_data_from_database(databse_filepath, folder_name,pdt.exercises[1])
+        data_import = line_data_from_database(databse_filepath, user_id,pdt.exercises[1])
         polylines_0 = data_import[0]
         linetype_0= data_import[1] # needs reconverting to integer from float in database
         img=draw_paths_base (polylines_0, linetype_0, 'any', 'any', img, save='False')
@@ -235,7 +235,6 @@ def save_land_uses (data, session_folder, file_name, folder_name):
         linetype = pts_to_polylines_list [1]
         file_name = file_name + '_land_uses'
         img=draw_paths_base (polylines, linetype, session_folder, file_name, img, save='True')
-
 
 # ------------------------------------------------------------------------------------
 # Saves survey results

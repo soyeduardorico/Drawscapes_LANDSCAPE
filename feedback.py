@@ -20,6 +20,7 @@ from basic_drawing_functions import site_area, pts_to_polylines, draw_paths, dra
 from drawing_app_functions import massing_analysis
 from graph_form_image import path_graph
 import project_data as pdt
+import drawing_app_functions as dap
 
 # ------------------------------------------------------------------------------------
 # File location
@@ -66,7 +67,11 @@ def obtain_connections (img):
 # ------------------------------------------------------------------------------------
 # Opens file in database and calls for as many feedbackimages as required
 # ------------------------------------------------------------------------------------
-def generate_feedback_images (databse_filepath, user_id, file_name):
+def generate_feedback_images (data, databse_filepath, user_id, file_name):
+    # calls for save of data into database
+    session_folder=os.path.join(root_data, user_id) # uses same folder as folder session
+    dap.save_land_uses (data, session_folder, file_name, user_id)
+
     # load line data from different exercises
     exercise = pdt.exercises[0]  #import massing data for this feedback operation
     data_import = line_data_from_database(databse_filepath, user_id,exercise)
@@ -88,6 +93,7 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     # ------------------------------------------------------------------------------------
     # feedback on canal proximity
     # ------------------------------------------------------------------------------------
+    text_colour= (1,168,80)
     if len (polylines_massing) > 1: # checks that there is actually data
         img=cv2.imread(pdt.feedback_canal_base)
         img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
@@ -96,15 +102,16 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
             text = str(int(text*100))+'%'
         else:
             text = '0% (no towers)'
-        text_colour= (1,168,80)
         generate_image_feeback (img, text, text_colour, pdt.feedback_canal, file_name,user_id, '_feedback_canal.jpg' )
     else:
         img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
+        text = '0% (no towers)'
         generate_image_feeback (img, text, text_colour, pdt.feedback_canal, file_name, user_id, '_feedback_canal.jpg' )
     
     # ------------------------------------------------------------------------------------
     # feedback on noise impact proximity
     # ------------------------------------------------------------------------------------
+    text_colour= (230,0,170)
     if len (polylines_massing) > 1:  # checks that there is actually data
         img=cv2.imread(pdt.feedback_noise_base)
         img=draw_paths_base (polylines_massing, linetype_massing, 'any', 'any', img, save='False')
@@ -113,7 +120,6 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
             text = str(int(text*100))+'%'
         else:
             text = '0% (no towers)'
-        text_colour= (230,0,170)
         generate_image_feeback (img, text, text_colour, pdt.feedback_noise, file_name,user_id, '_feedback_noise.jpg' )
     else:
         img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
@@ -122,6 +128,7 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
     # ------------------------------------------------------------------------------------
     # feedback on barrier effect counting connections to nodes that lead udner the bridge
     # ------------------------------------------------------------------------------------
+    text_colour= (230,0,170)
     if len (polylines_lines) > 1: # checks that there is actually data
         # generates image over base to develop feedback drawing
         img=cv2.imread(pdt.feedback_barrier_base)
@@ -134,7 +141,6 @@ def generate_feedback_images (databse_filepath, user_id, file_name):
         text = obtain_connections(img1) # sends drawing for calculation of number of conenctions
         
         text = '  ' +  str(text)
-        text_colour= (230,0,170)
         generate_image_feeback (img, text, text_colour, pdt.feedback_barrier, file_name,user_id, '_feedback_barrier.jpg' )
     else:
         img= cv2.imread(pdt.draw_no_lines_drawn) # loads error file if no lines included
