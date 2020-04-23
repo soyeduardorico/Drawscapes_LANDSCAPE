@@ -4,8 +4,8 @@
 var data_exercise = 1; //0 = draw over park, 1 = draw your own park
 var data_canvas_x = 700; //size of canvas
 var data_canvas_y = 700; //size of canvas
-var color_canvas_scheme  = ['#000000','#e6c48a', '#ff6e5e','#ff0000','#baa30d', '#7030a0', '#cc6618', '#2c700f']; //pencil colors for paths (0), massing (1,2,3) and land use (4,5, 6)  
-var thickness_canvas_scheme =  [5,30,22,15, 10, 10, 10, 10];
+var color_canvas_scheme  = ['#000000','#0070c0', '#2c700f','#7f6000','#baa30d', '#7030a0', '#a6a6a6', '#f4b184']; //pencil colors for paths (0), massing (1,2,3) and land use (4,5, 6)  
+var thickness_canvas_scheme =  [5,20,20,20, 10, 10, 10, 10];
 
 
 //--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ var pop5 = "myPopup5"
 title1 = '1 <br> some tips'
 title2 = '2 <br> draw paths'
 title3 = '3 <br> check lines'
-title4 = '4 <br> draw buildings'
+title4 = '4 <br> draw elements'
 title5 = '5 <br> check numbers'
 title6 = '6 <br> locate key uses'
 title7 = '7 <br> feedback'

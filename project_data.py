@@ -69,10 +69,18 @@ color_lines_cv2= (0,0,0)
 # ------------------------------------------------------------------------------------  
 # Use color coder in https://www.google.com/search?q=color+picker
 # height in storeys of building massing accordign to layers
-# heigth is measured from the ground, ie, it is NOT stacked in the calculation
-color_canvas_rgb = [[0,0,0],[230, 196, 138],[255, 110, 94],[255, 0, 0],[186, 163, 13], [112, 48, 160],[204, 102, 24], [44, 112, 15]]
-thickness_lines = [5,30,22,15, 10, 10, 10, 10]
-massing_height = [0,2,5,10, 0, 0, 0, 10] # last two colours do will appear in massing clal but the function will loop over all colors incl land uses
+color_canvas_rgb = [[0,0,0],[0, 112, 192],[44, 112, 15],[127, 96, 0],[186, 163, 13], [112, 48, 160],[166, 166, 166], [244, 177, 132]]
+thickness_lines = [5,20,20,20, 10, 10, 10, 10]
+massing_height = [0,1,1,1, 1, 1, 1, 1] # not used in landscape exercise
+# 0 = LINES
+# 1 = WATER
+# 2 = GREEN / TREES
+# 3 = MOUNDS
+# 4 = FOOD / PICNIC
+# 4 = BIRD WATCHING
+# 5 = FISHING
+# 6 = SPORT PITCHES
+
 
 # ------------------------------------------------------------------------------------
 # Definition of exercises carried out during the uinterface use and how they are saved in database
@@ -97,15 +105,18 @@ content_target_resize_list = [0.5, 0.5, 0.5, 0.5, 0.5]
 # ------------------------------------------------------------------------------------
 # Site specific geometric data 
 # ------------------------------------------------------------------------------------  
-node_coords=[[146,227],
-[201,212],
-[393,160],
-[454,144],
-[469,186],
-[535,307],
-[584,371],
-[410,547],
-[344,567]]
+node_coords=[[61,138],
+[128,15],
+[313,142],
+[341,149],
+[430,237],
+[480,243],
+[541,369],
+[620,513],
+[615,542],
+[383,641],
+[254,555],
+[197,556]]
 
 node_coords_bridge=[[469,186], [535,307], [344,567]] # these are nodes that lead to connections under the DLR bridge
 

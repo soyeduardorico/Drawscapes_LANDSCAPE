@@ -54,13 +54,15 @@
             <div class="row">
                 <div class="column_below" id="b6_1" onclick="myUnDo(4);">  <img id="undo" width="80" height="80"> </img> <br> UNDO</div>
                 <div class="column_below" id="b6_2" onclick="newCanvasStroke(4);">  <img id="draw_use_food" width="80" height="80"> </img> <br> FOOD </div>
-                <div class="column_below" id="b6_3" onclick="newCanvasStroke(5);">  <img id="draw_use_flexible" width="80" height="80"> </img> <br> FLEXIBLE SPACE </div>
-                <div class="column_below" id="b6_4" onclick="newCanvasStroke(6);">  <img id="draw_use_public" width="80" height="80"> </img> <br> PUBLIC GATHERING </div>
-                <div class="column_below" id="b6_5" onclick="newCanvasStroke(7);">  <img id="draw_use_green" width="80" height="80"> </img> <br> GREEN SPACE </div>                
+                <div class="column_below" id="b6_3" onclick="newCanvasStroke(5);">  <img id="draw_use_birdwatching" width="80" height="80"> </img> <br> BIRDWATCHING </div>
+                <div class="column_below" id="b6_4" onclick="newCanvasStroke(6);">  <img id="draw_use_fishing" width="80" height="80"> </img> <br> FISHING </div>
+                <div class="column_below" id="b6_5" onclick="newCanvasStroke(7);">  <img id="draw_use_sport" width="80" height="80"> </img> <br> SPORT PITCHES </div>                
                 <div class="column_below" id="b6_6" onclick="myPopFunction(pop1);"> 
                     <div class="popup">                    
                         <span class="popuptext" id="myPopup1">
-                            Think on landscape value of canals for public spaces <br>
+                            Think on landscape value of water and canals for restign and picnic areas <br> <br>
+                            Consider accessibility for sport pitches <br> <br>
+                            Consider elevated points for birdwatching <br> 
                         </span> 
                         <img class = "lower_menu_button" id="tips"> </img> <br> TIPS 
                     </div>
@@ -128,9 +130,9 @@
         document.getElementById("feedback").src = image_video.src;
         document.getElementById("undo").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/undo.jpg");
         document.getElementById("draw_use_food").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_food.jpg");
-        document.getElementById("draw_use_flexible").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_flexible.jpg");
-        document.getElementById("draw_use_public").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_public.jpg");
-        document.getElementById("draw_use_green").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_green.jpg");        
+        document.getElementById("draw_use_birdwatching").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_birdwatching.jpg");
+        document.getElementById("draw_use_fishing").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_fishing.jpg");
+        document.getElementById("draw_use_sport").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/draw_use_sport.jpg");        
         document.getElementById("tips").src = "{{url_for ('static', filename='ADDSHARE2') }}".replace("ADDSHARE2", "images/tips.jpg");
         openTab('b6')
         document.getElementById("overlay").style.visibility = "hidden";
