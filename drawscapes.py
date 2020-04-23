@@ -39,7 +39,7 @@ root_data = os.path.join(absFilePath,  'data')
 # -----------------------------------------------------------------------------------------
 # renders index page
 # -----------------------------------------------------------------------------------------
-@app.route ('/index')
+@app.route ('/')
 def index():
     millis = int(round(time.time() * 1000))
     variable = str(millis)
